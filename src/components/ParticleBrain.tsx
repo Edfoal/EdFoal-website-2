@@ -20,15 +20,36 @@ function createCerebrumHalf(isLeft: boolean): THREE.Mesh {
     const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
     const len = Math.sqrt(x * x + y * y + z * z) || 1;
     let sx = x / len, sy = y / len, sz = z / len;
+    
     let r = 1.0;
-    if (sz < 0 && sy < 0) r -= Math.abs(sz) * Math.abs(sy) * 0.42;
-    if (sz > 0.1 && sy < 0.1 && sy > -0.4)
-      r -= Math.sin(sz * Math.PI) * (0.1 - sy) * 0.18;
-    sx *= 0.75 + 0.25 * Math.abs(sx);
-    r += Math.sin(sx * 14) * Math.cos(sy * 14) * Math.sin(sz * 14) * 0.055;
-    r += Math.sin(sx * 28) * Math.cos(sy * 28) * Math.sin(sz * 28) * 0.020;
-    r += Math.sin(sx * 7) * Math.cos(sy * 7) * Math.sin(sz * 7) * 0.030;
-    pos.setXYZ(i, xOff + sx * 0.56 * r, 0.15 + sy * 0.50 * r, -0.05 + sz * 0.78 * r);
+    
+    // Front-to-back shaping: narrower front, wider back
+    r += (0.1 - 0.15 * sz);
+    
+    // Occipital carve-out for cerebellum
+    if (sz < 0 && sy < 0) {
+      r -= Math.abs(sz) * Math.abs(sy) * 0.45;
+    }
+    
+    // Temporal lobe protrusion
+    if (sz > 0.0 && sy < 0.1 && sy > -0.6) {
+      const tempProtrusion = Math.sin(sz * Math.PI) * Math.cos(sy * Math.PI) * 0.22;
+      r += tempProtrusion;
+    }
+    
+    // Longitudinal fissure
+    const midlineDist = Math.abs(sx);
+    if (midlineDist < 0.15) {
+      r -= (0.15 - midlineDist) * 0.35;
+    }
+
+    // Winding cortical folds math (reaction-diffusion wave emulation)
+    const fold1 = Math.sin(sy * 15 + Math.sin(sx * 10) * 2.5) * Math.cos(sz * 15 + Math.sin(sy * 10) * 2.5);
+    const fold2 = Math.sin(sx * 28 + Math.cos(sz * 14) * 2.0) * Math.cos(sy * 28 + Math.sin(sx * 14) * 2.0);
+    
+    r += fold1 * 0.055 + fold2 * 0.020;
+    
+    pos.setXYZ(i, xOff + sx * 0.58 * r, 0.15 + sy * 0.50 * r, -0.05 + sz * 0.76 * r);
   }
   geo.computeVertexNormals();
   return new THREE.Mesh(geo, new THREE.MeshBasicMaterial());
@@ -42,8 +63,13 @@ function createCerebellumHalf(isLeft: boolean): THREE.Mesh {
     const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
     const len = Math.sqrt(x * x + y * y + z * z) || 1;
     const sx = x / len, sy = y / len, sz = z / len;
-    const folds = Math.sin(sy * 38) * 0.045 + Math.cos(sz * 24) * 0.015 + Math.sin(sx * 50) * 0.02;
-    const r = 1.0 + folds;
+    
+    let r = 1.0;
+    
+    // Fine foliation folds (horizontal lines)
+    const folds = Math.sin(sy * 45) * 0.045 + Math.cos(sz * 24) * 0.015 + Math.sin(sx * 50) * 0.02;
+    r += folds;
+    
     pos.setXYZ(i, xOff + sx * 0.22 * r, -0.32 + sy * 0.15 * r, -0.38 + sz * 0.22 * r);
   }
   geo.computeVertexNormals();
@@ -51,12 +77,14 @@ function createCerebellumHalf(isLeft: boolean): THREE.Mesh {
 }
 
 function createBrainstem(): THREE.Mesh {
-  const geo = new THREE.CylinderGeometry(0.07, 0.055, 0.55, 16, 12, true);
+  const geo = new THREE.CylinderGeometry(0.07, 0.055, 0.55, 16, 24, true);
   const pos = geo.attributes.position;
   for (let i = 0; i < pos.count; i++) {
     const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
     const ny = y - 0.525;
-    pos.setXYZ(i, x + Math.sin(ny * 10) * 0.012, ny, z - 0.12 + Math.cos(ny * 10) * 0.012);
+    const angle = Math.atan2(z, x);
+    const r = 1.0 + Math.sin(angle * 6) * 0.15; // Vertical ridges
+    pos.setXYZ(i, x * r + Math.sin(ny * 10) * 0.012, ny, z * r - 0.12 + Math.cos(ny * 10) * 0.012);
   }
   geo.computeVertexNormals();
   return new THREE.Mesh(geo, new THREE.MeshBasicMaterial());
@@ -115,7 +143,7 @@ const brainShaderMaterial = new THREE.ShaderMaterial({
 
       // Facing factor relative to local view direction (rotated Y)
       float facing = abs(-N.x * 0.9757 + N.z * 0.2190);
-      float sizeFactor = 1.0 + 0.5 * pow(1.0 - facing, 2.0);
+      float sizeFactor = 1.0 + 0.7 * pow(1.0 - facing, 2.0);
 
       // Scale variation (1.5px - 4px on screen)
       float scale = (0.5 + aSeed * 0.7) * sizeFactor;
@@ -155,12 +183,12 @@ const brainShaderMaterial = new THREE.ShaderMaterial({
       // Wireframe edge detection
       float edgeFactor = min(min(vBarycentric.x, vBarycentric.y), vBarycentric.z);
       float delta = fwidth(edgeFactor);
-      float edge = 1.0 - smoothstep(0.0, delta * 1.0, edgeFactor);
+      float edge = 1.0 - smoothstep(0.0, delta * (1.5 + vSeed * 1.5), edgeFactor);
       if (edge < 0.1) discard;
 
       // Silhouette contour brighter (rim enhancement)
       float rim = pow(1.0 - vFacing, 2.0);
-      float edgeBright = 0.60 + 0.90 * rim;
+      float edgeBright = 0.50 + 1.50 * rim;
 
       // Subtle shimmer
       float shimmer = 0.88 + 0.12 * sin(uTime * 1.5 + vSeed * 80.0);
@@ -180,9 +208,6 @@ const brainShaderMaterial = new THREE.ShaderMaterial({
   blending: THREE.AdditiveBlending,
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Types
-// ─────────────────────────────────────────────────────────────────────────────
 export interface AnimStateProps {
   brainX: number;
   brainY: number;
@@ -205,7 +230,7 @@ interface ParticleBrainProps {
 
 function BrainParticles({ animState }: ParticleBrainProps) {
   const groupRef = useRef<THREE.Group>(null);
-  const count = 11500;
+  const count = 28000;
 
   const { positions, colors, normals, seeds, speeds } = useMemo(() => {
     const posArr = new Float32Array(count * 3);
@@ -226,11 +251,11 @@ function BrainParticles({ animState }: ParticleBrainProps) {
     const stem = createBrainstem();
 
     const regions: { mesh: THREE.Mesh; samples: number; type: string }[] = [
-      { mesh: cerebrumLeft,    samples: 4200, type: "cerebrum" },
-      { mesh: cerebrumRight,   samples: 4200, type: "cerebrum" },
-      { mesh: cerebellumLeft,  samples: 1150, type: "cerebellum" },
-      { mesh: cerebellumRight, samples: 1150, type: "cerebellum" },
-      { mesh: stem,            samples: 800,  type: "stem" },
+      { mesh: cerebrumLeft,    samples: 10000, type: "cerebrum" },
+      { mesh: cerebrumRight,   samples: 10000, type: "cerebrum" },
+      { mesh: cerebellumLeft,  samples: 3000,  type: "cerebellum" },
+      { mesh: cerebellumRight, samples: 3000,  type: "cerebellum" },
+      { mesh: stem,            samples: 2000,  type: "stem" },
     ];
 
     const _p = new THREE.Vector3();
@@ -238,7 +263,7 @@ function BrainParticles({ animState }: ParticleBrainProps) {
     let idx = 0;
 
     // Spatial grid for spacing check
-    const minDistance = 0.014;
+    const minDistance = 0.008;
     const grid = new Map<string, THREE.Vector3>();
 
     const getGridKey = (x: number, y: number, z: number): string => {
@@ -288,28 +313,23 @@ function BrainParticles({ animState }: ParticleBrainProps) {
             const sx = (_p.x - xOff) / 0.56;
             const sy = (_p.y - 0.15) / 0.50;
             const sz = (_p.z + 0.05) / 0.78;
-            const len = Math.sqrt(sx * sx + sy * sy + sz * sz) || 1;
-            const nsx = sx / len;
-            const nsy = sy / len;
-            const nsz = sz / len;
-            const noise = Math.sin(nsx * 14) * Math.cos(nsy * 14) * Math.sin(nsz * 14) * 0.055 +
-                          Math.sin(nsx * 28) * Math.cos(nsy * 28) * Math.sin(nsz * 28) * 0.020 +
-                          Math.sin(nsx * 7) * Math.cos(nsy * 7) * Math.sin(nsz * 7) * 0.030;
             
-            const isFold = noise < -0.01;
+            // Reconstruct winding folds noise
+            const fold1 = Math.sin(sy * 15 + Math.sin(sx * 10) * 2.5) * Math.cos(sz * 15 + Math.sin(sy * 10) * 2.5);
+            const fold2 = Math.sin(sx * 28 + Math.cos(sz * 14) * 2.0) * Math.cos(sy * 28 + Math.sin(sx * 14) * 2.0);
+            const noise = fold1 * 0.055 + fold2 * 0.020;
+            const isFold = noise < -0.005;
+
             weight = isSilhouette ? Math.pow(1.0 - facing, 1.2) : (isFold ? 0.32 : 0.08);
           } else if (type === "cerebellum") {
             const xOff = mesh === cerebellumLeft ? -0.15 : 0.15;
             const sx = (_p.x - xOff) / 0.22;
             const sy = (_p.y + 0.32) / 0.15;
             const sz = (_p.z + 0.38) / 0.22;
-            const len = Math.sqrt(sx * sx + sy * sy + sz * sz) || 1;
-            const nsx = sx / len;
-            const nsy = sy / len;
-            const nsz = sz / len;
-            const noise = Math.sin(nsy * 38) * 0.045 + Math.cos(nsz * 24) * 0.015 + Math.sin(nsx * 50) * 0.02;
+            
+            const noise = Math.sin(sy * 45) * 0.045 + Math.cos(sz * 24) * 0.015 + Math.sin(sx * 50) * 0.02;
+            const isFold = noise < -0.005;
 
-            const isFold = noise < -0.01;
             weight = isSilhouette ? Math.pow(1.0 - facing, 1.2) : (isFold ? 0.32 : 0.08);
           } else {
             // Brainstem
@@ -336,8 +356,45 @@ function BrainParticles({ animState }: ParticleBrainProps) {
         normArr[idx * 3 + 2] = _n.z;
 
         const rv = Math.random();
+        
+        // Spatial Color Zonation
         // 40% White, 35% Amber, 15% Purple, 10% Cyan
-        const c = rv < 0.40 ? cWhite : rv < 0.75 ? cAmber : rv < 0.90 ? cPurple : cCyan;
+        let pWhite = 0.40;
+        let pAmber = 0.35;
+        let pPurple = 0.15;
+        let pCyan = 0.10;
+
+        if (_p.y < -0.15) {
+          // Bottom area/stem is mostly Amber
+          pAmber = 0.65;
+          pWhite = 0.15;
+          pPurple = 0.15;
+          pCyan = 0.05;
+        } else if (_p.z < -0.1) {
+          // Back area is mostly Purple
+          pPurple = 0.45;
+          pWhite = 0.25;
+          pAmber = 0.20;
+          pCyan = 0.10;
+        } else if (_p.z > 0.2 && _p.y > 0.1) {
+          // Top-Front area is mostly White and Cyan
+          pWhite = 0.65;
+          pCyan = 0.20;
+          pAmber = 0.10;
+          pPurple = 0.05;
+        }
+
+        const totalP = pWhite + pAmber + pPurple + pCyan;
+        const r1 = pWhite / totalP;
+        const r2 = (pWhite + pAmber) / totalP;
+        const r3 = (pWhite + pAmber + pPurple) / totalP;
+
+        let c = cWhite;
+        if (rv < r1) c = cWhite;
+        else if (rv < r2) c = cAmber;
+        else if (rv < r3) c = cPurple;
+        else c = cCyan;
+
         colArr[idx * 3]     = c.r;
         colArr[idx * 3 + 1] = c.g;
         colArr[idx * 3 + 2] = c.b;
