@@ -6,7 +6,7 @@ import { FiActivity, FiLayers, FiTrendingUp, FiCpu, FiMaximize2 } from "react-ic
 
 export default function Showcase() {
   return (
-    <section id="solutions" className="relative py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto overflow-hidden">
+    <section id="solutions" className="w-full max-w-7xl mx-auto relative py-24 md:py-32 px-6 md:px-12 overflow-hidden">
       {/* Radial purple lighting backdrop */}
       <div className="absolute top-[30%] left-1/2 -translate-x-1/2 w-[700px] h-[300px] bg-purple-600/5 rounded-full blur-[120px] pointer-events-none -z-10" />
 

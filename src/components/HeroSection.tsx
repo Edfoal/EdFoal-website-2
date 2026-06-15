@@ -14,12 +14,12 @@ export default function HeroSection() {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
 
   // Mutable animation state passed to R3F canvas via ref
-  // brainX = fraction of 3D viewport width (+0.25 → -0.20)
+  // brainX = fraction of 3D viewport width (+0.15 → -0.15)
   const animState = useRef({
-    brainX: 0.25,
+    brainX: 0.15,
     brainY: 0.0,
     brainZ: 0.0,
-    brainScale: 1.0,
+    brainScale: 0.92,
     rotYOffset: 0.0,
     cameraZ: 3.6,
     cameraX: 0.0,
@@ -40,10 +40,10 @@ export default function HeroSection() {
         },
       });
 
-      // Lateral brain slide only — no zoom, no camera pan, no scale change
+      // Lateral brain slide and scale adjust to fit completely inside viewport
       tl.to(animState.current, {
-        brainX: -0.20,
-        brainScale: 1.0,
+        brainX: -0.15,
+        brainScale: 0.92,
         duration: 1,
         ease: "power1.inOut",
       }, 0);
@@ -69,7 +69,7 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative w-full h-[130vh] bg-[#080808]">
+    <div ref={containerRef} className="relative w-full h-[180vh] bg-[#080808]">
       {/* Pinned canvas layer */}
       <div
         ref={canvasContainerRef}
@@ -81,12 +81,27 @@ export default function HeroSection() {
       </div>
 
       {/* Scrolling text content */}
-      <div className="relative z-10 w-full">
+      <div
+        className="relative z-10"
+        style={{
+          width: "92%",
+          maxWidth: "1280px",
+          marginLeft: "auto",
+          marginRight: "auto",
+          paddingLeft: "max(16px, 2.5vw)",
+          paddingRight: "max(16px, 2.5vw)",
+        }}
+      >
         {/* Section 1: Text Left, Brain Right */}
-        <section className="w-full h-[65vh] flex items-center pointer-events-none select-text">
+        <section
+          className="w-full min-h-[75vh] flex flex-col justify-start pointer-events-none select-text"
+          style={{
+            paddingTop: "210px",
+            paddingBottom: "48px",
+          }}
+        >
           <div
-            className="hero-content flex flex-col justify-center pointer-events-auto"
-            style={{ paddingLeft: "7%" }}
+            className="hero-content flex flex-col justify-start pointer-events-auto"
           >
             <h1
               style={{
@@ -159,10 +174,15 @@ export default function HeroSection() {
         </section>
 
         {/* Section 2: Brain Left, New Content Right */}
-        <section className="w-full h-[65vh] flex items-center justify-end pointer-events-none select-text">
+        <section
+          className="w-full min-h-[65vh] flex items-center justify-end pointer-events-none select-text"
+          style={{
+            marginTop: "-120px",
+          }}
+        >
           <div
             className="second-content flex flex-col justify-center pointer-events-auto"
-            style={{ paddingRight: "7%", maxWidth: "440px" }}
+            style={{ maxWidth: "440px" }}
           >
             <h2
               style={{

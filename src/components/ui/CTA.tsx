@@ -16,7 +16,7 @@ export default function CTA() {
   };
 
   return (
-    <section id="contact" className="relative py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto overflow-hidden">
+    <section id="contact" className="w-full max-w-7xl mx-auto relative py-24 md:py-32 px-6 md:px-12 overflow-hidden">
       {/* Deep backing radial purple light */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-purple-500/15 rounded-full blur-[120px] pointer-events-none -z-10" />
 

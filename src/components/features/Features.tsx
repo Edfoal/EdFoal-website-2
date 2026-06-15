@@ -63,7 +63,7 @@ export default function Features() {
   };
 
   return (
-    <section id="features" className="relative py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto overflow-hidden">
+    <section id="features" className="w-full max-w-7xl mx-auto relative py-24 md:py-32 px-6 md:px-12 overflow-hidden">
       {/* Section Header */}
       <div className="text-center max-w-3xl mx-auto mb-16 md:mb-24">
         <motion.div

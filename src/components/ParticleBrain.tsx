@@ -4,94 +4,88 @@ import React, { useRef, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
+import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
-import { MeshSurfaceSampler } from "three/examples/jsm/math/MeshSurfaceSampler.js";
 import FloatingTriangles from "./FloatingTriangles";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Brain Mesh Generators — high-res deformed spheres
+// Barycentric area-weighted mesh sampler for loading GLTF model
 // ─────────────────────────────────────────────────────────────────────────────
 
-function createCerebrumHalf(isLeft: boolean): THREE.Mesh {
-  const geo = new THREE.SphereGeometry(1, 64, 48);
-  const pos = geo.attributes.position;
-  const xOff = isLeft ? -0.16 : 0.16;
-  for (let i = 0; i < pos.count; i++) {
-    const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
-    const len = Math.sqrt(x * x + y * y + z * z) || 1;
-    let sx = x / len, sy = y / len, sz = z / len;
-    
-    let r = 1.0;
-    
-    // Front-to-back shaping: narrower front, wider back
-    r += (0.1 - 0.15 * sz);
-    
-    // Occipital carve-out for cerebellum
-    if (sz < 0 && sy < 0) {
-      r -= Math.abs(sz) * Math.abs(sy) * 0.45;
-    }
-    
-    // Temporal lobe protrusion
-    if (sz > 0.0 && sy < 0.1 && sy > -0.6) {
-      const tempProtrusion = Math.sin(sz * Math.PI) * Math.cos(sy * Math.PI) * 0.22;
-      r += tempProtrusion;
-    }
-    
-    // Longitudinal fissure
-    const midlineDist = Math.abs(sx);
-    if (midlineDist < 0.15) {
-      r -= (0.15 - midlineDist) * 0.35;
-    }
-
-    // Winding cortical folds math (reaction-diffusion wave emulation)
-    const fold1 = Math.sin(sy * 15 + Math.sin(sx * 10) * 2.5) * Math.cos(sz * 15 + Math.sin(sy * 10) * 2.5);
-    const fold2 = Math.sin(sx * 28 + Math.cos(sz * 14) * 2.0) * Math.cos(sy * 28 + Math.sin(sx * 14) * 2.0);
-    
-    r += fold1 * 0.055 + fold2 * 0.020;
-    
-    pos.setXYZ(i, xOff + sx * 0.58 * r, 0.15 + sy * 0.50 * r, -0.05 + sz * 0.76 * r);
-  }
-  geo.computeVertexNormals();
-  return new THREE.Mesh(geo, new THREE.MeshBasicMaterial());
+interface TriangleInfo {
+  v0: THREE.Vector3; v1: THREE.Vector3; v2: THREE.Vector3;
+  n0: THREE.Vector3; n1: THREE.Vector3; n2: THREE.Vector3;
+  area: number;
 }
 
-function createCerebellumHalf(isLeft: boolean): THREE.Mesh {
-  const geo = new THREE.SphereGeometry(1, 32, 24);
-  const pos = geo.attributes.position;
-  const xOff = isLeft ? -0.15 : 0.15;
-  for (let i = 0; i < pos.count; i++) {
-    const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
-    const len = Math.sqrt(x * x + y * y + z * z) || 1;
-    const sx = x / len, sy = y / len, sz = z / len;
-    
-    let r = 1.0;
-    
-    // Fine foliation folds (horizontal lines)
-    const folds = Math.sin(sy * 45) * 0.045 + Math.cos(sz * 24) * 0.015 + Math.sin(sx * 50) * 0.02;
-    r += folds;
-    
-    pos.setXYZ(i, xOff + sx * 0.22 * r, -0.32 + sy * 0.15 * r, -0.38 + sz * 0.22 * r);
-  }
-  geo.computeVertexNormals();
-  return new THREE.Mesh(geo, new THREE.MeshBasicMaterial());
-}
+function getTrianglesFromGeometry(geom: THREE.BufferGeometry): {
+  triangles: TriangleInfo[];
+  totalArea: number;
+} {
+  const positionAttribute = geom.getAttribute("position");
+  const normalAttribute = geom.getAttribute("normal");
+  const indexAttribute = geom.getIndex();
 
-function createBrainstem(): THREE.Mesh {
-  const geo = new THREE.CylinderGeometry(0.07, 0.055, 0.55, 16, 24, true);
-  const pos = geo.attributes.position;
-  for (let i = 0; i < pos.count; i++) {
-    const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
-    const ny = y - 0.525;
-    const angle = Math.atan2(z, x);
-    const r = 1.0 + Math.sin(angle * 6) * 0.15; // Vertical ridges
-    pos.setXYZ(i, x * r + Math.sin(ny * 10) * 0.012, ny, z * r - 0.12 + Math.cos(ny * 10) * 0.012);
+  const triangles: TriangleInfo[] = [];
+  let totalArea = 0;
+
+  if (!positionAttribute) return { triangles, totalArea };
+
+  const positions = positionAttribute.array;
+  const normals = normalAttribute ? normalAttribute.array : null;
+
+  if (indexAttribute) {
+    const indices = indexAttribute.array;
+    for (let i = 0; i < indices.length; i += 3) {
+      const idx0 = indices[i];
+      const idx1 = indices[i+1];
+      const idx2 = indices[i+2];
+
+      const v0 = new THREE.Vector3(positions[idx0*3], positions[idx0*3+1], positions[idx0*3+2]);
+      const v1 = new THREE.Vector3(positions[idx1*3], positions[idx1*3+1], positions[idx1*3+2]);
+      const v2 = new THREE.Vector3(positions[idx2*3], positions[idx2*3+1], positions[idx2*3+2]);
+
+      const n0 = normals ? new THREE.Vector3(normals[idx0*3], normals[idx0*3+1], normals[idx0*3+2]) : new THREE.Vector3(0, 1, 0);
+      const n1 = normals ? new THREE.Vector3(normals[idx1*3], normals[idx1*3+1], normals[idx1*3+2]) : new THREE.Vector3(0, 1, 0);
+      const n2 = normals ? new THREE.Vector3(normals[idx2*3], normals[idx2*3+1], normals[idx2*3+2]) : new THREE.Vector3(0, 1, 0);
+
+      const edge1 = new THREE.Vector3().subVectors(v1, v0);
+      const edge2 = new THREE.Vector3().subVectors(v2, v0);
+      const cross = new THREE.Vector3().crossVectors(edge1, edge2);
+      const area = 0.5 * cross.length();
+
+      triangles.push({ v0, v1, v2, n0, n1, n2, area });
+      totalArea += area;
+    }
+  } else {
+    for (let i = 0; i < positionAttribute.count; i += 3) {
+      const idx0 = i;
+      const idx1 = i + 1;
+      const idx2 = i + 2;
+
+      const v0 = new THREE.Vector3(positions[idx0*3], positions[idx0*3+1], positions[idx0*3+2]);
+      const v1 = new THREE.Vector3(positions[idx1*3], positions[idx1*3+1], positions[idx1*3+2]);
+      const v2 = new THREE.Vector3(positions[idx2*3], positions[idx2*3+1], positions[idx2*3+2]);
+
+      const n0 = normals ? new THREE.Vector3(normals[idx0*3], normals[idx0*3+1], normals[idx0*3+2]) : new THREE.Vector3(0, 1, 0);
+      const n1 = normals ? new THREE.Vector3(normals[idx1*3], normals[idx1*3+1], normals[idx1*3+2]) : new THREE.Vector3(0, 1, 0);
+      const n2 = normals ? new THREE.Vector3(normals[idx2*3], normals[idx2*3+1], normals[idx2*3+2]) : new THREE.Vector3(0, 1, 0);
+
+      const edge1 = new THREE.Vector3().subVectors(v1, v0);
+      const edge2 = new THREE.Vector3().subVectors(v2, v0);
+      const cross = new THREE.Vector3().crossVectors(edge1, edge2);
+      const area = 0.5 * cross.length();
+
+      triangles.push({ v0, v1, v2, n0, n1, n2, area });
+      totalArea += area;
+    }
   }
-  geo.computeVertexNormals();
-  return new THREE.Mesh(geo, new THREE.MeshBasicMaterial());
+
+  return { triangles, totalArea };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Wireframe Triangle Shader — barycentric edge detection, rim brightness
+// Shader
 // ─────────────────────────────────────────────────────────────────────────────
 
 const brainShaderMaterial = new THREE.ShaderMaterial({
@@ -103,102 +97,102 @@ const brainShaderMaterial = new THREE.ShaderMaterial({
     attribute vec3 aNormal;
     attribute float aSeed;
     attribute float aSpeed;
+    attribute float aDepth;
     attribute vec3 aBarycentric;
 
     varying vec3 vBarycentric;
     varying vec3 vColor;
     varying float vAlpha;
     varying float vSeed;
-    varying vec3 vViewDir;
+    varying float vDepth;
     varying vec3 vSurfaceNormal;
-    varying float vFacing;
 
     mat3 rotationMatrix(vec3 axis, float angle) {
       axis = normalize(axis);
       float s = sin(angle); float c = cos(angle); float oc = 1.0 - c;
       return mat3(
-        oc*axis.x*axis.x+c,       oc*axis.x*axis.y-axis.z*s, oc*axis.z*axis.x+axis.y*s,
-        oc*axis.x*axis.y+axis.z*s, oc*axis.y*axis.y+c,       oc*axis.y*axis.z-axis.x*s,
+        oc*axis.x*axis.x+c,        oc*axis.x*axis.y-axis.z*s, oc*axis.z*axis.x+axis.y*s,
+        oc*axis.x*axis.y+axis.z*s, oc*axis.y*axis.y+c,        oc*axis.y*axis.z-axis.x*s,
         oc*axis.z*axis.x-axis.y*s, oc*axis.y*axis.z+axis.x*s, oc*axis.z*axis.z+c
       );
     }
 
     void main() {
       vBarycentric = aBarycentric;
-      vColor = aColor;
-      vSeed = aSeed;
-      vAlpha = 0.50 + aSeed * 0.50;
+      vColor  = aColor;
+      vSeed   = aSeed;
+      vDepth  = aDepth;
 
-      // Align triangle to brain surface normal
+      // Surface particles fully opaque, interior slightly transparent
+      vAlpha  = 0.65 + aDepth * 0.35;
+
       vec3 N = normalize(aNormal);
-      vec3 T;
-      if (abs(N.y) > 0.99) T = normalize(cross(N, vec3(0.0, 0.0, 1.0)));
-      else T = normalize(cross(N, vec3(0.0, 1.0, 0.0)));
+      vec3 T = abs(N.y) > 0.99
+        ? normalize(cross(N, vec3(0,0,1)))
+        : normalize(cross(N, vec3(0,1,0)));
       vec3 B = normalize(cross(N, T));
       mat3 alignMat = mat3(T, N, B);
 
-      // Very slow spin around surface normal
-      float spinAngle = uTime * (0.1 + aSeed * 0.2) * aSpeed + aSeed * 6.28;
-      mat3 spinMat = rotationMatrix(vec3(0.0, 1.0, 0.0), spinAngle);
+      float spinAngle = uTime * (0.10 + aSeed * 0.15) * aSpeed + aSeed * 6.28318;
+      mat3  spinMat   = rotationMatrix(vec3(0,1,0), spinAngle);
 
-      // Facing factor relative to local view direction (rotated Y)
-      float facing = abs(-N.x * 0.9757 + N.z * 0.2190);
-      float sizeFactor = 1.0 + 0.7 * pow(1.0 - facing, 2.0);
+      float facing    = abs(-N.x * 0.9757 + N.z * 0.2190);
+      float sizeFactor = (0.8 + aDepth * 0.4) * (1.0 + 0.35 * pow(1.0 - facing, 2.0));
+      float scale      = (0.38 + aSeed * 0.28) * sizeFactor;
 
-      // Scale variation (1.5px - 4px on screen)
-      float scale = (0.5 + aSeed * 0.7) * sizeFactor;
       vec3 localPos = alignMat * (spinMat * (position * scale));
 
-      // Gentle breathing
-      float breath = 1.0 + 0.015 * sin(uTime * 0.6 + aSeed * 6.28);
+      float breath = 1.0 + 0.009 * sin(uTime * 0.5 + aSeed * 6.28318);
       vec3 wPos = aInstancePos * breath + localPos;
 
-      // Tiny noise
-      float t = uTime * 0.12;
-      wPos.x += sin(t + aInstancePos.z * 1.5 + aSeed * 5.0) * 0.010;
-      wPos.y += cos(t * 0.7 + aInstancePos.x * 1.5 + aSeed * 12.0) * 0.008;
-      wPos.z += sin(t + aInstancePos.y * 1.5 + aSeed * 22.0) * 0.010;
+      float t = uTime * 0.08;
+      wPos.x += sin(t + aInstancePos.z*1.1 + aSeed*5.0) * 0.005;
+      wPos.y += cos(t*0.7 + aInstancePos.x*1.1 + aSeed*11.0) * 0.004;
+      wPos.z += sin(t + aInstancePos.y*1.1 + aSeed*21.0) * 0.005;
 
-      vec4 modelPos = modelMatrix * vec4(wPos, 1.0);
-      vec4 viewPos = viewMatrix * modelPos;
-      gl_Position = projectionMatrix * viewPos;
-
-      vViewDir = cameraPosition - modelPos.xyz;
+      gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(wPos, 1.0);
       vSurfaceNormal = normalize(normalMatrix * N);
-      vFacing = facing;
     }
   `,
   fragmentShader: `
     uniform float uTime;
-
-    varying vec3 vBarycentric;
-    varying vec3 vColor;
+    varying vec3  vBarycentric;
+    varying vec3  vColor;
     varying float vAlpha;
     varying float vSeed;
-    varying vec3 vViewDir;
-    varying vec3 vSurfaceNormal;
-    varying float vFacing;
+    varying float vDepth;
+    varying vec3  vSurfaceNormal;
 
     void main() {
-      // Wireframe edge detection
-      float edgeFactor = min(min(vBarycentric.x, vBarycentric.y), vBarycentric.z);
-      float delta = fwidth(edgeFactor);
-      float edge = 1.0 - smoothstep(0.0, delta * (1.5 + vSeed * 1.5), edgeFactor);
-      if (edge < 0.1) discard;
+      // Crisp triangle outlines
+      float ef    = min(min(vBarycentric.x, vBarycentric.y), vBarycentric.z);
+      float delta = fwidth(ef);
+      float lw    = 1.6 + vSeed * 1.2;
+      float edge  = 1.0 - smoothstep(0.0, delta * lw, ef);
+      if (edge < 0.12) discard;
 
-      // Silhouette contour brighter (rim enhancement)
-      float rim = pow(1.0 - vFacing, 2.0);
-      float edgeBright = 0.50 + 1.50 * rim;
+      // Dynamic view-space facing factor (1.0 = points at camera, 0.0 = sideways silhouette edge)
+      float facing    = abs(normalize(vSurfaceNormal).z);
+      
+      // Rim glow strictly confined to silhouette edges (higher power = sharper border)
+      float rim       = pow(1.0 - facing, 4.5);
+      float edgeBright = 0.55 + 1.55 * rim;
 
       // Subtle shimmer
-      float shimmer = 0.88 + 0.12 * sin(uTime * 1.5 + vSeed * 80.0);
+      float shimmer = 0.88 + 0.12 * sin(uTime * 2.0 + vSeed * 75.0);
+      float flicker = 1.0 - step(0.988, fract(sin(vSeed*12345.6789 + uTime*0.3)*43758.5453)) * 0.28;
 
-      // Tiny random flicker
-      float flicker = 1.0 - step(0.97, fract(sin(vSeed * 12345.6789 + uTime * 0.3) * 43758.5453)) * 0.4;
+      // Interior particles slightly dimmer to create depth
+      float depthDim = 0.55 + vDepth * 0.45;
 
-      vec3 finalColor = vColor * edgeBright * shimmer * flicker;
+      vec3  baseColor = vColor * edgeBright * shimmer * flicker * depthDim;
+      
+      // Blend base color with a brilliant golden yellow outline on the silhouette edge
+      vec3 gold = vec3(1.0, 0.72, 0.16); // #ffb829
+      vec3 finalColor = mix(baseColor * 2.4, gold * edgeBright * 2.6, rim * 0.85);
 
-      gl_FragColor = vec4(finalColor * 0.95, vAlpha * edge * 0.75);
+      float a   = vAlpha * edge * 0.85;
+      gl_FragColor = vec4(finalColor, a);
     }
   `,
   transparent: true,
@@ -208,238 +202,206 @@ const brainShaderMaterial = new THREE.ShaderMaterial({
   blending: THREE.AdditiveBlending,
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Types
+// ─────────────────────────────────────────────────────────────────────────────
+
 export interface AnimStateProps {
-  brainX: number;
-  brainY: number;
-  brainZ: number;
-  brainScale: number;
-  rotYOffset: number;
-  cameraZ: number;
-  cameraX: number;
-  cameraY: number;
+  brainX: number; brainY: number; brainZ: number;
+  brainScale: number; rotYOffset: number;
+  cameraZ: number; cameraX: number; cameraY: number;
   lookAtX: number;
 }
 
 interface ParticleBrainProps {
-  animState: React.MutableRefObject<AnimStateProps>;
+  animState?: React.MutableRefObject<AnimStateProps>;
 }
 
+const defaultAnim: AnimStateProps = {
+  brainX: 0.22, brainY: 0.0, brainZ: 0.0,
+  brainScale: 1.0, rotYOffset: 0.0,
+  cameraZ: 3.6, cameraX: 0.0, cameraY: 0.0, lookAtX: 0.0,
+};
+
 // ─────────────────────────────────────────────────────────────────────────────
-// Brain Particles — InstancedBufferGeometry + MeshSurfaceSampler
+// Brain Particles — volumetric SDF sampling
 // ─────────────────────────────────────────────────────────────────────────────
 
 function BrainParticles({ animState }: ParticleBrainProps) {
   const groupRef = useRef<THREE.Group>(null);
-  const count = 28000;
+  const COUNT    = 12000;
 
-  const { positions, colors, normals, seeds, speeds } = useMemo(() => {
-    const posArr = new Float32Array(count * 3);
-    const colArr = new Float32Array(count * 3);
-    const normArr = new Float32Array(count * 3);
-    const seedArr = new Float32Array(count);
-    const speedArr = new Float32Array(count);
+  const { scene } = useGLTF("/brain.glb");
+
+  const { positions, colors, normals, seeds, speeds, depths } = useMemo(() => {
+    const posArr   = new Float32Array(COUNT * 3);
+    const colArr   = new Float32Array(COUNT * 3);
+    const normArr  = new Float32Array(COUNT * 3);
+    const seedArr  = new Float32Array(COUNT);
+    const speedArr = new Float32Array(COUNT);
+    const depthArr = new Float32Array(COUNT);
+
+    let brainMesh: THREE.Mesh | null = null;
+    scene.traverse((node) => {
+      if ((node as any).isMesh && !brainMesh) {
+        brainMesh = node as THREE.Mesh;
+      }
+    });
+
+    if (!brainMesh) {
+      return {
+        positions: posArr, colors: colArr, normals: normArr,
+        seeds: seedArr, speeds: speedArr, depths: depthArr,
+      };
+    }
+
+    scene.updateMatrixWorld(true);
+    const geom = (brainMesh as THREE.Mesh).geometry.clone();
+    geom.applyMatrix4((brainMesh as THREE.Mesh).matrixWorld);
+    geom.center();
+    geom.computeBoundingBox();
+    let bbox = geom.boundingBox!;
+    const size = new THREE.Vector3();
+    bbox.getSize(size);
+    const maxDim = Math.max(size.x, Math.max(size.y, size.z));
+    geom.scale(1.2 / maxDim, 1.2 / maxDim, 1.2 / maxDim);
+    geom.computeBoundingBox();
+    bbox = geom.boundingBox!;
+
+    const { triangles, totalArea } = getTrianglesFromGeometry(geom);
+
+    const cumulativeAreas = new Float32Array(triangles.length);
+    let sum = 0;
+    for (let i = 0; i < triangles.length; i++) {
+      sum += triangles[i].area;
+      cumulativeAreas[i] = sum;
+    }
+
+    const sampleTriangleIndex = (target: number): number => {
+      let low = 0;
+      let high = cumulativeAreas.length - 1;
+      while (low < high) {
+        const mid = (low + high) >> 1;
+        if (cumulativeAreas[mid] < target) {
+          low = mid + 1;
+        } else {
+          high = mid;
+        }
+      }
+      return low;
+    };
 
     const cWhite  = new THREE.Color("#ffffff");
     const cAmber  = new THREE.Color("#ffb829");
     const cPurple = new THREE.Color("#8052ff");
     const cCyan   = new THREE.Color("#00d4ff");
+    const rng = () => Math.random();
 
-    const cerebrumLeft = createCerebrumHalf(true);
-    const cerebrumRight = createCerebrumHalf(false);
-    const cerebellumLeft = createCerebellumHalf(true);
-    const cerebellumRight = createCerebellumHalf(false);
-    const stem = createBrainstem();
+    for (let i = 0; i < COUNT; i++) {
+      const r = rng() * totalArea;
+      const triIdx = sampleTriangleIndex(r);
+      const tri = triangles[triIdx];
 
-    const regions: { mesh: THREE.Mesh; samples: number; type: string }[] = [
-      { mesh: cerebrumLeft,    samples: 10000, type: "cerebrum" },
-      { mesh: cerebrumRight,   samples: 10000, type: "cerebrum" },
-      { mesh: cerebellumLeft,  samples: 3000,  type: "cerebellum" },
-      { mesh: cerebellumRight, samples: 3000,  type: "cerebellum" },
-      { mesh: stem,            samples: 2000,  type: "stem" },
-    ];
-
-    const _p = new THREE.Vector3();
-    const _n = new THREE.Vector3();
-    let idx = 0;
-
-    // Spatial grid for spacing check
-    const minDistance = 0.008;
-    const grid = new Map<string, THREE.Vector3>();
-
-    const getGridKey = (x: number, y: number, z: number): string => {
-      const gx = Math.floor(x / minDistance);
-      const gy = Math.floor(y / minDistance);
-      const gz = Math.floor(z / minDistance);
-      return `${gx},${gy},${gz}`;
-    };
-
-    const checkOverlap = (p: THREE.Vector3): boolean => {
-      const gx = Math.floor(p.x / minDistance);
-      const gy = Math.floor(p.y / minDistance);
-      const gz = Math.floor(p.z / minDistance);
-
-      for (let dx = -1; dx <= 1; dx++) {
-        for (let dy = -1; dy <= 1; dy++) {
-          for (let dz = -1; dz <= 1; dz++) {
-            const key = `${gx + dx},${gy + dy},${gz + dz}`;
-            const other = grid.get(key);
-            if (other && p.distanceTo(other) < minDistance) {
-              return true;
-            }
-          }
-        }
+      let r1 = rng();
+      let r2 = rng();
+      if (r1 + r2 > 1.0) {
+        r1 = 1.0 - r1;
+        r2 = 1.0 - r2;
       }
-      return false;
-    };
+      const r0 = 1.0 - r1 - r2;
 
-    for (const { mesh, samples, type } of regions) {
-      const sampler = new MeshSurfaceSampler(mesh).build();
-      for (let s = 0; s < samples; s++) {
-        let accepted = false;
-        let tries = 0;
+      const pos = new THREE.Vector3()
+        .addScaledVector(tri.v0, r0)
+        .addScaledVector(tri.v1, r1)
+        .addScaledVector(tri.v2, r2);
 
-        while (!accepted && tries < 150) {
-          sampler.sample(_p, _n);
-          tries++;
+      const norm = new THREE.Vector3()
+        .addScaledVector(tri.n0, r0)
+        .addScaledVector(tri.n1, r1)
+        .addScaledVector(tri.n2, r2)
+        .normalize();
 
-          // Dynamic silhouette weight based on side-view angle
-          const facing = Math.abs(-_n.x * Math.sin(1.35) + _n.z * Math.cos(1.35));
-          const isSilhouette = facing < 0.28;
-          
-          let weight = 0.08; // Base density for inner regions
+      const isSurface = rng() < 0.70;
+      const depth = isSurface ? 1.0 : Math.max(0, 1.0 - rng() * 0.5);
 
-          if (type === "cerebrum") {
-            const xOff = mesh === cerebrumLeft ? -0.16 : 0.16;
-            const sx = (_p.x - xOff) / 0.56;
-            const sy = (_p.y - 0.15) / 0.50;
-            const sz = (_p.z + 0.05) / 0.78;
-            
-            // Reconstruct winding folds noise
-            const fold1 = Math.sin(sy * 15 + Math.sin(sx * 10) * 2.5) * Math.cos(sz * 15 + Math.sin(sy * 10) * 2.5);
-            const fold2 = Math.sin(sx * 28 + Math.cos(sz * 14) * 2.0) * Math.cos(sy * 28 + Math.sin(sx * 14) * 2.0);
-            const noise = fold1 * 0.055 + fold2 * 0.020;
-            const isFold = noise < -0.005;
-
-            weight = isSilhouette ? Math.pow(1.0 - facing, 1.2) : (isFold ? 0.32 : 0.08);
-          } else if (type === "cerebellum") {
-            const xOff = mesh === cerebellumLeft ? -0.15 : 0.15;
-            const sx = (_p.x - xOff) / 0.22;
-            const sy = (_p.y + 0.32) / 0.15;
-            const sz = (_p.z + 0.38) / 0.22;
-            
-            const noise = Math.sin(sy * 45) * 0.045 + Math.cos(sz * 24) * 0.015 + Math.sin(sx * 50) * 0.02;
-            const isFold = noise < -0.005;
-
-            weight = isSilhouette ? Math.pow(1.0 - facing, 1.2) : (isFold ? 0.32 : 0.08);
-          } else {
-            // Brainstem
-            weight = isSilhouette ? Math.pow(1.0 - facing, 1.2) : 0.15;
-          }
-
-          if (Math.random() < weight) {
-            let tooClose = checkOverlap(_p);
-            if (tooClose && tries > 80) {
-              tooClose = false; // Relax constraint
-            }
-            if (!tooClose) {
-              accepted = true;
-              grid.set(getGridKey(_p.x, _p.y, _p.z), _p.clone());
-            }
-          }
-        }
-
-        posArr[idx * 3]     = _p.x;
-        posArr[idx * 3 + 1] = _p.y;
-        posArr[idx * 3 + 2] = _p.z;
-        normArr[idx * 3]     = _n.x;
-        normArr[idx * 3 + 1] = _n.y;
-        normArr[idx * 3 + 2] = _n.z;
-
-        const rv = Math.random();
-        
-        // Spatial Color Zonation
-        // 40% White, 35% Amber, 15% Purple, 10% Cyan
-        let pWhite = 0.40;
-        let pAmber = 0.35;
-        let pPurple = 0.15;
-        let pCyan = 0.10;
-
-        if (_p.y < -0.15) {
-          // Bottom area/stem is mostly Amber
-          pAmber = 0.65;
-          pWhite = 0.15;
-          pPurple = 0.15;
-          pCyan = 0.05;
-        } else if (_p.z < -0.1) {
-          // Back area is mostly Purple
-          pPurple = 0.45;
-          pWhite = 0.25;
-          pAmber = 0.20;
-          pCyan = 0.10;
-        } else if (_p.z > 0.2 && _p.y > 0.1) {
-          // Top-Front area is mostly White and Cyan
-          pWhite = 0.65;
-          pCyan = 0.20;
-          pAmber = 0.10;
-          pPurple = 0.05;
-        }
-
-        const totalP = pWhite + pAmber + pPurple + pCyan;
-        const r1 = pWhite / totalP;
-        const r2 = (pWhite + pAmber) / totalP;
-        const r3 = (pWhite + pAmber + pPurple) / totalP;
-
-        let c = cWhite;
-        if (rv < r1) c = cWhite;
-        else if (rv < r2) c = cAmber;
-        else if (rv < r3) c = cPurple;
-        else c = cCyan;
-
-        colArr[idx * 3]     = c.r;
-        colArr[idx * 3 + 1] = c.g;
-        colArr[idx * 3 + 2] = c.b;
-
-        seedArr[idx] = Math.random();
-        speedArr[idx] = 0.4 + Math.random() * 0.8;
-        idx++;
+      const pt = pos.clone();
+      if (!isSurface) {
+        pt.addScaledVector(norm, -rng() * 0.12);
       }
-      mesh.geometry.dispose();
+
+      let w = 0.35, a = 0.0, pu = 0.40, cy = 0.25;
+
+      const relativeY = (pt.y - bbox.min.y) / (bbox.max.y - bbox.min.y);
+      const relativeZ = (pt.z - bbox.min.z) / (bbox.max.z - bbox.min.z);
+
+      if (relativeY < 0.30 && relativeZ < 0.45) {
+        a = 0.80; w = 0.10; pu = 0.05; cy = 0.05;
+      } else if (relativeZ < 0.35) {
+        pu = 0.70; w = 0.15; a = 0.0; cy = 0.15;
+      } else if (relativeZ > 0.65 && relativeY > 0.40) {
+        w = 0.50; cy = 0.40; a = 0.0; pu = 0.10;
+      }
+
+      const t = w + a + pu + cy;
+      const rv = rng();
+      let c = cCyan;
+      if (rv < w / t) c = cWhite;
+      else if (rv < (w + a) / t) c = cAmber;
+      else if (rv < (w + a + pu) / t) c = cPurple;
+
+      posArr[i * 3] = pt.x;
+      posArr[i * 3 + 1] = pt.y;
+      posArr[i * 3 + 2] = pt.z;
+
+      normArr[i * 3] = norm.x;
+      normArr[i * 3 + 1] = norm.y;
+      normArr[i * 3 + 2] = norm.z;
+
+      colArr[i * 3] = c.r;
+      colArr[i * 3 + 1] = c.g;
+      colArr[i * 3 + 2] = c.b;
+
+      seedArr[i] = rng();
+      speedArr[i] = 0.35 + rng() * 0.9;
+      depthArr[i] = depth;
     }
 
-    return { positions: posArr, colors: colArr, normals: normArr, seeds: seedArr, speeds: speedArr };
-  }, []);
+    return {
+      positions: posArr, colors: colArr, normals: normArr,
+      seeds: seedArr, speeds: speedArr, depths: depthArr,
+    };
+  }, [scene]);
 
-  // Build InstancedBufferGeometry — flat triangle with per-instance attributes
   const instancedGeometry = useMemo(() => {
-    const s = 0.005;
+    // Triangle size matching reference image
+    const s = 0.0125;
     const verts = new Float32Array([
-       0,          0, -s * 1.15,
-      -s * 0.866,  0,  s * 0.577,
-       s * 0.866,  0,  s * 0.577,
+       0,        0, -s * 1.15,
+      -s*0.866,  0,  s * 0.577,
+       s*0.866,  0,  s * 0.577,
     ]);
-    const norms = new Float32Array([0, 1, 0, 0, 1, 0, 0, 1, 0]);
-    const bary  = new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]);
+    const norms = new Float32Array([0,1,0, 0,1,0, 0,1,0]);
+    const bary  = new Float32Array([1,0,0, 0,1,0, 0,0,1]);
 
     const geom = new THREE.InstancedBufferGeometry();
-    geom.setAttribute("position",    new THREE.BufferAttribute(verts, 3));
-    geom.setAttribute("normal",      new THREE.BufferAttribute(norms, 3));
-    geom.setAttribute("aBarycentric", new THREE.BufferAttribute(bary, 3));
-    geom.setIndex(new THREE.BufferAttribute(new Uint16Array([0, 1, 2]), 1));
+    geom.setAttribute("position",     new THREE.BufferAttribute(verts, 3));
+    geom.setAttribute("normal",       new THREE.BufferAttribute(norms, 3));
+    geom.setAttribute("aBarycentric", new THREE.BufferAttribute(bary,  3));
+    geom.setIndex(new THREE.BufferAttribute(new Uint16Array([0,1,2]), 1));
 
     geom.setAttribute("aInstancePos", new THREE.InstancedBufferAttribute(positions, 3));
-    geom.setAttribute("aColor",       new THREE.InstancedBufferAttribute(colors, 3));
-    geom.setAttribute("aNormal",      new THREE.InstancedBufferAttribute(normals, 3));
-    geom.setAttribute("aSeed",        new THREE.InstancedBufferAttribute(seeds, 1));
-    geom.setAttribute("aSpeed",       new THREE.InstancedBufferAttribute(speeds, 1));
-
-    geom.instanceCount = count;
+    geom.setAttribute("aColor",       new THREE.InstancedBufferAttribute(colors,    3));
+    geom.setAttribute("aNormal",      new THREE.InstancedBufferAttribute(normals,   3));
+    geom.setAttribute("aSeed",        new THREE.InstancedBufferAttribute(seeds,     1));
+    geom.setAttribute("aSpeed",       new THREE.InstancedBufferAttribute(speeds,    1));
+    geom.setAttribute("aDepth",       new THREE.InstancedBufferAttribute(depths,    1));
+    geom.instanceCount = COUNT;
     return geom;
-  }, [positions, colors, normals, seeds, speeds]);
+  }, [positions, colors, normals, seeds, speeds, depths]);
 
   useFrame((state) => {
     const elapsed = state.clock.getElapsedTime();
-    const current = animState.current;
-
+    const current = animState ? animState.current : defaultAnim;
     brainShaderMaterial.uniforms.uTime.value = elapsed;
 
     if (groupRef.current) {
@@ -447,21 +409,20 @@ function BrainParticles({ animState }: ParticleBrainProps) {
       const h3d = 2 * Math.tan((cam.fov * Math.PI) / 360) * cam.position.z;
       const w3d = h3d * state.viewport.aspect;
 
-      const scH = (0.60 * h3d) / 1.45;
-      const scW = (0.45 * w3d) / 1.44;
-      const base = Math.min(scH, scW);
-      const finalScale = base * current.brainScale;
+      // Scale so brain fills ~50% of screen width (matching reference)
+      const scH = (0.95 * h3d) / 1.45;
+      const scW = (0.75 * w3d) / 1.44;
+      const finalScale = Math.min(scH, scW) * current.brainScale;
 
       const tX = current.brainX * w3d;
-      const tY = current.brainY + Math.sin(elapsed * 0.3) * 0.025;
+      const tY = current.brainY + Math.sin(elapsed * 0.3) * 0.022;
 
       groupRef.current.position.set(tX, tY, current.brainZ);
       groupRef.current.scale.setScalar(finalScale);
 
-      // Very slow rotation + mouse parallax
-      const rotY = 1.35 + current.rotYOffset + elapsed * 0.03 + state.pointer.x * 0.15;
-      const rotX = 0.12 + Math.sin(elapsed * 0.04) * 0.03 - state.pointer.y * 0.12;
-      const rotZ = -0.04 + Math.sin(elapsed * 0.05) * 0.02;
+      const rotY = 1.35 + current.rotYOffset + Math.sin(elapsed * 0.08) * 0.22 + state.pointer.x * 0.14;
+      const rotX = 0.10 + Math.sin(elapsed * 0.04) * 0.03 - state.pointer.y * 0.10;
+      const rotZ = -0.03 + Math.sin(elapsed * 0.05) * 0.018;
 
       groupRef.current.rotation.y += (rotY - groupRef.current.rotation.y) * 0.04;
       groupRef.current.rotation.x += (rotX - groupRef.current.rotation.x) * 0.04;
@@ -486,7 +447,7 @@ function BrainParticles({ animState }: ParticleBrainProps) {
 // Canvas Wrapper
 // ─────────────────────────────────────────────────────────────────────────────
 
-function ParticleBrainInner({ animState }: ParticleBrainProps) {
+function CanvasBrainInner({ animState }: ParticleBrainProps) {
   return (
     <div className="w-full h-full relative overflow-visible select-none pointer-events-none">
       <Canvas
@@ -498,10 +459,10 @@ function ParticleBrainInner({ animState }: ParticleBrainProps) {
         <BrainParticles animState={animState} />
         <EffectComposer>
           <Bloom
-            luminanceThreshold={0.3}
-            luminanceSmoothing={0.9}
-            height={200}
-            intensity={0.5}
+            luminanceThreshold={0.08}
+            luminanceSmoothing={0.75}
+            height={300}
+            intensity={1.2}
           />
         </EffectComposer>
       </Canvas>
@@ -509,7 +470,7 @@ function ParticleBrainInner({ animState }: ParticleBrainProps) {
   );
 }
 
-export default dynamic(() => Promise.resolve(ParticleBrainInner), {
+export default dynamic(() => Promise.resolve(CanvasBrainInner), {
   ssr: false,
   loading: () => (
     <div className="w-full h-full flex items-center justify-center bg-black">
@@ -522,3 +483,5 @@ export default dynamic(() => Promise.resolve(ParticleBrainInner), {
     </div>
   ),
 });
+
+useGLTF.preload("/brain.glb");

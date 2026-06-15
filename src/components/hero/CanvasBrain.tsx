@@ -1,350 +1,486 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useRef, useMemo } from "react";
+import dynamic from "next/dynamic";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
+import { useGLTF } from "@react-three/drei";
+import * as THREE from "three";
+import FloatingTriangles from "../FloatingTriangles";
 
-// Brain silhouette: a realistic side-profile brain shape
-const BRAIN_PATH_NORM = [
-  [0.50, 0.92], // bottom stem left
-  [0.45, 0.85],
-  [0.38, 0.82],
-  [0.28, 0.80],
-  [0.18, 0.76],
-  [0.10, 0.68],
-  [0.06, 0.58],
-  [0.05, 0.48],
-  [0.07, 0.38],
-  [0.10, 0.30],
-  [0.13, 0.23], // frontal lobe area
-  [0.17, 0.16],
-  [0.23, 0.10],
-  [0.30, 0.06],
-  [0.38, 0.04],
-  [0.46, 0.03], // top center
-  [0.54, 0.04],
-  [0.62, 0.06],
-  [0.70, 0.10],
-  [0.76, 0.15],
-  [0.82, 0.22],
-  [0.87, 0.30],
-  [0.90, 0.38], // right side / parietal
-  [0.92, 0.46],
-  [0.91, 0.55],
-  [0.88, 0.63],
-  [0.83, 0.70], // occipital area
-  [0.76, 0.76],
-  [0.68, 0.80],
-  [0.60, 0.83],
-  [0.56, 0.88],
-  [0.54, 0.93], // back to stem
-  [0.52, 0.95],
-  [0.50, 0.92],
-];
+// ─────────────────────────────────────────────────────────────────────────────
+// Barycentric area-weighted mesh sampler for loading GLTF model
+// ─────────────────────────────────────────────────────────────────────────────
 
-// Internal sulcus concavity (a dip on left side = frontal/parietal boundary)
-const SULCUS = [
-  [0.25, 0.30],
-  [0.32, 0.27],
-  [0.36, 0.32],
-  [0.33, 0.38],
-  [0.27, 0.40],
-  [0.23, 0.35],
-  [0.25, 0.30],
-];
+interface TriangleInfo {
+  v0: THREE.Vector3; v1: THREE.Vector3; v2: THREE.Vector3;
+  n0: THREE.Vector3; n1: THREE.Vector3; n2: THREE.Vector3;
+  area: number;
+}
 
-const GOLD = ["#f5a623", "#f7c63a", "#e89010", "#ffcc44", "#f0a820", "#d4860a", "#fbb034", "#ffb347"];
-const MID = ["#2dd4bf", "#a78bfa", "#818cf8", "#ffffff", "#34d399", "#c084fc", "#67e8f9", "#60a5fa", "#38bdf8", "#818cf8"];
-const INNER = ["#e2e8f0", "#cbd5e1", "#a5b4fc", "#7dd3fc", "#c4b5fd", "#f0f4ff", "#ffffff", "#dde4ff", "#c7d2fe"];
+function getTrianglesFromGeometry(geom: THREE.BufferGeometry): {
+  triangles: TriangleInfo[];
+  totalArea: number;
+} {
+  const positionAttribute = geom.getAttribute("position");
+  const normalAttribute = geom.getAttribute("normal");
+  const indexAttribute = geom.getIndex();
 
-const BG_C = [
-  "#7c3aed",
-  "rgba(124,58,237,0.5)",
-  "rgba(255,255,255,0.18)",
-  "rgba(255,255,255,0.10)",
-  "#a78bfa",
-  "rgba(167,139,250,0.4)",
-];
+  const triangles: TriangleInfo[] = [];
+  let totalArea = 0;
 
-export default function CanvasBrain() {
-  const floatCanvasRef = useRef<HTMLCanvasElement>(null);
-  const brainCanvasRef = useRef<HTMLCanvasElement>(null);
+  if (!positionAttribute) return { triangles, totalArea };
 
-  useEffect(() => {
-    const floatCanvas = floatCanvasRef.current;
-    const brainCanvas = brainCanvasRef.current;
-    if (!floatCanvas || !brainCanvas) return;
+  const positions = positionAttribute.array;
+  const normals = normalAttribute ? normalAttribute.array : null;
 
-    let animationFrameId: number;
-    let W = window.innerWidth;
-    let H = window.innerHeight;
+  if (indexAttribute) {
+    const indices = indexAttribute.array;
+    for (let i = 0; i < indices.length; i += 3) {
+      const idx0 = indices[i];
+      const idx1 = indices[i+1];
+      const idx2 = indices[i+2];
 
-    floatCanvas.width = W;
-    floatCanvas.height = H;
-    const fX = floatCanvas.getContext("2d")!;
+      const v0 = new THREE.Vector3(positions[idx0*3], positions[idx0*3+1], positions[idx0*3+2]);
+      const v1 = new THREE.Vector3(positions[idx1*3], positions[idx1*3+1], positions[idx1*3+2]);
+      const v2 = new THREE.Vector3(positions[idx2*3], positions[idx2*3+1], positions[idx2*3+2]);
 
-    let BW = Math.round(W * 0.65);
-    let BH = H;
-    brainCanvas.width = BW;
-    brainCanvas.height = BH;
-    const bX = brainCanvas.getContext("2d")!;
+      const n0 = normals ? new THREE.Vector3(normals[idx0*3], normals[idx0*3+1], normals[idx0*3+2]) : new THREE.Vector3(0, 1, 0);
+      const n1 = normals ? new THREE.Vector3(normals[idx1*3], normals[idx1*3+1], normals[idx1*3+2]) : new THREE.Vector3(0, 1, 0);
+      const n2 = normals ? new THREE.Vector3(normals[idx2*3], normals[idx2*3+1], normals[idx2*3+2]) : new THREE.Vector3(0, 1, 0);
 
-    let MARGIN_X = BW * 0.05;
-    let MARGIN_Y = BH * 0.08;
-    let SCALE_X = BW * 0.90;
-    let SCALE_Y = BH * 0.82;
+      const edge1 = new THREE.Vector3().subVectors(v1, v0);
+      const edge2 = new THREE.Vector3().subVectors(v2, v0);
+      const cross = new THREE.Vector3().crossVectors(edge1, edge2);
+      const area = 0.5 * cross.length();
 
-    function norm2px(nx: number, ny: number): [number, number] {
-      return [MARGIN_X + nx * SCALE_X, MARGIN_Y + ny * SCALE_Y];
+      triangles.push({ v0, v1, v2, n0, n1, n2, area });
+      totalArea += area;
+    }
+  } else {
+    for (let i = 0; i < positionAttribute.count; i += 3) {
+      const idx0 = i;
+      const idx1 = i + 1;
+      const idx2 = i + 2;
+
+      const v0 = new THREE.Vector3(positions[idx0*3], positions[idx0*3+1], positions[idx0*3+2]);
+      const v1 = new THREE.Vector3(positions[idx1*3], positions[idx1*3+1], positions[idx1*3+2]);
+      const v2 = new THREE.Vector3(positions[idx2*3], positions[idx2*3+1], positions[idx2*3+2]);
+
+      const n0 = normals ? new THREE.Vector3(normals[idx0*3], normals[idx0*3+1], normals[idx0*3+2]) : new THREE.Vector3(0, 1, 0);
+      const n1 = normals ? new THREE.Vector3(normals[idx1*3], normals[idx1*3+1], normals[idx1*3+2]) : new THREE.Vector3(0, 1, 0);
+      const n2 = normals ? new THREE.Vector3(normals[idx2*3], normals[idx2*3+1], normals[idx2*3+2]) : new THREE.Vector3(0, 1, 0);
+
+      const edge1 = new THREE.Vector3().subVectors(v1, v0);
+      const edge2 = new THREE.Vector3().subVectors(v2, v0);
+      const cross = new THREE.Vector3().crossVectors(edge1, edge2);
+      const area = 0.5 * cross.length();
+
+      triangles.push({ v0, v1, v2, n0, n1, n2, area });
+      totalArea += area;
+    }
+  }
+
+  return { triangles, totalArea };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Shader
+// ─────────────────────────────────────────────────────────────────────────────
+
+const brainShaderMaterial = new THREE.ShaderMaterial({
+  uniforms: { uTime: { value: 0 } },
+  vertexShader: `
+    uniform float uTime;
+    attribute vec3 aInstancePos;
+    attribute vec3 aColor;
+    attribute vec3 aNormal;
+    attribute float aSeed;
+    attribute float aSpeed;
+    attribute float aDepth;
+    attribute vec3 aBarycentric;
+
+    varying vec3 vBarycentric;
+    varying vec3 vColor;
+    varying float vAlpha;
+    varying float vSeed;
+    varying float vDepth;
+    varying vec3 vSurfaceNormal;
+
+    mat3 rotationMatrix(vec3 axis, float angle) {
+      axis = normalize(axis);
+      float s = sin(angle); float c = cos(angle); float oc = 1.0 - c;
+      return mat3(
+        oc*axis.x*axis.x+c,        oc*axis.x*axis.y-axis.z*s, oc*axis.z*axis.x+axis.y*s,
+        oc*axis.x*axis.y+axis.z*s, oc*axis.y*axis.y+c,        oc*axis.y*axis.z-axis.x*s,
+        oc*axis.z*axis.x-axis.y*s, oc*axis.y*axis.z+axis.x*s, oc*axis.z*axis.z+c
+      );
     }
 
-    function buildPath(pts: number[][]): Path2D {
-      const path = new Path2D();
-      const [x0, y0] = norm2px(pts[0][0], pts[0][1]);
-      path.moveTo(x0, y0);
-      for (let i = 1; i < pts.length; i++) {
-        const [x, y] = norm2px(pts[i][0], pts[i][1]);
-        path.lineTo(x, y);
+    void main() {
+      vBarycentric = aBarycentric;
+      vColor  = aColor;
+      vSeed   = aSeed;
+      vDepth  = aDepth;
+
+      // Surface particles fully opaque, interior slightly transparent
+      vAlpha  = 0.65 + aDepth * 0.35;
+
+      vec3 N = normalize(aNormal);
+      vec3 T = abs(N.y) > 0.99
+        ? normalize(cross(N, vec3(0,0,1)))
+        : normalize(cross(N, vec3(0,1,0)));
+      vec3 B = normalize(cross(N, T));
+      mat3 alignMat = mat3(T, N, B);
+
+      float spinAngle = uTime * (0.10 + aSeed * 0.15) * aSpeed + aSeed * 6.28318;
+      mat3  spinMat   = rotationMatrix(vec3(0,1,0), spinAngle);
+
+      float facing    = abs(-N.x * 0.9757 + N.z * 0.2190);
+      float sizeFactor = (0.8 + aDepth * 0.4) * (1.0 + 0.35 * pow(1.0 - facing, 2.0));
+      float scale      = (0.38 + aSeed * 0.28) * sizeFactor;
+
+      vec3 localPos = alignMat * (spinMat * (position * scale));
+
+      float breath = 1.0 + 0.009 * sin(uTime * 0.5 + aSeed * 6.28318);
+      vec3 wPos = aInstancePos * breath + localPos;
+
+      float t = uTime * 0.08;
+      wPos.x += sin(t + aInstancePos.z*1.1 + aSeed*5.0) * 0.005;
+      wPos.y += cos(t*0.7 + aInstancePos.x*1.1 + aSeed*11.0) * 0.004;
+      wPos.z += sin(t + aInstancePos.y*1.1 + aSeed*21.0) * 0.005;
+
+      gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(wPos, 1.0);
+      vSurfaceNormal = normalize(normalMatrix * N);
+    }
+  `,
+  fragmentShader: `
+    uniform float uTime;
+    varying vec3  vBarycentric;
+    varying vec3  vColor;
+    varying float vAlpha;
+    varying float vSeed;
+    varying float vDepth;
+    varying vec3  vSurfaceNormal;
+
+    void main() {
+      // Crisp triangle outlines
+      float ef    = min(min(vBarycentric.x, vBarycentric.y), vBarycentric.z);
+      float delta = fwidth(ef);
+      float lw    = 1.6 + vSeed * 1.2;
+      float edge  = 1.0 - smoothstep(0.0, delta * lw, ef);
+      if (edge < 0.12) discard;
+
+      // Dynamic view-space facing factor (1.0 = points at camera, 0.0 = sideways silhouette edge)
+      float facing    = abs(normalize(vSurfaceNormal).z);
+      
+      // Rim glow strictly confined to silhouette edges (higher power = sharper border)
+      float rim       = pow(1.0 - facing, 4.5);
+      float edgeBright = 0.55 + 1.55 * rim;
+
+      // Subtle shimmer
+      float shimmer = 0.88 + 0.12 * sin(uTime * 2.0 + vSeed * 75.0);
+      float flicker = 1.0 - step(0.988, fract(sin(vSeed*12345.6789 + uTime*0.3)*43758.5453)) * 0.28;
+
+      // Interior particles slightly dimmer to create depth
+      float depthDim = 0.55 + vDepth * 0.45;
+
+      vec3  baseColor = vColor * edgeBright * shimmer * flicker * depthDim;
+      
+      // Blend base color with a brilliant golden yellow outline on the silhouette edge
+      vec3 gold = vec3(1.0, 0.72, 0.16); // #ffb829
+      vec3 finalColor = mix(baseColor * 2.4, gold * edgeBright * 2.6, rim * 0.85);
+
+      float a   = vAlpha * edge * 0.85;
+      gl_FragColor = vec4(finalColor, a);
+    }
+  `,
+  transparent: true,
+  depthWrite: false,
+  depthTest: true,
+  side: THREE.DoubleSide,
+  blending: THREE.AdditiveBlending,
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Types
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface AnimStateProps {
+  brainX: number; brainY: number; brainZ: number;
+  brainScale: number; rotYOffset: number;
+  cameraZ: number; cameraX: number; cameraY: number;
+  lookAtX: number;
+}
+
+interface ParticleBrainProps {
+  animState?: React.MutableRefObject<AnimStateProps>;
+}
+
+const defaultAnim: AnimStateProps = {
+  brainX: 0.22, brainY: 0.0, brainZ: 0.0,
+  brainScale: 1.0, rotYOffset: 0.0,
+  cameraZ: 3.6, cameraX: 0.0, cameraY: 0.0, lookAtX: 0.0,
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Brain Particles — volumetric SDF sampling
+// ─────────────────────────────────────────────────────────────────────────────
+
+function BrainParticles({ animState }: ParticleBrainProps) {
+  const groupRef = useRef<THREE.Group>(null);
+  const COUNT    = 12000;
+
+  const { scene } = useGLTF("/brain.glb");
+
+  const { positions, colors, normals, seeds, speeds, depths } = useMemo(() => {
+    const posArr   = new Float32Array(COUNT * 3);
+    const colArr   = new Float32Array(COUNT * 3);
+    const normArr  = new Float32Array(COUNT * 3);
+    const seedArr  = new Float32Array(COUNT);
+    const speedArr = new Float32Array(COUNT);
+    const depthArr = new Float32Array(COUNT);
+
+    let brainMesh: THREE.Mesh | null = null;
+    scene.traverse((node) => {
+      if ((node as any).isMesh && !brainMesh) {
+        brainMesh = node as THREE.Mesh;
       }
-      path.closePath();
-      return path;
+    });
+
+    if (!brainMesh) {
+      return {
+        positions: posArr, colors: colArr, normals: normArr,
+        seeds: seedArr, speeds: speedArr, depths: depthArr,
+      };
     }
 
-    let pixData: Uint8ClampedArray;
+    scene.updateMatrixWorld(true);
+    const geom = (brainMesh as THREE.Mesh).geometry.clone();
+    geom.applyMatrix4((brainMesh as THREE.Mesh).matrixWorld);
+    geom.center();
+    geom.computeBoundingBox();
+    let bbox = geom.boundingBox!;
+    const size = new THREE.Vector3();
+    bbox.getSize(size);
+    const maxDim = Math.max(size.x, Math.max(size.y, size.z));
+    geom.scale(1.2 / maxDim, 1.2 / maxDim, 1.2 / maxDim);
+    geom.computeBoundingBox();
+    bbox = geom.boundingBox!;
 
-    function initOffscreen() {
-      const offC = document.createElement("canvas");
-      offC.width = BW;
-      offC.height = BH;
-      const offX = offC.getContext("2d")!;
+    const { triangles, totalArea } = getTrianglesFromGeometry(geom);
 
-      const brainPath = buildPath(BRAIN_PATH_NORM);
-      const sulcusPath = buildPath(SULCUS);
-
-      offX.fillStyle = "#fff";
-      offX.fill(brainPath);
-      offX.fillStyle = "#000";
-      offX.fill(sulcusPath);
-
-      pixData = offX.getImageData(0, 0, BW, BH).data;
+    const cumulativeAreas = new Float32Array(triangles.length);
+    let sum = 0;
+    for (let i = 0; i < triangles.length; i++) {
+      sum += triangles[i].area;
+      cumulativeAreas[i] = sum;
     }
 
-    initOffscreen();
-
-    function inBrain(x: number, y: number): boolean {
-      const ix = Math.round(x);
-      const iy = Math.round(y);
-      if (ix < 0 || ix >= BW || iy < 0 || iy >= BH) return false;
-      if (!pixData) return false;
-      const idx = (iy * BW + ix) * 4;
-      return pixData[idx] > 128;
-    }
-
-    let CX = MARGIN_X + 0.50 * SCALE_X;
-    let CY = MARGIN_Y + 0.45 * SCALE_Y;
-    let RADIUS = Math.min(SCALE_X, SCALE_Y) * 0.45;
-
-    function updateCentroid() {
-      CX = MARGIN_X + 0.50 * SCALE_X;
-      CY = MARGIN_Y + 0.45 * SCALE_Y;
-      RADIUS = Math.min(SCALE_X, SCALE_Y) * 0.45;
-    }
-
-    function zoneDist(x: number, y: number): number {
-      return Math.sqrt((x - CX) ** 2 + (y - CY) ** 2) / RADIUS;
-    }
-
-    function pickColor(x: number, y: number): string {
-      const d = zoneDist(x, y);
-      if (d > 0.80) return GOLD[Math.floor(Math.random() * GOLD.length)];
-      if (d > 0.45) return MID[Math.floor(Math.random() * MID.length)];
-      return INNER[Math.floor(Math.random() * INNER.length)];
-    }
-
-    class BrainTri {
-      x: number = 0;
-      y: number = 0;
-      sz: number = 0;
-      color: string = "";
-      alpha: number = 1;
-      rot: number = 0;
-      rSpeed: number = 0;
-      outline: boolean = false;
-
-      constructor() {
-        this.place();
-      }
-
-      place() {
-        let x = 0, y = 0, tries = 0;
-        do {
-          x = MARGIN_X + Math.random() * SCALE_X;
-          y = MARGIN_Y + Math.random() * SCALE_Y;
-          tries++;
-        } while (!inBrain(x, y) && tries < 300);
-        this.x = x;
-        this.y = y;
-        this.sz = 3 + Math.random() * 6.5;
-        this.color = pickColor(x, y);
-        this.alpha = 0.55 + Math.random() * 0.45;
-        this.rot = Math.random() * Math.PI * 2;
-        this.rSpeed = (Math.random() - 0.5) * 0.005;
-        this.outline = Math.random() < 0.38;
-      }
-
-      draw() {
-        bX.save();
-        bX.translate(this.x, this.y);
-        bX.rotate(this.rot);
-        bX.globalAlpha = this.alpha;
-        const s = this.sz;
-        bX.beginPath();
-        bX.moveTo(0, -s);
-        bX.lineTo(s * 0.866, s * 0.5);
-        bX.lineTo(-s * 0.866, s * 0.5);
-        bX.closePath();
-        if (this.outline) {
-          bX.strokeStyle = this.color;
-          bX.lineWidth = 0.7;
-          bX.stroke();
+    const sampleTriangleIndex = (target: number): number => {
+      let low = 0;
+      let high = cumulativeAreas.length - 1;
+      while (low < high) {
+        const mid = (low + high) >> 1;
+        if (cumulativeAreas[mid] < target) {
+          low = mid + 1;
         } else {
-          bX.fillStyle = this.color;
-          bX.fill();
-        }
-        bX.restore();
-        this.rot += this.rSpeed;
-      }
-    }
-
-    class FloatTri {
-      x: number = 0;
-      y: number = 0;
-      sz: number = 0;
-      vx: number = 0;
-      vy: number = 0;
-      rot: number = 0;
-      rS: number = 0;
-      color: string = "";
-      alpha: number = 1;
-      outline: boolean = false;
-
-      constructor(init: boolean) {
-        this.reset(init);
-      }
-
-      reset(init: boolean) {
-        this.x = init ? Math.random() * W : (Math.random() < 0.5 ? -30 : W + 30);
-        this.y = Math.random() * H;
-        this.sz = 9 + Math.random() * 24;
-        this.vx = (Math.random() - 0.5) * 0.35;
-        this.vy = (Math.random() - 0.5) * 0.35;
-        this.rot = Math.random() * Math.PI * 2;
-        this.rS = (Math.random() - 0.5) * 0.009;
-        this.color = BG_C[Math.floor(Math.random() * BG_C.length)];
-        this.alpha = 0.10 + Math.random() * 0.28;
-        this.outline = Math.random() < 0.65;
-      }
-
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        this.rot += this.rS;
-        if (this.x < -60 || this.x > W + 60 || this.y < -60 || this.y > H + 60) {
-          this.reset(false);
+          high = mid;
         }
       }
-
-      draw() {
-        fX.save();
-        fX.translate(this.x, this.y);
-        fX.rotate(this.rot);
-        fX.globalAlpha = this.alpha;
-        const s = this.sz;
-        fX.beginPath();
-        fX.moveTo(0, -s);
-        fX.lineTo(s * 0.866, s * 0.5);
-        fX.lineTo(-s * 0.866, s * 0.5);
-        fX.closePath();
-        if (this.outline) {
-          fX.strokeStyle = this.color;
-          fX.lineWidth = 1.4;
-          fX.stroke();
-        } else {
-          fX.fillStyle = this.color;
-          fX.fill();
-        }
-        fX.restore();
-      }
-    }
-
-    let brainTris = Array.from({ length: 2800 }, () => new BrainTri());
-    const floatTris = Array.from({ length: 65 }, () => new FloatTri(true));
-
-    let tick = 0;
-    function loop() {
-      fX.clearRect(0, 0, W, H);
-      for (const f of floatTris) {
-        f.update();
-        f.draw();
-      }
-
-      bX.clearRect(0, 0, BW, BH);
-      tick++;
-      if (tick % 2 === 0) {
-        for (let i = 0; i < 12; i++) {
-          const p = brainTris[Math.floor(Math.random() * brainTris.length)];
-          if (p) {
-            p.alpha = 0.30 + Math.random() * 0.70;
-          }
-        }
-      }
-      for (const t of brainTris) {
-        t.draw();
-      }
-      animationFrameId = requestAnimationFrame(loop);
-    }
-
-    loop();
-
-    const handleResize = () => {
-      W = window.innerWidth;
-      H = window.innerHeight;
-      floatCanvas.width = W;
-      floatCanvas.height = H;
-
-      BW = Math.round(W * 0.65);
-      BH = H;
-      brainCanvas.width = BW;
-      brainCanvas.height = BH;
-
-      MARGIN_X = BW * 0.05;
-      MARGIN_Y = BH * 0.08;
-      SCALE_X = BW * 0.90;
-      SCALE_Y = BH * 0.82;
-
-      updateCentroid();
-      initOffscreen();
-      brainTris = Array.from({ length: 2800 }, () => new BrainTri());
+      return low;
     };
 
-    window.addEventListener("resize", handleResize);
+    const cWhite  = new THREE.Color("#ffffff");
+    const cAmber  = new THREE.Color("#ffb829");
+    const cPurple = new THREE.Color("#8052ff");
+    const cCyan   = new THREE.Color("#00d4ff");
+    const rng = () => Math.random();
 
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      window.removeEventListener("resize", handleResize);
+    for (let i = 0; i < COUNT; i++) {
+      const r = rng() * totalArea;
+      const triIdx = sampleTriangleIndex(r);
+      const tri = triangles[triIdx];
+
+      let r1 = rng();
+      let r2 = rng();
+      if (r1 + r2 > 1.0) {
+        r1 = 1.0 - r1;
+        r2 = 1.0 - r2;
+      }
+      const r0 = 1.0 - r1 - r2;
+
+      const pos = new THREE.Vector3()
+        .addScaledVector(tri.v0, r0)
+        .addScaledVector(tri.v1, r1)
+        .addScaledVector(tri.v2, r2);
+
+      const norm = new THREE.Vector3()
+        .addScaledVector(tri.n0, r0)
+        .addScaledVector(tri.n1, r1)
+        .addScaledVector(tri.n2, r2)
+        .normalize();
+
+      const isSurface = rng() < 0.70;
+      const depth = isSurface ? 1.0 : Math.max(0, 1.0 - rng() * 0.5);
+
+      const pt = pos.clone();
+      if (!isSurface) {
+        pt.addScaledVector(norm, -rng() * 0.12);
+      }
+
+      let w = 0.35, a = 0.0, pu = 0.40, cy = 0.25;
+
+      const relativeY = (pt.y - bbox.min.y) / (bbox.max.y - bbox.min.y);
+      const relativeZ = (pt.z - bbox.min.z) / (bbox.max.z - bbox.min.z);
+
+      if (relativeY < 0.30 && relativeZ < 0.45) {
+        a = 0.80; w = 0.10; pu = 0.05; cy = 0.05;
+      } else if (relativeZ < 0.35) {
+        pu = 0.70; w = 0.15; a = 0.0; cy = 0.15;
+      } else if (relativeZ > 0.65 && relativeY > 0.40) {
+        w = 0.50; cy = 0.40; a = 0.0; pu = 0.10;
+      }
+
+      const t = w + a + pu + cy;
+      const rv = rng();
+      let c = cCyan;
+      if (rv < w / t) c = cWhite;
+      else if (rv < (w + a) / t) c = cAmber;
+      else if (rv < (w + a + pu) / t) c = cPurple;
+
+      posArr[i * 3] = pt.x;
+      posArr[i * 3 + 1] = pt.y;
+      posArr[i * 3 + 2] = pt.z;
+
+      normArr[i * 3] = norm.x;
+      normArr[i * 3 + 1] = norm.y;
+      normArr[i * 3 + 2] = norm.z;
+
+      colArr[i * 3] = c.r;
+      colArr[i * 3 + 1] = c.g;
+      colArr[i * 3 + 2] = c.b;
+
+      seedArr[i] = rng();
+      speedArr[i] = 0.35 + rng() * 0.9;
+      depthArr[i] = depth;
+    }
+
+    return {
+      positions: posArr, colors: colArr, normals: normArr,
+      seeds: seedArr, speeds: speedArr, depths: depthArr,
     };
-  }, []);
+  }, [scene]);
+
+  const instancedGeometry = useMemo(() => {
+    const s = 0.0125;
+    const verts = new Float32Array([
+       0,        0, -s * 1.15,
+      -s*0.866,  0,  s * 0.577,
+       s*0.866,  0,  s * 0.577,
+    ]);
+    const norms = new Float32Array([0,1,0, 0,1,0, 0,1,0]);
+    const bary  = new Float32Array([1,0,0, 0,1,0, 0,0,1]);
+
+    const geom = new THREE.InstancedBufferGeometry();
+    geom.setAttribute("position",     new THREE.BufferAttribute(verts, 3));
+    geom.setAttribute("normal",       new THREE.BufferAttribute(norms, 3));
+    geom.setAttribute("aBarycentric", new THREE.BufferAttribute(bary,  3));
+    geom.setIndex(new THREE.BufferAttribute(new Uint16Array([0,1,2]), 1));
+
+    geom.setAttribute("aInstancePos", new THREE.InstancedBufferAttribute(positions, 3));
+    geom.setAttribute("aColor",       new THREE.InstancedBufferAttribute(colors,    3));
+    geom.setAttribute("aNormal",      new THREE.InstancedBufferAttribute(normals,   3));
+    geom.setAttribute("aSeed",        new THREE.InstancedBufferAttribute(seeds,     1));
+    geom.setAttribute("aSpeed",       new THREE.InstancedBufferAttribute(speeds,    1));
+    geom.setAttribute("aDepth",       new THREE.InstancedBufferAttribute(depths,    1));
+    geom.instanceCount = COUNT;
+    return geom;
+  }, [positions, colors, normals, seeds, speeds, depths]);
+
+  useFrame((state) => {
+    const elapsed = state.clock.getElapsedTime();
+    const current = animState ? animState.current : defaultAnim;
+    brainShaderMaterial.uniforms.uTime.value = elapsed;
+
+    if (groupRef.current) {
+      const cam = state.camera as THREE.PerspectiveCamera;
+      const h3d = 2 * Math.tan((cam.fov * Math.PI) / 360) * cam.position.z;
+      const w3d = h3d * state.viewport.aspect;
+
+      // Scale so brain fills ~50% of screen width (matching reference)
+      const scH = (0.95 * h3d) / 1.45;
+      const scW = (0.75 * w3d) / 1.44;
+      const finalScale = Math.min(scH, scW) * current.brainScale;
+
+      const tX = current.brainX * w3d;
+      const tY = current.brainY + Math.sin(elapsed * 0.3) * 0.022;
+
+      groupRef.current.position.set(tX, tY, current.brainZ);
+      groupRef.current.scale.setScalar(finalScale);
+
+      const rotY = 1.35 + current.rotYOffset + Math.sin(elapsed * 0.08) * 0.22 + state.pointer.x * 0.14;
+      const rotX = 0.10 + Math.sin(elapsed * 0.04) * 0.03 - state.pointer.y * 0.10;
+      const rotZ = -0.03 + Math.sin(elapsed * 0.05) * 0.018;
+
+      groupRef.current.rotation.y += (rotY - groupRef.current.rotation.y) * 0.04;
+      groupRef.current.rotation.x += (rotX - groupRef.current.rotation.x) * 0.04;
+      groupRef.current.rotation.z += (rotZ - groupRef.current.rotation.z) * 0.04;
+    }
+
+    state.camera.position.set(0, 0, 3.6);
+    state.camera.lookAt(0, 0, 0);
+  });
 
   return (
-    <>
-      <canvas
-        ref={floatCanvasRef}
-        className="absolute inset-0 w-full h-full pointer-events-none z-1"
-        style={{ display: "block" }}
-      />
-      <canvas
-        ref={brainCanvasRef}
-        className="absolute right-0 top-0 bottom-0 pointer-events-none z-2"
-        style={{ display: "block" }}
-      />
-    </>
+    <group ref={groupRef}>
+      <mesh frustumCulled={false}>
+        <primitive object={instancedGeometry} attach="geometry" />
+        <primitive object={brainShaderMaterial} attach="material" />
+      </mesh>
+    </group>
   );
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Canvas Wrapper
+// ─────────────────────────────────────────────────────────────────────────────
+
+function CanvasBrainInner({ animState }: ParticleBrainProps) {
+  return (
+    <div className="w-full h-full relative overflow-visible select-none pointer-events-none">
+      <Canvas
+        camera={{ position: [0, 0, 3.6], fov: 60 }}
+        gl={{ antialias: true, alpha: true }}
+        style={{ background: "transparent", overflow: "visible", width: "100%", height: "100%" }}
+      >
+        <FloatingTriangles />
+        <BrainParticles animState={animState} />
+        <EffectComposer>
+          <Bloom
+            luminanceThreshold={0.08}
+            luminanceSmoothing={0.75}
+            height={300}
+            intensity={1.2}
+          />
+        </EffectComposer>
+      </Canvas>
+    </div>
+  );
+}
+
+export default dynamic(() => Promise.resolve(CanvasBrainInner), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full flex items-center justify-center bg-black">
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-10 h-10 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+        <span className="text-purple-400 text-xs font-semibold tracking-widest uppercase">
+          Initializing 3D Engine...
+        </span>
+      </div>
+    </div>
+  ),
+});
+
+useGLTF.preload("/brain.glb");
