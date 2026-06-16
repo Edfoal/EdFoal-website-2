@@ -33,12 +33,16 @@ interface CircularTestimonialsProps {
   autoplay?: boolean;
   colors?: Colors;
   fontSizes?: FontSizes;
+  className?: string;
+  showArrows?: boolean;
+  style?: React.CSSProperties;
+  showBackgroundCards?: boolean;
 }
 
 function calculateGap(width: number) {
-  if (width < 640) return 90;
-  if (width < 1024) return 180;
-  return 240;
+  if (width < 640) return 80;
+  if (width < 1024) return 120;
+  return 150; // A more compact desktop gap
 }
 
 export const CircularTestimonials = ({
@@ -46,6 +50,10 @@ export const CircularTestimonials = ({
   autoplay = true,
   colors = {},
   fontSizes = {},
+  className = "",
+  showArrows = true,
+  style = {},
+  showBackgroundCards = true,
 }: CircularTestimonialsProps) => {
   // Color & font config
   const colorName = colors.name ?? "#fff";
@@ -69,12 +77,10 @@ export const CircularTestimonials = ({
 
   const testimonialsLength = useMemo(() => testimonials.length, [testimonials]);
 
-  // Responsive gap calculation
+  // Responsive gap calculation based on window width
   useEffect(() => {
     function handleResize() {
-      if (imageContainerRef.current) {
-        setContainerWidth(imageContainerRef.current.offsetWidth);
-      }
+      setContainerWidth(window.innerWidth);
     }
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -119,7 +125,7 @@ export const CircularTestimonials = ({
     const gap = calculateGap(containerWidth);
     const maxStickUp = gap * 0.4;
     const offset = (index - activeIndex + testimonialsLength) % testimonialsLength;
-    
+
     // Responsive scale
     const baseScale = containerWidth < 640 ? 0.8 : 1;
 
@@ -133,23 +139,23 @@ export const CircularTestimonials = ({
         transition: "all 0.8s cubic-bezier(.4,2,.3,1)",
       };
     }
-    
+
     if (offset === 1) {
-      // Immediate Right
+      // Immediate Right (Hidden)
       return {
-        zIndex: 5,
-        opacity: 0.65,
-        pointerEvents: "auto",
+        zIndex: 1,
+        opacity: 0,
+        pointerEvents: "none",
         transform: `translateX(${gap}px) translateY(-${maxStickUp}px) scale(${baseScale * 0.8}) rotateY(-12deg)`,
         transition: "all 0.8s cubic-bezier(.4,2,.3,1)",
       };
     }
-    
+
     if (offset === testimonialsLength - 1) {
       // Immediate Left
       return {
         zIndex: 5,
-        opacity: 0.65,
+        opacity: showBackgroundCards ? 0.65 : 0,
         pointerEvents: "auto",
         transform: `translateX(-${gap}px) translateY(-${maxStickUp}px) scale(${baseScale * 0.8}) rotateY(12deg)`,
         transition: "all 0.8s cubic-bezier(.4,2,.3,1)",
@@ -160,7 +166,7 @@ export const CircularTestimonials = ({
       // Back center for exactly 4 cards
       return {
         zIndex: 2,
-        opacity: 0.35,
+        opacity: showBackgroundCards ? 0.35 : 0,
         pointerEvents: "none",
         transform: `translateX(0px) translateY(-${maxStickUp * 1.6}px) scale(${baseScale * 0.68}) rotateY(0deg)`,
         transition: "all 0.8s cubic-bezier(.4,2,.3,1)",
@@ -168,10 +174,10 @@ export const CircularTestimonials = ({
     }
 
     if (offset === 2) {
-      // Back Right (for >4 cards)
+      // Back Right (for >4 cards) - Hidden
       return {
-        zIndex: 2,
-        opacity: 0.3,
+        zIndex: 1,
+        opacity: 0,
         pointerEvents: "none",
         transform: `translateX(${gap * 0.5}px) translateY(-${maxStickUp * 1.4}px) scale(${baseScale * 0.7}) rotateY(-6deg)`,
         transition: "all 0.8s cubic-bezier(.4,2,.3,1)",
@@ -182,7 +188,7 @@ export const CircularTestimonials = ({
       // Back Left (for >4 cards)
       return {
         zIndex: 2,
-        opacity: 0.3,
+        opacity: showBackgroundCards ? 0.3 : 0,
         pointerEvents: "none",
         transform: `translateX(-${gap * 0.5}px) translateY(-${maxStickUp * 1.4}px) scale(${baseScale * 0.7}) rotateY(6deg)`,
         transition: "all 0.8s cubic-bezier(.4,2,.3,1)",
@@ -200,10 +206,13 @@ export const CircularTestimonials = ({
   }
 
   return (
-    <div className="w-full flex flex-col items-center justify-center">
+    <div 
+      className={`w-full flex flex-col items-center justify-center ${className}`}
+      style={style}
+    >
       {/* 3D Cards Container */}
-      <div 
-        className="relative w-full flex items-center justify-center h-[380px] [perspective:1000px] overflow-visible" 
+      <div
+        className="relative w-full flex items-center justify-center h-[380px] [perspective:1000px] overflow-visible"
         ref={imageContainerRef}
       >
         {testimonials.map((testimonial, index) => {
@@ -220,7 +229,7 @@ export const CircularTestimonials = ({
                 alt={testimonial.name}
                 className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none"
               />
-              
+
               {/* Dark Gradient Overlay for Readability */}
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-black/20 z-10" />
 
@@ -233,7 +242,7 @@ export const CircularTestimonials = ({
                 >
                   {testimonial.name}
                 </h3>
-                
+
                 {/* Designation / Subtitle */}
                 <p
                   className="mb-3 font-semibold uppercase tracking-widest"
@@ -261,33 +270,35 @@ export const CircularTestimonials = ({
         })}
       </div>
 
-      {/* Navigation Buttons */}
-      <div className="flex gap-6 mt-12 z-30">
-        <button
-          className="w-12 h-12 rounded-full flex items-center justify-center cursor-pointer transition-colors duration-300 border border-white/15 text-white"
-          onClick={handlePrev}
-          style={{
-            backgroundColor: hoverPrev ? colorArrowHoverBg : colorArrowBg,
-          }}
-          onMouseEnter={() => setHoverPrev(true)}
-          onMouseLeave={() => setHoverPrev(false)}
-          aria-label="Previous testimonial"
-        >
-          <FaArrowLeft size={18} color={colorArrowFg} />
-        </button>
-        <button
-          className="w-12 h-12 rounded-full flex items-center justify-center cursor-pointer transition-colors duration-300 border border-white/15 text-white"
-          onClick={handleNext}
-          style={{
-            backgroundColor: hoverNext ? colorArrowHoverBg : colorArrowBg,
-          }}
-          onMouseEnter={() => setHoverNext(true)}
-          onMouseLeave={() => setHoverNext(false)}
-          aria-label="Next testimonial"
-        >
-          <FaArrowRight size={18} color={colorArrowFg} />
-        </button>
-      </div>
+      {showArrows && (
+        /* Navigation Buttons */
+        <div className="flex gap-6 mt-12 z-30">
+          <button
+            className="w-12 h-12 rounded-full flex items-center justify-center cursor-pointer transition-colors duration-300 border border-white/15 text-white"
+            onClick={handlePrev}
+            style={{
+              backgroundColor: hoverPrev ? colorArrowHoverBg : colorArrowBg,
+            }}
+            onMouseEnter={() => setHoverPrev(true)}
+            onMouseLeave={() => setHoverPrev(false)}
+            aria-label="Previous testimonial"
+          >
+            <FaArrowLeft size={18} color={colorArrowFg} />
+          </button>
+          <button
+            className="w-12 h-12 rounded-full flex items-center justify-center cursor-pointer transition-colors duration-300 border border-white/15 text-white"
+            onClick={handleNext}
+            style={{
+              backgroundColor: hoverNext ? colorArrowHoverBg : colorArrowBg,
+            }}
+            onMouseEnter={() => setHoverNext(true)}
+            onMouseLeave={() => setHoverNext(false)}
+            aria-label="Next testimonial"
+          >
+            <FaArrowRight size={18} color={colorArrowFg} />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

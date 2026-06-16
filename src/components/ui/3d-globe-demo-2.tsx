@@ -188,10 +188,12 @@ export default function Globe3DDemoSecond() {
         </CardSpotlight>
 
         {/* Right: Circular Testimonials Cards */}
-        <div className="relative z-10 flex-1 flex items-center justify-center overflow-hidden rounded-2xl min-h-[380px]">
+        <div className="relative z-10 flex-1 flex items-start justify-end overflow-visible rounded-2xl min-h-[380px] lg:pr-12">
           <CircularTestimonials
             testimonials={serviceTestimonials}
             autoplay={true}
+            showArrows={false}
+            showBackgroundCards={false}
             colors={{
               name: "#f7f7ff",
               designation: "#3b82f6",
@@ -205,6 +207,7 @@ export default function Globe3DDemoSecond() {
               designation: "11px",
               quote: "13px",
             }}
+            className="lg:max-w-[550px] lg:ml-auto lg:translate-x-[45px] xl:translate-x-[90px] lg:-translate-y-[90px] xl:-translate-y-[120px] transition-transform duration-500"
           />
         </div>
       </div>
