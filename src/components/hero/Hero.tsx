@@ -3,6 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import CanvasBrain from "./CanvasBrain";
+import { OriginButton } from "@/components/ui/origin-button";
 
 export default function Hero() {
   return (
@@ -14,7 +15,7 @@ export default function Hero() {
           Use pointer-events-none on the grid and pointer-events-auto on the elements to allow canvas interaction if needed while keeping button clicks working. */}
       <div className="relative z-10 w-full lg:absolute lg:left-0 lg:top-0 lg:bottom-0 lg:w-[43%] flex flex-col justify-center px-6 md:px-12 lg:px-0 lg:pl-[7%] py-24 lg:py-0 pointer-events-none">
         <div className="pointer-events-auto flex flex-col justify-center">
-          
+
           {/* Heading */}
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
@@ -78,32 +79,26 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <button
-              className="hover:bg-[#6d28d9] transition-colors duration-300 shadow-[0_0_20px_rgba(124,58,237,0.3)]"
-              style={{
-                display: "inline-block",
-                background: "#7c3aed",
-                color: "#fff",
-                fontFamily: "Arial, sans-serif",
-                fontSize: "11px",
-                fontWeight: 800,
-                letterSpacing: "2px",
-                textTransform: "uppercase",
-                padding: "14px 28px",
-                borderRadius: "50px",
-                border: "none",
-                cursor: "pointer",
-                width: "fit-content",
-              }}
-              onClick={() => {
-                const contactElem = document.getElementById("contact");
-                if (contactElem) {
-                  contactElem.scrollIntoView({ behavior: "smooth" });
-                }
-              }}
-            >
-              Request Access
-            </button>
+            <div className="inline-flex rounded-full w-[160px] h-[40px] items-center justify-center">
+              <OriginButton
+                className="w-full h-full rounded-full px-0 text-sm font-semibold tracking-wide border-[0.5px]"
+                style={{
+                  "--ic-card": "#000000",
+                  "--ic-card-foreground": "#ffffff",
+                  "--ic-border": "#ffffff",
+                  "--ic-foreground": "#ffffff",
+                  "--ic-background": "#000000",
+                } as React.CSSProperties}
+                onClick={() => {
+                  const contactElem = document.getElementById("contact");
+                  if (contactElem) {
+                    contactElem.scrollIntoView({ behavior: "smooth" });
+                  }
+                }}
+              >
+                Request Access
+              </OriginButton>
+            </div>
           </motion.div>
 
         </div>

@@ -1,0 +1,181 @@
+"use client";
+import { Globe3D, GlobeMarker } from "@/components/ui/3d-globe";
+import { Globe, Smile, MousePointer2, ChevronRight, MapPin, Send } from "lucide-react";
+import { OriginButton } from "@/components/ui/origin-button";
+import { CardSpotlight } from "@/components/ui/card-spotlight";
+
+const sampleMarkers: GlobeMarker[] = [
+  {
+    lat: 40.7128,
+    lng: -74.006,
+    src: "https://assets.aceternity.com/avatars/1.webp",
+    label: "New York",
+  },
+  {
+    lat: 51.5074,
+    lng: -0.1278,
+    src: "https://assets.aceternity.com/avatars/2.webp",
+    label: "London",
+  },
+  {
+    lat: 35.6762,
+    lng: 139.6503,
+    src: "https://assets.aceternity.com/avatars/3.webp",
+    label: "Tokyo",
+  },
+  {
+    lat: -33.8688,
+    lng: 151.2093,
+    src: "https://assets.aceternity.com/avatars/4.webp",
+    label: "Sydney",
+  },
+  {
+    lat: 48.8566,
+    lng: 2.3522,
+    src: "https://assets.aceternity.com/avatars/5.webp",
+    label: "Paris",
+  },
+  {
+    lat: 28.6139,
+    lng: 77.209,
+    src: "https://assets.aceternity.com/avatars/6.webp",
+    label: "New Delhi",
+  },
+  {
+    lat: 55.7558,
+    lng: 37.6173,
+    src: "https://assets.aceternity.com/avatars/7.webp",
+    label: "Moscow",
+  },
+  {
+    lat: -22.9068,
+    lng: -43.1729,
+    src: "https://assets.aceternity.com/avatars/8.webp",
+    label: "Rio de Janeiro",
+  },
+  {
+    lat: 31.2304,
+    lng: 121.4737,
+    src: "https://assets.aceternity.com/avatars/9.webp",
+    label: "Shanghai",
+  },
+  {
+    lat: 25.2048,
+    lng: 55.2708,
+    src: "https://assets.aceternity.com/avatars/10.webp",
+    label: "Dubai",
+  },
+  {
+    lat: -34.6037,
+    lng: -58.3816,
+    src: "https://assets.aceternity.com/avatars/11.webp",
+    label: "Buenos Aires",
+  },
+  {
+    lat: 1.3521,
+    lng: 103.8198,
+    src: "https://assets.aceternity.com/avatars/12.webp",
+    label: "Singapore",
+  },
+  {
+    lat: 37.5665,
+    lng: 126.978,
+    src: "https://assets.aceternity.com/avatars/13.webp",
+    label: "Seoul",
+  },
+];
+
+export default function Globe3DDemoSecond() {
+  return (
+    <div className="relative my-8 h-[800px] w-full max-w-[1400px] overflow-hidden rounded-3xl bg-white p-8 md:p-16 shadow-sm shadow-black/5 flex flex-col justify-start items-start">
+      {/* Text Content overlaying the absolute globe (using CardSpotlight from the first image) */}
+      <CardSpotlight
+        color="#f4f4f5"
+        showGradient={false}
+        className="relative z-10 text-gray-900 dark:text-gray-900 rounded-3xl border border-neutral-200/80 dark:border-neutral-200/80 bg-white/95 dark:bg-white/95 backdrop-blur-sm shadow-2xl overflow-hidden w-full max-w-[380px] h-[380px] flex flex-col justify-center gap-y-5 items-center p-6 text-center"
+      >
+        {/* Header Section */}
+        <div className="relative z-20 flex flex-col items-center">
+          {/* Globe icon badge */}
+          <div className="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center mb-3">
+            <Globe className="w-5 h-5 text-gray-800" />
+          </div>
+
+          {/* Title */}
+          <h3 className="mb-1 text-4xl font-extrabold text-gray-900 tracking-tight leading-tight">
+            Realtime tracking
+          </h3>
+
+          {/* Subtitle */}
+          <p className="text-zinc-600 text-md leading-relaxed font-normal max-w-[280px]">
+            Watch visitors arrive and interact with your site as it happens.
+          </p>
+        </div>
+
+        {/* Feature bullets (centered block with left-aligned items) */}
+        <div className="relative z-20 space-y-2.5 w-fit text-left flex flex-col items-start mx-auto">
+          <div className="flex items-center gap-3 text-gray-700 text-sm font-semibold">
+            <Smile className="w-[18px] h-[18px] text-blue-500 shrink-0" />
+            <span>AI-Driven Automation</span>
+          </div>
+          <div className="flex items-center gap-3 text-gray-700 text-sm font-semibold">
+            <Globe className="w-[18px] h-[18px] text-blue-500 shrink-0" />
+            <span>Custom AI Systems</span>
+          </div>
+          <div className="flex items-center gap-3 text-gray-700 text-sm font-semibold">
+            <Send className="w-[18px] h-[18px] text-blue-500 shrink-0" />
+            <span>Customer Feedback Intelligence</span>
+          </div>
+          <div className="flex items-center gap-3 text-gray-700 text-sm font-semibold">
+            <MapPin className="w-[18px] h-[18px] text-blue-500 shrink-0" />
+            <span>Knowledge Base Optimization</span>
+          </div>
+        </div>
+
+        {/* Action Button centered at the bottom */}
+        <div className="relative z-20 w-full flex justify-center">
+          <div className="inline-flex rounded-full w-[160px] h-[40px] items-center justify-center">
+            <OriginButton
+              className="w-full h-full rounded-full px-0 text-sm font-bold tracking-wide border-0"
+              style={{
+                "--ic-card": "#000000",
+                "--ic-card-foreground": "#ffffff",
+                "--ic-border": "transparent",
+                "--ic-foreground": "#ffffff",
+                "--ic-background": "#000000",
+              } as React.CSSProperties}
+              onClick={() => {
+                const contactElem = document.getElementById("contact");
+                if (contactElem) {
+                  contactElem.scrollIntoView({ behavior: "smooth" });
+                }
+              }}
+            >
+              Learn more
+            </OriginButton>
+          </div>
+        </div>
+      </CardSpotlight>
+
+      {/* Globe Canvas positioned absolutely like the original */}
+      <Globe3D
+        className="absolute -bottom-[550px] -left-0 h-[1200px]"
+        markers={sampleMarkers}
+        config={{
+          atmosphereColor: "#4da6ff",
+          atmosphereIntensity: 20,
+          bumpScale: 5,
+          autoRotateSpeed: 0.3,
+        }}
+        onMarkerClick={(marker) => {
+          console.log("Clicked marker:", marker.label);
+        }}
+        onMarkerHover={(marker) => {
+          if (marker) {
+            console.log("Hovering:", marker.label);
+          }
+        }}
+      />
+    </div>
+  );
+}

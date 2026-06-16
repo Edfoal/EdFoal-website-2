@@ -89,9 +89,24 @@ function getTrianglesFromGeometry(geom: THREE.BufferGeometry): {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const brainShaderMaterial = new THREE.ShaderMaterial({
-  uniforms: { uTime: { value: 0 } },
+  uniforms: {
+    uTime: { value: 0 },
+    uMouse: { value: new THREE.Vector3(0, 0, 0) },
+    uMouseActive: { value: 0 },
+    uDistortionStrength: { value: 0.15 },
+    uDistortionRadius: { value: 0.35 },
+    uJitterStrength: { value: 0.03 },
+    uJitterSpeed: { value: 4.0 },
+  },
   vertexShader: `
     uniform float uTime;
+    uniform vec3 uMouse;
+    uniform float uMouseActive;
+    uniform float uDistortionStrength;
+    uniform float uDistortionRadius;
+    uniform float uJitterStrength;
+    uniform float uJitterSpeed;
+
     attribute vec3 aInstancePos;
     attribute vec3 aColor;
     attribute vec3 aNormal;
@@ -150,6 +165,39 @@ const brainShaderMaterial = new THREE.ShaderMaterial({
       wPos.y += cos(t*0.7 + aInstancePos.x*1.1 + aSeed*11.0) * 0.004;
       wPos.z += sin(t + aInstancePos.y*1.1 + aSeed*21.0) * 0.005;
 
+      // --- MOUSE HOVER DISTORTION MECHANICS ---
+      vec3 toMouse = wPos - uMouse;
+      float dist = length(toMouse);
+      
+      float sigma = max(0.01, uDistortionRadius * 0.5);
+      float falloff = exp(-(dist * dist) / (2.0 * sigma * sigma));
+      float influence = falloff * uMouseActive;
+
+      if (influence > 0.0005) {
+        // Swirl distortion (rotate around local Z axis centered at uMouse)
+        float swirlAngle = uDistortionStrength * 0.8 * influence;
+        float cosS = cos(swirlAngle);
+        float sinS = sin(swirlAngle);
+        vec2 dXY = wPos.xy - uMouse.xy;
+        vec2 rXY = vec2(
+          cosS * dXY.x - sinS * dXY.y,
+          sinS * dXY.x + cosS * dXY.y
+        );
+        wPos.xy = uMouse.xy + rXY;
+
+        // Subtle 3D repel away from mouse
+        vec3 repelDir = normalize(toMouse + vec3(0.0001));
+        wPos += repelDir * (uDistortionStrength * 0.15) * influence;
+
+        // Jitter distortion
+        if (uJitterStrength > 0.0) {
+          float k = aSeed * 43758.5453;
+          float tJit = uTime * uJitterSpeed;
+          wPos.x += sin(tJit + k) * uJitterStrength * influence;
+          wPos.y += cos(tJit + k * 1.13) * uJitterStrength * influence;
+        }
+      }
+
       gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(wPos, 1.0);
       vSurfaceNormal = normalize(normalMatrix * N);
     }
@@ -189,7 +237,7 @@ const brainShaderMaterial = new THREE.ShaderMaterial({
       
       // Blend base color with a brilliant golden yellow outline on the silhouette edge
       vec3 gold = vec3(1.0, 0.72, 0.16); // #ffb829
-      vec3 finalColor = mix(baseColor * 2.4, gold * edgeBright * 2.6, rim * 0.85);
+      vec3 finalColor = mix(baseColor * 1.5, gold * edgeBright * 1.6, rim * 0.85);
 
       float a   = vAlpha * edge * 0.85;
       gl_FragColor = vec4(finalColor, a);
@@ -230,6 +278,26 @@ const defaultAnim: AnimStateProps = {
 function BrainParticles({ animState }: ParticleBrainProps) {
   const groupRef = useRef<THREE.Group>(null);
   const COUNT    = 12000;
+
+  const mouseRef = useRef({ x: 0, y: 0, active: 0 });
+  const smoothMouseRef = useRef({ x: 0, y: 0, active: 0 });
+
+  React.useEffect(() => {
+    const handlePointerMove = (e: PointerEvent) => {
+      mouseRef.current.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouseRef.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
+      mouseRef.current.active = 1;
+    };
+    const handlePointerLeave = () => {
+      mouseRef.current.active = 0;
+    };
+    window.addEventListener("pointermove", handlePointerMove);
+    document.addEventListener("pointerleave", handlePointerLeave);
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      document.removeEventListener("pointerleave", handlePointerLeave);
+    };
+  }, []);
 
   const { scene } = useGLTF("/brain.glb");
 
@@ -373,6 +441,7 @@ function BrainParticles({ animState }: ParticleBrainProps) {
   }, [scene]);
 
   const instancedGeometry = useMemo(() => {
+    // Triangle size matching reference image
     const s = 0.0125;
     const verts = new Float32Array([
        0,        0, -s * 1.15,
@@ -403,6 +472,15 @@ function BrainParticles({ animState }: ParticleBrainProps) {
     const current = animState ? animState.current : defaultAnim;
     brainShaderMaterial.uniforms.uTime.value = elapsed;
 
+    // Smooth pointer variables (lerp)
+    const followSpeed = 0.08;
+    const currentMouse = mouseRef.current;
+    smoothMouseRef.current.x += (currentMouse.x - smoothMouseRef.current.x) * followSpeed;
+    smoothMouseRef.current.y += (currentMouse.y - smoothMouseRef.current.y) * followSpeed;
+
+    const fadeSpeed = 0.05;
+    smoothMouseRef.current.active += (currentMouse.active - smoothMouseRef.current.active) * fadeSpeed;
+
     if (groupRef.current) {
       const cam = state.camera as THREE.PerspectiveCamera;
       const h3d = 2 * Math.tan((cam.fov * Math.PI) / 360) * cam.position.z;
@@ -419,8 +497,26 @@ function BrainParticles({ animState }: ParticleBrainProps) {
       groupRef.current.position.set(tX, tY, current.brainZ);
       groupRef.current.scale.setScalar(finalScale);
 
-      const rotY = 1.35 + current.rotYOffset + Math.sin(elapsed * 0.08) * 0.22 + state.pointer.x * 0.14;
-      const rotX = 0.10 + Math.sin(elapsed * 0.04) * 0.03 - state.pointer.y * 0.10;
+      // Unproject mouse coordinates to find intersection with brain plane
+      const mouse3D = new THREE.Vector3(smoothMouseRef.current.x, smoothMouseRef.current.y, 0);
+      mouse3D.unproject(cam);
+      const dir = mouse3D.clone().sub(cam.position).normalize();
+      
+      const groupWorldPos = new THREE.Vector3();
+      groupRef.current.getWorldPosition(groupWorldPos);
+      
+      const distToPlane = dir.z !== 0 ? (groupWorldPos.z - cam.position.z) / dir.z : 0;
+      const worldMouse = cam.position.clone().add(dir.multiplyScalar(distToPlane));
+      
+      const localMouse = worldMouse.clone();
+      groupRef.current.worldToLocal(localMouse);
+      
+      brainShaderMaterial.uniforms.uMouse.value.copy(localMouse);
+      brainShaderMaterial.uniforms.uMouseActive.value = smoothMouseRef.current.active;
+
+      // Rotations driven by mouse position and automatic animation
+      const rotY = 1.35 + current.rotYOffset + Math.sin(elapsed * 0.08) * 0.22 + smoothMouseRef.current.x * 0.14;
+      const rotX = 0.10 + Math.sin(elapsed * 0.04) * 0.03 - smoothMouseRef.current.y * 0.10;
       const rotZ = -0.03 + Math.sin(elapsed * 0.05) * 0.018;
 
       groupRef.current.rotation.y += (rotY - groupRef.current.rotation.y) * 0.04;
@@ -461,7 +557,7 @@ function CanvasBrainInner({ animState }: ParticleBrainProps) {
             luminanceThreshold={0.08}
             luminanceSmoothing={0.75}
             height={300}
-            intensity={1.2}
+            intensity={0.7}
           />
         </EffectComposer>
       </Canvas>
