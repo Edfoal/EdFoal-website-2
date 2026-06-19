@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
+import { useScroll, useTransform, motion } from "framer-motion";
 
 /* ───── Step cards data ───── */
 
@@ -67,17 +68,13 @@ const steps = [
   },
 ];
 
-/* ───── Inner process mockup UI ───── */
+/* ───── Inner process mockup UI (dashboard) ───── */
 
 function ProcessMockup() {
   return (
     <div
-      className="w-full rounded-2xl overflow-hidden"
-      style={{
-        background: "#ffffff",
-        boxShadow:
-          "0 32px 80px rgba(0,0,0,0.16), 0 8px 24px rgba(0,0,0,0.08)",
-      }}
+      className="w-full h-full rounded-2xl overflow-hidden"
+      style={{ background: "#ffffff" }}
     >
       {/* Mockup top bar */}
       <div
@@ -93,7 +90,6 @@ function ProcessMockup() {
           <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#f59e0b" }} />
           <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#22c55e" }} />
         </div>
-        {/* Nav tabs */}
         <div className="flex gap-1 ml-3">
           {["Overview", "Messages", "Task Board", "Calendar", "Activity"].map(
             (tab, i) => (
@@ -119,8 +115,7 @@ function ProcessMockup() {
 
       {/* Mockup body */}
       <div className="p-5" style={{ background: "#ffffff" }}>
-        {/* Header row */}
-        <div className="flex items-start justify-between mb-5">
+        <div className="flex flex-col md:flex-row items-start justify-between gap-3 mb-5">
           <div>
             <p style={{ fontSize: 9, color: "#9ca3af", margin: "0 0 2px" }}>
               Thursday, September 26, 2024
@@ -139,7 +134,7 @@ function ProcessMockup() {
               Edfoal, Let&apos;s Build
             </h3>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {[
               { icon: "+", label: "New Task", bg: "#111827", color: "#fff" },
               { icon: "👤", label: "Invite", bg: "#f3f4f6", color: "#374151" },
@@ -165,7 +160,7 @@ function ProcessMockup() {
         </div>
 
         {/* Three column cards */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {/* Card 1: Performance gauge */}
           <div
             className="rounded-xl p-4 flex flex-col gap-2"
@@ -182,51 +177,18 @@ function ProcessMockup() {
             <p style={{ fontSize: 8, color: "#9ca3af", margin: 0 }}>
               Monthly Analysis Report
             </p>
-            {/* Gauge */}
             <div className="flex flex-col items-center justify-center py-3">
               <div style={{ position: "relative", width: 80, height: 48, overflow: "hidden" }}>
                 <svg width="80" height="48" viewBox="0 0 80 48">
-                  <path
-                    d="M8 44 A32 32 0 0 1 72 44"
-                    fill="none"
-                    stroke="#f0f0f0"
-                    strokeWidth="8"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M8 44 A32 32 0 0 1 72 44"
-                    fill="none"
-                    stroke="#7c3aed"
-                    strokeWidth="8"
-                    strokeLinecap="round"
-                    strokeDasharray="100 101"
-                    style={{ strokeDashoffset: 0 }}
-                  />
-                  <path
-                    d="M8 44 A32 32 0 0 1 58 18"
-                    fill="none"
-                    stroke="#fbbf24"
-                    strokeWidth="8"
-                    strokeLinecap="round"
-                  />
+                  <path d="M8 44 A32 32 0 0 1 72 44" fill="none" stroke="#f0f0f0" strokeWidth="8" strokeLinecap="round" />
+                  <path d="M8 44 A32 32 0 0 1 72 44" fill="none" stroke="#7c3aed" strokeWidth="8" strokeLinecap="round" strokeDasharray="100 101" style={{ strokeDashoffset: 0 }} />
+                  <path d="M8 44 A32 32 0 0 1 58 18" fill="none" stroke="#fbbf24" strokeWidth="8" strokeLinecap="round" />
                 </svg>
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    textAlign: "center",
-                  }}
-                >
-                  <span style={{ fontSize: 15, fontWeight: 800, color: "#111827" }}>
-                    86%
-                  </span>
+                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, textAlign: "center" }}>
+                  <span style={{ fontSize: 15, fontWeight: 800, color: "#111827" }}>86%</span>
                 </div>
               </div>
-              <p style={{ fontSize: 8, color: "#9ca3af", margin: "4px 0 0", textAlign: "center" }}>
-                Projects Completed
-              </p>
+              <p style={{ fontSize: 8, color: "#9ca3af", margin: "4px 0 0", textAlign: "center" }}>Projects Completed</p>
             </div>
             <div className="flex gap-2 justify-center">
               {[
@@ -248,28 +210,14 @@ function ProcessMockup() {
             style={{ border: "1px solid #f0f0f0" }}
           >
             <div>
-              <span style={{ fontSize: 10, fontWeight: 700, color: "#374151" }}>
-                Build Website Landing Page
-              </span>
-              <p style={{ fontSize: 8, color: "#9ca3af", margin: "2px 0 0" }}>
-                5 Tasks to complete
-              </p>
+              <span style={{ fontSize: 10, fontWeight: 700, color: "#374151" }}>Build Website Landing Page</span>
+              <p style={{ fontSize: 8, color: "#9ca3af", margin: "2px 0 0" }}>5 Tasks to complete</p>
             </div>
-            <div
-              className="rounded-lg p-3 flex flex-col gap-1.5"
-              style={{ background: "#f9fafb", flex: 1 }}
-            >
-              <p style={{ fontSize: 9, fontWeight: 700, color: "#374151", margin: 0 }}>
-                Refresh the web design
-              </p>
-              <p style={{ fontSize: 8, color: "#9ca3af", margin: 0 }}>
-                After the latest product updates and pricing changes
-              </p>
+            <div className="rounded-lg p-3 flex flex-col gap-1.5" style={{ background: "#f9fafb", flex: 1 }}>
+              <p style={{ fontSize: 9, fontWeight: 700, color: "#374151", margin: 0 }}>Refresh the web design</p>
+              <p style={{ fontSize: 8, color: "#9ca3af", margin: 0 }}>After the latest product updates and pricing changes</p>
               <div className="flex items-center gap-2 mt-1">
-                <div
-                  className="flex-1 rounded-full overflow-hidden"
-                  style={{ height: 4, background: "#e5e7eb" }}
-                >
+                <div className="flex-1 rounded-full overflow-hidden" style={{ height: 4, background: "#e5e7eb" }}>
                   <div style={{ width: "56%", height: "100%", background: "#7c3aed", borderRadius: 999 }} />
                 </div>
                 <span style={{ fontSize: 10, fontWeight: 800, color: "#374151" }}>56%</span>
@@ -278,32 +226,12 @@ function ProcessMockup() {
             <div className="flex items-center justify-between">
               <div className="flex gap-1">
                 {["#7c3aed", "#fbbf24", "#10b981"].map((c, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      width: 18,
-                      height: 18,
-                      borderRadius: "50%",
-                      background: c,
-                      border: "2px solid #fff",
-                      marginLeft: i > 0 ? -6 : 0,
-                    }}
-                  />
+                  <div key={i} style={{ width: 18, height: 18, borderRadius: "50%", background: c, border: "2px solid #fff", marginLeft: i > 0 ? -6 : 0 }} />
                 ))}
               </div>
               <div className="flex gap-1">
-                <span
-                  className="rounded-full px-2 py-0.5"
-                  style={{ fontSize: 8, background: "#fef3c7", color: "#d97706", fontWeight: 700 }}
-                >
-                  UI/UX
-                </span>
-                <span
-                  className="rounded-full px-2 py-0.5"
-                  style={{ fontSize: 8, background: "#dcfce7", color: "#16a34a", fontWeight: 700 }}
-                >
-                  New
-                </span>
+                <span className="rounded-full px-2 py-0.5" style={{ fontSize: 8, background: "#fef3c7", color: "#d97706", fontWeight: 700 }}>UI/UX</span>
+                <span className="rounded-full px-2 py-0.5" style={{ fontSize: 8, background: "#dcfce7", color: "#16a34a", fontWeight: 700 }}>New</span>
               </div>
             </div>
           </div>
@@ -314,9 +242,7 @@ function ProcessMockup() {
             style={{ border: "1px solid #f0f0f0" }}
           >
             <div className="flex flex-col gap-1">
-              <span style={{ fontSize: 10, fontWeight: 700, color: "#374151" }}>
-                Team
-              </span>
+              <span style={{ fontSize: 10, fontWeight: 700, color: "#374151" }}>Team</span>
               <div className="flex gap-1 flex-wrap">
                 {[
                   { name: "Luke", color: "#7c3aed" },
@@ -325,72 +251,27 @@ function ProcessMockup() {
                   { name: "Susan", color: "#ef4444" },
                 ].map((m) => (
                   <div key={m.name} className="flex flex-col items-center gap-0.5">
-                    <div
-                      style={{
-                        width: 24,
-                        height: 24,
-                        borderRadius: "50%",
-                        background: m.color,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 9,
-                        fontWeight: 800,
-                        color: "#fff",
-                      }}
-                    >
+                    <div style={{ width: 24, height: 24, borderRadius: "50%", background: m.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, color: "#fff" }}>
                       {m.name[0]}
                     </div>
                     <span style={{ fontSize: 7, color: "#9ca3af" }}>{m.name}</span>
                   </div>
                 ))}
                 <div className="flex flex-col items-center gap-0.5">
-                  <div
-                    style={{
-                      width: 24,
-                      height: 24,
-                      borderRadius: "50%",
-                      background: "#f3f4f6",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 9,
-                      fontWeight: 800,
-                      color: "#374151",
-                    }}
-                  >
-                    4+
-                  </div>
+                  <div style={{ width: 24, height: 24, borderRadius: "50%", background: "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, color: "#374151" }}>4+</div>
                   <span style={{ fontSize: 7, color: "#9ca3af" }}>Others</span>
                 </div>
               </div>
             </div>
-
-            {/* Chat bubbles */}
             <div className="flex flex-col gap-1.5 mt-1">
-              <div
-                className="rounded-xl rounded-tl-sm px-2.5 py-1.5"
-                style={{ background: "#fef3c7", alignSelf: "flex-start", maxWidth: "85%" }}
-              >
-                <p style={{ fontSize: 8, color: "#92400e", fontWeight: 600, margin: 0 }}>
-                  Hey! How is it going? 🙌
-                </p>
+              <div className="rounded-xl rounded-tl-sm px-2.5 py-1.5" style={{ background: "#fef3c7", alignSelf: "flex-start", maxWidth: "85%" }}>
+                <p style={{ fontSize: 8, color: "#92400e", fontWeight: 600, margin: 0 }}>Hey! How is it going? 🙌</p>
               </div>
-              <div
-                className="rounded-xl rounded-tl-sm px-2.5 py-1.5"
-                style={{ background: "#fef3c7", alignSelf: "flex-start", maxWidth: "85%" }}
-              >
-                <p style={{ fontSize: 8, color: "#92400e", fontWeight: 600, margin: 0 }}>
-                  I have a new task in design today. Let me know when done ✅
-                </p>
+              <div className="rounded-xl rounded-tl-sm px-2.5 py-1.5" style={{ background: "#fef3c7", alignSelf: "flex-start", maxWidth: "85%" }}>
+                <p style={{ fontSize: 8, color: "#92400e", fontWeight: 600, margin: 0 }}>I have a new task in design today. Let me know when done ✅</p>
               </div>
-              <div
-                className="rounded-xl rounded-tr-sm px-2.5 py-1.5"
-                style={{ background: "#fbbf24", alignSelf: "flex-end", maxWidth: "80%" }}
-              >
-                <p style={{ fontSize: 8, color: "#fff", fontWeight: 700, margin: 0 }}>
-                  Sure thing Diana 👍
-                </p>
+              <div className="rounded-xl rounded-tr-sm px-2.5 py-1.5" style={{ background: "#fbbf24", alignSelf: "flex-end", maxWidth: "80%" }}>
+                <p style={{ fontSize: 8, color: "#fff", fontWeight: 700, margin: 0 }}>Sure thing Diana 👍</p>
               </div>
             </div>
           </div>
@@ -403,6 +284,15 @@ function ProcessMockup() {
 /* ───── HowWeWork Section ───── */
 
 export default function HowWeWork() {
+  const mockupRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: mockupRef,
+    offset: ["start end", "end start"],
+  });
+
+  const rotate = useTransform(scrollYProgress, [0, 0.5], [15, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.5], [0.95, 1]);
+
   return (
     <section
       id="how-we-work"
@@ -411,9 +301,8 @@ export default function HowWeWork() {
     >
       <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 24px" }}>
 
-        {/* ── Section header (above the box) ── */}
+        {/* ── Static section header ── */}
         <div className="text-center" style={{ marginBottom: "52px" }}>
-          {/* Pill badge */}
           <div
             className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-gray-200 bg-gray-50"
             style={{ marginBottom: "20px" }}
@@ -432,8 +321,7 @@ export default function HowWeWork() {
             <span
               className="bg-clip-text text-transparent"
               style={{
-                backgroundImage:
-                  "linear-gradient(90deg, #d97706 0%, #fbbf24 50%, #f59e0b 100%)",
+                backgroundImage: "linear-gradient(90deg, #d97706 0%, #fbbf24 50%, #f59e0b 100%)",
               }}
             >
               Work
@@ -448,64 +336,28 @@ export default function HowWeWork() {
           </p>
         </div>
 
-        {/* ── Large yellow accent container ── */}
+        {/* ── Static yellow container with step cards ── */}
         <div
-          className="relative rounded-3xl overflow-hidden w-full"
+          className="relative rounded-3xl overflow-visible w-full"
           style={{
             background: "linear-gradient(140deg, #fde68a 0%, #fbbf24 40%, #f59e0b 100%)",
             padding: "36px 36px 0 36px",
+            maxWidth: "1152px",
+            minHeight: "465px",
+            margin: "0 auto",
           }}
         >
-          {/* Decorative wave/leaf blobs — same as reference image */}
-          <div
-            className="absolute pointer-events-none select-none"
-            style={{
-              width: 340,
-              height: 340,
-              borderRadius: "50%",
-              background: "rgba(255,255,255,0.12)",
-              top: -120,
-              right: -80,
-            }}
-          />
-          <div
-            className="absolute pointer-events-none select-none"
-            style={{
-              width: 220,
-              height: 220,
-              borderRadius: "50%",
-              background: "rgba(255,255,255,0.10)",
-              bottom: 60,
-              left: -60,
-            }}
-          />
-          {/* Leaf shape top-left */}
-          <svg
-            className="absolute pointer-events-none select-none"
-            style={{ top: 10, left: -30, opacity: 0.18 }}
-            width="220"
-            height="220"
-            viewBox="0 0 220 220"
-            fill="none"
-          >
-            <path
-              d="M110 10 C160 10, 210 60, 210 110 C210 160, 160 210, 110 210 C60 210, 10 160, 10 110 C10 60, 60 10, 110 10 Z"
-              fill="#fff"
-            />
+          {/* Decorative blobs */}
+          <div className="absolute pointer-events-none select-none" style={{ width: 340, height: 340, borderRadius: "50%", background: "rgba(255,255,255,0.12)", top: -120, right: -80 }} />
+          <div className="absolute pointer-events-none select-none" style={{ width: 220, height: 220, borderRadius: "50%", background: "rgba(255,255,255,0.10)", bottom: 60, left: -60 }} />
+          <svg className="absolute pointer-events-none select-none" style={{ top: 10, left: -30, opacity: 0.18 }} width="220" height="220" viewBox="0 0 220 220" fill="none">
+            <path d="M110 10 C160 10, 210 60, 210 110 C210 160, 160 210, 110 210 C60 210, 10 160, 10 110 C10 60, 60 10, 110 10 Z" fill="#fff" />
           </svg>
-          {/* Leaf shape bottom-right */}
-          <svg
-            className="absolute pointer-events-none select-none"
-            style={{ bottom: 40, right: -40, opacity: 0.14 }}
-            width="260"
-            height="200"
-            viewBox="0 0 260 200"
-            fill="none"
-          >
+          <svg className="absolute pointer-events-none select-none" style={{ bottom: 40, right: -40, opacity: 0.14 }} width="260" height="200" viewBox="0 0 260 200" fill="none">
             <ellipse cx="130" cy="100" rx="130" ry="100" fill="#fff" />
           </svg>
 
-          {/* ── 4 Step cards ── */}
+          {/* ── 4 Step cards (static) ── */}
           <div
             className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-4"
             style={{ marginBottom: "32px" }}
@@ -520,51 +372,37 @@ export default function HowWeWork() {
                   boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
                 }}
               >
-                {/* Icon */}
                 <div
                   className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                  style={{
-                    background: step.iconBg,
-                    color: step.iconColor,
-                  }}
+                  style={{ background: step.iconBg, color: step.iconColor }}
                 >
                   {step.icon}
                 </div>
-
-                {/* Title */}
                 <div>
-                  <h3
-                    className="font-bold text-gray-900"
-                    style={{ fontSize: "13px", lineHeight: 1.35, margin: 0 }}
-                  >
+                  <h3 className="font-bold text-gray-900" style={{ fontSize: "13px", lineHeight: 1.35, margin: 0 }}>
                     {step.title}
                   </h3>
                 </div>
-
-                {/* Description */}
-                <p
-                  style={{
-                    fontSize: "11px",
-                    color: "#6b7280",
-                    lineHeight: 1.6,
-                    margin: 0,
-                  }}
-                >
+                <p style={{ fontSize: "11px", color: "#6b7280", lineHeight: 1.6, margin: 0 }}>
                   {step.description}
                 </p>
               </div>
             ))}
           </div>
 
-          {/* ── Process mockup floating up ── */}
-          <div
-            className="relative z-10"
-            style={{
-              maxWidth: "920px",
-              margin: "0 auto",
-            }}
-          >
-            <ProcessMockup />
+          {/* ── Scroll-animated dashboard mockup ── */}
+          <div ref={mockupRef} className="relative z-10" style={{ maxWidth: "920px", margin: "0 auto", perspective: "1000px" }}>
+            <motion.div
+              style={{
+                rotateX: rotate,
+                scale,
+                boxShadow:
+                  "0 32px 80px rgba(0,0,0,0.16), 0 8px 24px rgba(0,0,0,0.08)",
+              }}
+              className="rounded-2xl overflow-hidden"
+            >
+              <ProcessMockup />
+            </motion.div>
           </div>
         </div>
 
@@ -572,3 +410,4 @@ export default function HowWeWork() {
     </section>
   );
 }
+
