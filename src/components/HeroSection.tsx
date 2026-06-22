@@ -72,6 +72,7 @@ export default function HeroSection() {
   return (
     <div className="w-full bg-white" style={{ padding: "10px" }}>
       <div
+        id="hero-section"
         ref={containerRef}
         className="relative rounded-xl overflow-hidden"
         style={{

@@ -29,16 +29,30 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const lightSections = document.querySelectorAll('[data-theme="light"]');
       let overLight = false;
       const navbarBottom = 80;
 
-      lightSections.forEach((el) => {
-        const rect = el.getBoundingClientRect();
-        if (rect.top <= navbarBottom && rect.bottom >= 0) {
-          overLight = true;
+      if (pathname === "/") {
+        const heroEl = document.getElementById("hero-section");
+        if (heroEl) {
+          const rect = heroEl.getBoundingClientRect();
+          if (rect.bottom > navbarBottom) {
+            overLight = false;
+          } else {
+            overLight = true;
+          }
+        } else {
+          overLight = window.scrollY > 600;
         }
-      });
+      } else {
+        const lightSections = document.querySelectorAll('[data-theme="light"]');
+        lightSections.forEach((el) => {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= navbarBottom && rect.bottom >= 0) {
+            overLight = true;
+          }
+        });
+      }
 
       setIsLight(overLight);
 
@@ -51,7 +65,7 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [pathname]);
 
   const navLinks = [
     { label: "Home", href: "/" },
