@@ -1,15 +1,15 @@
 "use client";
 
 import React from "react";
-import Navbar from "@/components/Navbar";
-import HeroSection from "@/components/HeroSection";
-import LogoTicker from "@/components/LogoTicker";
-import OurServices from "@/components/services/OurServices";
-import WhyChooseUs from "@/components/why-choose-us/WhyChooseUs";
-import Footer from "@/components/footer/Footer";
-import ElevateSection from "@/components/elevate/ElevateSection";
-import IndustriesHoverExpand from "@/components/industries/IndustriesHoverExpand";
-import HowWeWork from "@/components/how-we-work/HowWeWork";
+import Navbar from "@/components/layout/Navbar";
+import HeroSection from "@/components/sections/home/Hero";
+import LogoTicker from "@/components/sections/home/LogoTicker";
+import OurServices from "@/components/sections/home/OurServices";
+import WhyChooseUs from "@/components/sections/home/WhyChooseUs";
+import Footer from "@/components/layout/Footer";
+import ElevateSection from "@/components/sections/home/ElevateSection";
+import IndustriesHoverExpand from "@/components/sections/home/IndustriesHoverExpand";
+import HowWeWork from "@/components/sections/home/HowWeWork";
 import BackgroundEffects from "@/components/ui/BackgroundEffects";
 import useLenis from "@/hooks/useLenis";
 

@@ -3,8 +3,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeftIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { OriginButton } from "@/components/ui/origin-button";
-import { Globe } from "@/components/ui/cosmic-404";
+import { OriginButton } from "@/components/ui/OriginButton";
+import { Globe } from "@/components/ui/Cosmic404";
 
 // 🎞️ Animation Variants
 const fadeUp: any = {

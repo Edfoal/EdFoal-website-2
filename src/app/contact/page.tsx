@@ -13,15 +13,15 @@ import {
   Shield,
   Sparkles,
 } from "lucide-react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/footer/Footer";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import BackgroundEffects from "@/components/ui/BackgroundEffects";
 import useLenis from "@/hooks/useLenis";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
+import { Textarea } from "@/components/ui/Textarea";
 import { cn } from "@/lib/utils";
-import MinimalHero from "@/components/ui/hero-minimalism";
+import MinimalHero from "@/components/ui/HeroMinimalism";
 
 // If you have a Google Sheets deployment URL, paste it here to enable active submission:
 const GOOGLE_SHEETS_URL = "";

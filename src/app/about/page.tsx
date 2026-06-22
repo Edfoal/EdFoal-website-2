@@ -1,12 +1,13 @@
 "use client";
 
 import React from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/footer/Footer";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import BackgroundEffects from "@/components/ui/BackgroundEffects";
-import AboutUs from "@/components/about/AboutUs";
+import AboutHero from "@/components/sections/about/AboutHero";
+import Team from "@/components/sections/about/Team";
+import AboutUs from "@/components/sections/about/AboutUs";
 import useLenis from "@/hooks/useLenis";
-import MinimalHero from "@/components/ui/hero-minimalism";
 
 export default function AboutPage() {
   useLenis();
@@ -20,17 +21,13 @@ export default function AboutPage() {
       <Navbar />
 
       {/* Hero Section */}
-      <MinimalHero
-        kicker="About Us"
-        title={
-          <span className="text-[#f5e1b8]">Get to Know EdFoal</span>
-        }
-        subtitle="We're transforming businesses with custom AI solutions that drive efficiency, innovation, and growth. Let's unlock your potential with AI built just for you."
-        showFooter={false}
-      />
+      <AboutHero />
 
       {/* About Us — 3D Spline Section */}
       <AboutUs />
+
+      {/* Team Section */}
+      <Team />
 
       {/* Footer */}
       <Footer />

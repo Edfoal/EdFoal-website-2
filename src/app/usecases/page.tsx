@@ -3,11 +3,11 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { FiArrowRight } from "react-icons/fi";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/footer/Footer";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import BackgroundEffects from "@/components/ui/BackgroundEffects";
 import useLenis from "@/hooks/useLenis";
-import MinimalHero from "@/components/ui/hero-minimalism";
+import MinimalHero from "@/components/ui/HeroMinimalism";
 
 export default function UsecasesPage() {
   // Initialize Lenis scroll smoothing

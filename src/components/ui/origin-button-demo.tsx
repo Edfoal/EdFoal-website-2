@@ -1,6 +1,6 @@
 "use client";
 
-import { OriginButton } from "@/components/ui/origin-button";
+import { OriginButton } from "@/components/ui/OriginButton";
 
 export function OriginButtonPreview() {
   return <OriginButton>Origin Button</OriginButton>;

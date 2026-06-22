@@ -1,6 +1,6 @@
 "use client";
 
-import Component from "@/components/ui/highlight-card";
+import Component from "@/components/ui/HighlightCard";
 import { Rocket } from "lucide-react";
 
 export default function DemoOne() {

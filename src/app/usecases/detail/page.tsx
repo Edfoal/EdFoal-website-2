@@ -4,10 +4,10 @@ import React, { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { FiArrowLeft, FiCheckCircle } from "react-icons/fi";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/footer/Footer";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import BackgroundEffects from "@/components/ui/BackgroundEffects";
-import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
+import { HoverBorderGradient } from "@/components/ui/HoverBorderGradient";
 import useLenis from "@/hooks/useLenis";
 
 // Detailed static case study data dictionary

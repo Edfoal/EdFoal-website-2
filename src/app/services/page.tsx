@@ -1,13 +1,13 @@
 "use client";
 
 import React from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/footer/Footer";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import useLenis from "@/hooks/useLenis";
 import { useRouter } from "next/navigation";
-import { OriginButton } from "@/components/ui/origin-button";
-import MinimalHero from "@/components/ui/hero-minimalism";
-import { ServicesShowcase } from "@/components/ui/services-showcase";
+import { OriginButton } from "@/components/ui/OriginButton";
+import ServiceHero from "@/components/sections/services/ServiceHero";
+import { ServicesShowcase } from "@/components/sections/services/ServiceList";
 
 export default function ServicesPage() {
   const router = useRouter();
@@ -19,18 +19,7 @@ export default function ServicesPage() {
       <Navbar />
 
       {/* Hero Section (Dark Theme) */}
-      <MinimalHero
-        kicker="Our Services"
-        title={
-          <>
-            Custom AI Solutions <br />
-            For Your Needs
-          </>
-        }
-        subtitle="Tailored technologies designed to drive your business forward and address your unique challenges!"
-        isLight={false}
-       
-       />
+      <ServiceHero />
 
       {/* Intro Section (Light Theme) */}
       <section data-theme="light" className="relative w-full max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-20 bg-white" style={{margin:"5rem 5rem 0 5rem"}}>
