@@ -8,7 +8,7 @@ import { OriginButton } from "@/components/ui/origin-button";
 function Footer() {
   return (
     <footer className="h-[500px] flex items-center px-4 md:px-6 bg-black border-t border-zinc-900 relative overflow-hidden">
-      <div className="container mx-auto z-10" style={{marginTop:"-120px"}}>
+      <div className="container mx-auto z-10" style={{ marginTop: "-120px" }}>
         <div className="flex flex-col md:flex-row justify-between gap-8">
           <div className="mb-8 md:mb-0 max-w-sm">
             <Link href="/" className="flex items-center gap-2">
@@ -19,13 +19,13 @@ function Footer() {
               />
             </Link>
 
-            <p className="text-zinc-400 text-sm leading-relaxed " style={{margin:"20px 0 "}}>
+            <p className="text-zinc-400 text-sm leading-relaxed " style={{ margin: "20px 0 " }}>
               At EdFoal AI, we create tailored AI solutions to reduce costs, save time, and enhance business efficiency for growth.
             </p>
 
             <div className="mt-4">
               <Link href="mailto:info@edfoal.com">
-                <div className="rounded-full w-[160px] h-[40px] flex items-center justify-center" style={{margin:"20px 0 "}}>
+                <div className="rounded-full w-[160px] h-[40px] flex items-center justify-center" style={{ margin: "20px 0 " }}>
                   <OriginButton
                     className="w-full h-full rounded-full px-0 text-sm font-semibold tracking-wide border-[0.5px]"
                     style={{
@@ -67,7 +67,7 @@ function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="#contact" className="text-sm text-zinc-400 hover:text-white transition-colors">
+                  <Link href="/contact" className="text-sm text-zinc-400 hover:text-white transition-colors">
                     Contact Us
                   </Link>
                 </li>

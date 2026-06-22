@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
@@ -23,6 +23,7 @@ const EdfoalLogo = ({ isLight }: { isLight: boolean }) => (
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [isLight, setIsLight] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -72,7 +73,7 @@ export default function Navbar() {
     { label: "Services", href: "/services" },
     { label: "About Us", href: "/about" },
     { label: "Usecases", href: "/usecases" },
-    { label: "Contact Us", href: "/#contact" },
+    { label: "Contact Us", href: "/contact" },
   ];
 
   return (
@@ -144,10 +145,7 @@ export default function Navbar() {
                     } as React.CSSProperties)
                 }
                 onClick={() => {
-                  const contactElem = document.getElementById("contact");
-                  if (contactElem) {
-                    contactElem.scrollIntoView({ behavior: "smooth" });
-                  }
+                  router.push("/contact");
                 }}
               >
                 Contact Us
@@ -215,10 +213,7 @@ export default function Navbar() {
                 } as React.CSSProperties}
                 onClick={() => {
                   setMobileMenuOpen(false);
-                  const contactElem = document.getElementById("contact");
-                  if (contactElem) {
-                    contactElem.scrollIntoView({ behavior: "smooth" });
-                  }
+                  router.push("/contact");
                 }}
               >
                 Contact Us

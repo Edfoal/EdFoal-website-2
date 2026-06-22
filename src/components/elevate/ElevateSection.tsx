@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 import { OriginButton } from "@/components/ui/origin-button";
 
 const avatars = [
@@ -16,11 +17,45 @@ export default function ElevateSection() {
       <div
         className="relative w-full max-w-[1400px] h-[400px] rounded-3xl overflow-hidden"
         style={{
-          backgroundImage: "url('/elevate-bg.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          background: "linear-gradient(to bottom, #ec4899, #8b5cf6, #3b82f6)",
         }}
       >
+        {/* Floating animated ambient light glows that keep the base gradient colors completely static */}
+        <motion.div
+          className="absolute w-[600px] h-[600px] rounded-full pointer-events-none filter blur-[90px]"
+          style={{
+            background: "radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 70%)",
+            top: "-200px",
+            left: "-200px",
+          }}
+          animate={{
+            x: [0, 250, 120, 0],
+            y: [0, 120, -40, 0],
+          }}
+          transition={{
+            duration: 15,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+
+        <motion.div
+          className="absolute w-[500px] h-[500px] rounded-full pointer-events-none filter blur-[100px]"
+          style={{
+            background: "radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 70%)",
+            bottom: "-150px",
+            right: "-150px",
+          }}
+          animate={{
+            x: [0, -180, -40, 0],
+            y: [0, -70, 70, 0],
+          }}
+          transition={{
+            duration: 18,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
         {/* Subtle dark overlay on the left for text readability */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/10 to-transparent z-[1]" />
 
