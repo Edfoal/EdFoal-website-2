@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import GlobeDemo from "@/components/ui/globe-demo";
+import Globe3DDemoSecond from "@/components/ui/Globe3D-demo-2";
 
 export default function OurServices() {
   return (
@@ -23,7 +23,7 @@ export default function OurServices() {
         </h2>
 
         <div className="w-full flex justify-center">
-          <GlobeDemo />
+          <Globe3DDemoSecond />
         </div>
       </div>
     </section>
