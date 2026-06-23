@@ -21,7 +21,7 @@ import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Textarea } from "@/components/ui/Textarea";
 import { cn } from "@/lib/utils";
-import MinimalHero from "@/components/ui/HeroMinimalism";
+import { RobotHero } from "@/components/ui/RobotHero";
 
 // If you have a Google Sheets deployment URL, paste it here to enable active submission:
 const GOOGLE_SHEETS_URL = "";
@@ -138,14 +138,13 @@ export default function ContactPage() {
       {/* Floating Navbar */}
       <Navbar />
 
-      {/* MinimalHero Background with stars and grid */}
-      <MinimalHero
+      {/* RobotHero Section */}
+      <RobotHero
         kicker="Contact Us"
         title={
           <span className="text-[#f5e1b8]">Tailored AI Solutions</span>
         }
         subtitle="Explore how we're transforming businesses with cutting-edge AI solutions tailored just for you!"
-        showFooter={false}
       />
 
       {/* Hero / Main Section Grid */}

@@ -7,7 +7,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BackgroundEffects from "@/components/ui/BackgroundEffects";
 import useLenis from "@/hooks/useLenis";
-import MinimalHero from "@/components/ui/HeroMinimalism";
+import { RobotHero } from "@/components/ui/RobotHero";
 
 export default function UsecasesPage() {
   // Initialize Lenis scroll smoothing
@@ -77,7 +77,7 @@ export default function UsecasesPage() {
       <Navbar />
 
       {/* Hero Section */}
-      <MinimalHero
+      <RobotHero
         kicker="Case Studies"
         title={
           <>
@@ -88,10 +88,6 @@ export default function UsecasesPage() {
           </>
         }
         subtitle="Explore how we're transforming businesses with cutting-edge AI solutions — backed by measurable outcomes."
-        showFooter={true}
-        footerTag="Designed for focus"
-        footerHeading="Composable. Accessible. Production-ready."
-        footerDesc="Start with sensible defaults, ship without the noise, and scale your UI with confidence. Works across any app architecture."
       />
 
       {/* Case Studies Card Grid Section */}

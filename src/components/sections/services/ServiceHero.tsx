@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import HeroMinimalism from "@/components/ui/HeroMinimalism";
+import { RobotHero } from "@/components/ui/RobotHero";
 
 export default function ServiceHero() {
   return (
-    <HeroMinimalism
+    <RobotHero
       kicker="Our Services"
       title={
         <>
@@ -14,7 +14,6 @@ export default function ServiceHero() {
         </>
       }
       subtitle="Tailored technologies designed to drive your business forward and address your unique challenges!"
-      isLight={false}
     />
   );
 }
