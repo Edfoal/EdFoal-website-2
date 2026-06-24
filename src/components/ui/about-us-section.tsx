@@ -337,25 +337,7 @@ export default function AboutUsSection() {
           ))}
         </motion.div>
 
-        {/* CTA Section */}
-        <motion.div
-          className="mt-20 bg-[#202e44] text-white p-8 rounded-xl flex flex-col md:flex-row items-center justify-between gap-6"
-          initial={{ opacity: 0, y: 30 }}
-          animate={isStatsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-        >
-          <div className="flex-1">
-            <h3 className="text-2xl font-medium mb-2">Ready to transform your business with AI?</h3>
-            <p className="text-white/80">Let's build custom intelligence workflows together.</p>
-          </div>
-          <motion.button
-            className="bg-[#88734C] hover:bg-[#88734C]/90 text-white px-6 py-3 rounded-lg flex items-center gap-2 font-medium transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Get Started <ArrowRight className="w-4 h-4" />
-          </motion.button>
-        </motion.div>
+
       </motion.div>
     </section>
   );
