@@ -221,7 +221,7 @@ export default function AboutUsSection() {
           <div className="flex justify-center items-center order-first md:order-none mb-9 md:mb-0">
             <motion.div className="relative w-full max-w-xs" variants={itemVariants}>
               <motion.div
-                className="rounded-md overflow-hidden shadow-xl"
+                className="rounded-md overflow-hidden shadow-xl h-[450px] md:h-[580px] w-full"
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
