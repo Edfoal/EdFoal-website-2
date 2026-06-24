@@ -128,7 +128,6 @@ export function ServicesShowcase({ isLight = false }: ServicesShowcaseProps) {
                   : "bg-zinc-900/60 backdrop-blur-xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)]",
                 isEven ? "md:ml-[-80px]" : "md:mr-[-80px]"
               )}
-              style={{ padding: "2rem", margin: "-2rem" }}
             >
               {/* Highlight Aura */}
               <div className={cn(
