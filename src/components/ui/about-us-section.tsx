@@ -124,7 +124,7 @@ export default function AboutUsSection() {
     <section
       id="about-section"
       ref={sectionRef}
-      className="w-full py-24 px-4 bg-gradient-to-b from-[#F2F2EB] to-[#F8F8F2] text-[#202e44] overflow-hidden relative"
+      className="w-full py-24 px-4 bg-gradient-to-b from-[#F2F2EB] to-[#F8F8F2] text-zinc-900 overflow-hidden relative"
     >
       {/* Decorative background elements */}
       <motion.div
@@ -188,7 +188,7 @@ export default function AboutUsSection() {
           ></motion.div>
         </motion.div>
 
-        <motion.div className="text-center max-w-4xl mx-auto mb-16 text-[#202e44]/80 space-y-6 text-base md:text-lg leading-relaxed font-normal" variants={itemVariants}>
+        <motion.div className="text-center max-w-4xl mx-auto mb-16 text-zinc-800 space-y-6 text-base md:text-lg leading-relaxed font-normal" variants={itemVariants}>
           <p>
             At EdFoal AI, we are passionate about leveraging the transformative power of artificial intelligence to help businesses succeed. Founded with the vision of making AI accessible and impactful, we specialize in designing tailored AI solutions that reduce costs, save time, and enhance overall efficiency. Our mission is simple: to empower businesses with intelligent tools that solve their unique challenges and create new opportunities for growth.
           </p>
@@ -392,12 +392,12 @@ function ServiceItem({ icon, secondaryIcon, title, description, variants, delay,
           {icon}
           {secondaryIcon}
         </motion.div>
-        <h3 className="text-xl font-medium text-[#202e44] group-hover:text-[#88734C] transition-colors duration-300">
+        <h3 className="text-xl font-medium text-zinc-900 group-hover:text-[#88734C] transition-colors duration-300">
           {title}
         </h3>
       </motion.div>
       <motion.p
-        className="text-sm text-[#202e44]/80 leading-relaxed px-4"
+        className="text-sm text-zinc-600 leading-relaxed px-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, delay: delay + 0.4 }}
@@ -466,11 +466,11 @@ function StatCounter({ icon, value, label, suffix, delay }: StatCounterProps) {
       >
         {icon}
       </motion.div>
-      <motion.div ref={countRef} className="text-3xl font-bold text-[#202e44] flex items-center">
+      <motion.div ref={countRef} className="text-3xl font-bold text-zinc-900 flex items-center">
         <motion.span>{displayValue}</motion.span>
         <span>{suffix}</span>
       </motion.div>
-      <p className="text-[#202e44]/70 text-sm mt-1">{label}</p>
+      <p className="text-zinc-600 text-sm mt-1">{label}</p>
       <motion.div className="w-10 h-0.5 bg-[#88734C] mt-3 group-hover:w-16 transition-all duration-300" />
     </motion.div>
   );
