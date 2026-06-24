@@ -374,13 +374,13 @@ interface ServiceItemProps {
 function ServiceItem({ icon, secondaryIcon, title, description, variants, delay, direction }: ServiceItemProps) {
   return (
     <motion.div
-      className="flex flex-col group"
+      className="flex flex-col items-center text-center group"
       variants={variants}
       transition={{ delay }}
       whileHover={{ y: -5, transition: { duration: 0.2 } }}
     >
       <motion.div
-        className="flex items-center gap-3 mb-3"
+        className="flex flex-col items-center gap-2 mb-3"
         initial={{ x: direction === "left" ? -20 : 20, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: delay + 0.2 }}
@@ -397,7 +397,7 @@ function ServiceItem({ icon, secondaryIcon, title, description, variants, delay,
         </h3>
       </motion.div>
       <motion.p
-        className="text-sm text-[#202e44]/80 leading-relaxed pl-12"
+        className="text-sm text-[#202e44]/80 leading-relaxed px-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, delay: delay + 0.4 }}
@@ -405,7 +405,7 @@ function ServiceItem({ icon, secondaryIcon, title, description, variants, delay,
         {description}
       </motion.p>
       <motion.div
-        className="mt-3 pl-12 flex items-center text-[#88734C] text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        className="mt-3 flex items-center justify-center text-[#88734C] text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         initial={{ opacity: 0 }}
         animate={{ opacity: 0 }}
       >
