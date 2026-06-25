@@ -126,7 +126,7 @@ export function ServicesShowcase({ isLight = false }: ServicesShowcaseProps) {
                 isLight
                   ? "bg-white border border-zinc-200/30 shadow-[0_20px_50px_rgba(0,0,0,0.04)]"
                   : "bg-zinc-900 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.4)]",
-                isEven ? "md:-ml-[120px]" : "md:-mr-[160px]"
+                isEven ? "md:-ml-[50px]" : "md:-mr-[50px]"
               )}
             >
               {/* Highlight Aura */}
