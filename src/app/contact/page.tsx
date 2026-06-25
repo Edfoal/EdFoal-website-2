@@ -101,8 +101,8 @@ export default function ContactPage() {
           services: [],
         });
       }
-    } catch (err: any) {
-      setSubmitError(err.message || "Failed to submit message. Please try again.");
+    } catch (err: unknown) {
+      setSubmitError(err instanceof Error ? err.message : "Failed to submit message. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -122,13 +122,7 @@ export default function ContactPage() {
         {/* Light Background Gradients & Grid */}
         <div className="absolute inset-0 w-full h-full overflow-hidden bg-white -z-50 pointer-events-none select-none">
           {/* Light Grid Overlay */}
-          <div 
-            className="absolute inset-0 opacity-70"
-            style={{
-              backgroundSize: "50px 50px",
-              backgroundImage: "linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px)"
-            }}
-          />
+          <div className="absolute inset-0 opacity-70 bg-size-[50px_50px] bg-[linear-gradient(to_right,rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.03)_1px,transparent_1px)]" />
 
           {/* Noise overlay */}
           <div className="noise-overlay" />
@@ -163,41 +157,35 @@ export default function ContactPage() {
             locationText="Edfoal AI Solutions"
             hideHeader={true}
             hideFooter={true}
-            className="bg-black text-white mx-2.5 mt-2.5 w-auto"
-            style={{
-              "--background": "0 0% 0%",
-              "--foreground": "0 0% 100%",
-              background: "#080808",
-              color: "#ffffff"
-            } as React.CSSProperties}
+            className="mx-1.5 mt-1.5 w-auto rounded-xl bg-[#001427] text-white [--background:207_100%_8%] [--foreground:0_0%_100%] sm:mx-2.5 sm:mt-2.5"
           />
           {/* Bottom fade overlay to transition the black card background into the white content area below */}
-          <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white to-transparent pointer-events-none z-20" />
+          <div className="absolute bottom-0 left-0 right-0 z-20 h-28 bg-linear-to-t from-white to-transparent pointer-events-none sm:h-40" />
         </div>
 
         {/* Main Content & Footer inside light theme wrapper */}
         <div data-theme="light">
           {/* Main Content Section */}
-          <section id="contact-form-section" className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 md:px-12 pt-16 pb-20">
-          <div className="w-full rounded-3xl border border-zinc-200 bg-white overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.04)]">
-            <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[650px]">
+          <section id="contact-form-section" className="relative z-10 mx-auto w-full max-w-360 px-4 pb-16 pt-12 sm:px-6 sm:pb-18 sm:pt-14 md:px-8 md:pb-20 md:pt-16 lg:px-[max(32px,4vw)]">
+          <div className="w-full overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-[0_10px_40px_rgba(0,0,0,0.04)] lg:rounded-4xl">
+            <div className="grid grid-cols-1 lg:grid-cols-12">
               
               {/* Left Column: Info Sidebar */}
-              <div className="lg:col-span-5 bg-zinc-50 p-8 md:p-12 border-b lg:border-b-0 lg:border-r border-zinc-200 flex flex-col justify-between">
+              <div className="flex flex-col justify-between border-b border-zinc-200 bg-zinc-50 p-5 sm:p-8 md:p-10 lg:col-span-5 lg:border-b-0 lg:border-r lg:p-12">
                 <div>
                   {/* Heading */}
-                  <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-zinc-950 mb-3">
+                  <h1 className="mb-3 text-[clamp(2rem,8vw,2.75rem)] font-bold leading-tight tracking-tight text-zinc-950 md:text-4xl">
                     Get in touch
                   </h1>
-                  <p className="text-zinc-500 text-sm md:text-base leading-relaxed mb-10 max-w-sm">
-                    We'd love to hear from you. Our friendly team is always here to chat.
+                  <p className="mb-8 max-w-sm text-sm leading-relaxed text-zinc-500 md:mb-10 md:text-base">
+                    We&apos;d love to hear from you. Our friendly team is always here to chat.
                   </p>
 
                   {/* Info Blocks */}
-                  <div className="space-y-8">
+                  <div className="space-y-6 md:space-y-8">
                     {/* Chat */}
-                    <div className="flex gap-4">
-                      <div className="w-10 h-10 rounded-lg bg-white border border-zinc-200 flex items-center justify-center text-zinc-600 shrink-0 shadow-sm">
+                    <div className="flex gap-3 sm:gap-4">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-zinc-200 bg-white text-zinc-600 shadow-sm">
                         <MessageSquare className="w-5 h-5" />
                       </div>
                       <div>
@@ -217,8 +205,8 @@ export default function ContactPage() {
                     </div>
 
                     {/* Office */}
-                    <div className="flex gap-4">
-                      <div className="w-10 h-10 rounded-lg bg-white border border-zinc-200 flex items-center justify-center text-zinc-600 shrink-0 shadow-sm">
+                    <div className="flex gap-3 sm:gap-4">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-zinc-200 bg-white text-zinc-600 shadow-sm">
                         <MapPin className="w-5 h-5" />
                       </div>
                       <div>
@@ -235,8 +223,8 @@ export default function ContactPage() {
                     </div>
 
                     {/* Phone */}
-                    <div className="flex gap-4">
-                      <div className="w-10 h-10 rounded-lg bg-white border border-zinc-200 flex items-center justify-center text-zinc-600 shrink-0 shadow-sm">
+                    <div className="flex gap-3 sm:gap-4">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-zinc-200 bg-white text-zinc-600 shadow-sm">
                         <Phone className="w-5 h-5" />
                       </div>
                       <div>
@@ -258,7 +246,7 @@ export default function ContactPage() {
                 </div>
 
                 {/* Social Icons Footer */}
-                <div className="flex items-center gap-5 mt-16 text-zinc-400">
+                <div className="mt-10 flex items-center gap-5 text-zinc-400 md:mt-16">
                   <a href="#" className="hover:text-purple-600 transition-colors" aria-label="Facebook">
                     <FaFacebook className="w-5 h-5" />
                   </a>
@@ -278,7 +266,7 @@ export default function ContactPage() {
               </div>
 
               {/* Right Column: Form Container */}
-              <div className="lg:col-span-7 bg-white p-8 md:p-12 flex flex-col justify-center">
+              <div className="flex flex-col justify-center bg-white p-5 sm:p-8 md:p-10 lg:col-span-7 lg:p-12">
                 <AnimatePresence mode="wait">
                   {!submitSuccess ? (
                     <motion.div
@@ -287,8 +275,8 @@ export default function ContactPage() {
                       exit={{ opacity: 0 }}
                     >
                       {/* Header */}
-                      <div className="mb-8">
-                        <h2 className="text-3xl font-bold tracking-tight text-zinc-950 mb-2">
+                      <div className="mb-7 md:mb-8">
+                        <h2 className="mb-2 text-2xl font-bold tracking-tight text-zinc-950 sm:text-3xl">
                           Level up your brand
                         </h2>
                         <p className="text-zinc-500 text-sm md:text-base">
@@ -303,9 +291,9 @@ export default function ContactPage() {
                       </div>
 
                       {/* Form */}
-                      <form onSubmit={handleSubmit} className="space-y-5">
+                      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
                         {/* First & Last Name */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
                           <div>
                             <label htmlFor="firstName" className="text-zinc-700 text-sm font-medium mb-2 block">
                               First name *
@@ -318,7 +306,7 @@ export default function ContactPage() {
                               value={formData.firstName}
                               onChange={handleInputChange}
                               required
-                              className="w-full bg-zinc-50/50 border border-zinc-200 rounded-lg px-4 py-2.5 text-zinc-900 text-sm placeholder:text-zinc-400 focus:outline-none focus:border-purple-500 focus:bg-white transition-all"
+                              className="w-full rounded-lg border border-zinc-200 bg-zinc-50/50 px-4 py-3 text-sm text-zinc-900 transition-all placeholder:text-zinc-400 focus:border-purple-500 focus:bg-white focus:outline-none sm:py-2.5"
                             />
                           </div>
                           <div>
@@ -333,7 +321,7 @@ export default function ContactPage() {
                               value={formData.lastName}
                               onChange={handleInputChange}
                               required
-                              className="w-full bg-zinc-50/50 border border-zinc-200 rounded-lg px-4 py-2.5 text-zinc-900 text-sm placeholder:text-zinc-400 focus:outline-none focus:border-purple-500 focus:bg-white transition-all"
+                              className="w-full rounded-lg border border-zinc-200 bg-zinc-50/50 px-4 py-3 text-sm text-zinc-900 transition-all placeholder:text-zinc-400 focus:border-purple-500 focus:bg-white focus:outline-none sm:py-2.5"
                             />
                           </div>
                         </div>
@@ -351,7 +339,7 @@ export default function ContactPage() {
                             value={formData.email}
                             onChange={handleInputChange}
                             required
-                            className="w-full bg-zinc-50/50 border border-zinc-200 rounded-lg px-4 py-2.5 text-zinc-900 text-sm placeholder:text-zinc-400 focus:outline-none focus:border-purple-500 focus:bg-white transition-all"
+                            className="w-full rounded-lg border border-zinc-200 bg-zinc-50/50 px-4 py-3 text-sm text-zinc-900 transition-all placeholder:text-zinc-400 focus:border-purple-500 focus:bg-white focus:outline-none sm:py-2.5"
                           />
                         </div>
 
@@ -360,12 +348,12 @@ export default function ContactPage() {
                           <label htmlFor="phone" className="text-zinc-700 text-sm font-medium mb-2 block">
                             Phone number
                           </label>
-                          <div className="flex rounded-lg border border-zinc-200 bg-zinc-50/50 focus-within:border-purple-500 focus-within:bg-white transition-all overflow-hidden">
+                          <div className="flex overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50/50 transition-all focus-within:border-purple-500 focus-within:bg-white">
                             <select
                               name="countryCode"
                               value={formData.countryCode}
                               onChange={handleInputChange}
-                              className="bg-transparent border-r border-zinc-200 text-zinc-700 text-sm px-3 py-2.5 focus:outline-none cursor-pointer hover:bg-zinc-100/50"
+                              className="cursor-pointer border-r border-zinc-200 bg-transparent px-3 py-3 text-sm text-zinc-700 hover:bg-zinc-100/50 focus:outline-none sm:py-2.5"
                             >
                               <option value="US" className="bg-white text-zinc-950">US +1</option>
                               <option value="GB" className="bg-white text-zinc-950">GB +44</option>
@@ -380,7 +368,7 @@ export default function ContactPage() {
                               placeholder="+1 (555) 000-0000"
                               value={formData.phone}
                               onChange={handleInputChange}
-                              className="flex-1 bg-transparent border-none px-4 py-2.5 text-zinc-900 text-sm placeholder:text-zinc-400 focus:outline-none focus:ring-0"
+                              className="min-w-0 flex-1 border-none bg-transparent px-3 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-0 sm:px-4 sm:py-2.5"
                             />
                           </div>
                         </div>
@@ -398,7 +386,7 @@ export default function ContactPage() {
                             value={formData.message}
                             onChange={handleInputChange}
                             required
-                            className="w-full bg-zinc-50/50 border border-zinc-200 rounded-lg px-4 py-2.5 text-zinc-900 text-sm placeholder:text-zinc-400 focus:outline-none focus:border-purple-500 focus:bg-white transition-all min-h-[120px] resize-none"
+                            className="min-h-[130px] w-full resize-none rounded-lg border border-zinc-200 bg-zinc-50/50 px-4 py-3 text-sm text-zinc-900 transition-all placeholder:text-zinc-400 focus:border-purple-500 focus:bg-white focus:outline-none"
                           />
                         </div>
 
@@ -407,7 +395,7 @@ export default function ContactPage() {
                           <span className="text-zinc-700 text-sm font-medium mb-3 block">
                             Services
                           </span>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-3.5">
                             {serviceOptions.map((service) => {
                               const isChecked = formData.services.includes(service);
                               return (
@@ -423,7 +411,7 @@ export default function ContactPage() {
                                   />
                                   <div
                                     className={cn(
-                                      "w-5 h-5 rounded border border-zinc-200 bg-zinc-50/50 group-hover:border-zinc-300 flex items-center justify-center transition-all duration-200 shrink-0",
+                                      "flex h-5 w-5 shrink-0 items-center justify-center rounded border border-zinc-200 bg-zinc-50/50 transition-all duration-200 group-hover:border-zinc-300",
                                       isChecked && "border-purple-600 bg-purple-50 text-purple-600"
                                     )}
                                   >
@@ -449,14 +437,7 @@ export default function ContactPage() {
                         <OriginButton
                           type="submit"
                           disabled={isSubmitting}
-                          className="w-full h-12 rounded-full text-sm font-semibold tracking-wide border-[0.5px]"
-                          style={{
-                            "--ic-card": "#ffffff",
-                            "--ic-card-foreground": "#0f172a",
-                            "--ic-border": "#0f172a",
-                            "--ic-foreground": "#0f172a",
-                            "--ic-background": "#ffffff",
-                          } as React.CSSProperties}
+                          className="h-12 w-full rounded-full border-[0.5px] text-sm font-semibold tracking-wide [--ic-background:#ffffff] [--ic-border:#0f172a] [--ic-card-foreground:#0f172a] [--ic-card:#ffffff] [--ic-foreground:#0f172a]"
                         >
                           {isSubmitting ? (
                             <div className="flex items-center justify-center gap-2">

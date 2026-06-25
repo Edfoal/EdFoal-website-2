@@ -2,6 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
+type IconComponent = React.ComponentType<{ className?: string }>;
+
 // Define the props interface for type safety and reusability
 interface MinimalistHeroProps {
   logoText?: string;
@@ -14,10 +16,9 @@ interface MinimalistHeroProps {
     part1: string;
     part2: string;
   };
-  socialLinks?: { icon: React.ComponentType<any>; href: string }[];
+  socialLinks?: { icon: IconComponent; href: string }[];
   locationText?: string;
   className?: string;
-  style?: React.CSSProperties;
   hideHeader?: boolean;
   hideFooter?: boolean;
 }
@@ -33,7 +34,7 @@ const NavLink = ({ href, children }: { href: string; children: React.ReactNode }
 );
 
 // Helper component for social media icons
-const SocialIcon = ({ href, icon: Icon }: { href: string; icon: React.ComponentType<any> }) => (
+const SocialIcon = ({ href, icon: Icon }: { href: string; icon: IconComponent }) => (
   <a href={href} target="_blank" rel="noopener noreferrer" className="text-foreground/60 transition-colors hover:text-foreground">
     <Icon className="h-5 w-5" />
   </a>
@@ -51,15 +52,13 @@ export const MinimalistHero = ({
   socialLinks = [],
   locationText = "",
   className,
-  style,
   hideHeader = false,
   hideFooter = false,
 }: MinimalistHeroProps) => {
   return (
     <div
-      style={style}
       className={cn(
-        'relative flex h-screen w-full flex-col items-center justify-between overflow-hidden bg-background p-8 font-sans md:p-12',
+        'relative flex min-h-[620px] w-full flex-col items-center justify-between overflow-hidden bg-background px-4 py-16 font-sans sm:px-6 md:min-h-[680px] md:p-10 lg:min-h-[760px] lg:p-12',
         className
       )}
     >
@@ -96,32 +95,32 @@ export const MinimalistHero = ({
       )}
 
       {/* Main Content Area */}
-      <div className="relative grid w-full max-w-7xl flex-grow grid-cols-1 items-center md:grid-cols-3">
+      <div className="relative grid w-full max-w-7xl grow grid-cols-1 items-center gap-8 md:grid-cols-3 md:gap-6">
         {/* Left Text Content */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1 }}
-          className="z-20 order-2 md:order-1 text-center md:text-left"
+          className="z-20 order-2 text-center md:order-1 md:text-left"
         >
-          <p className="mx-auto max-w-xs text-sm leading-relaxed text-foreground/80 md:mx-0">{mainText}</p>
+          <p className="mx-auto max-w-sm text-sm leading-relaxed text-foreground/80 sm:text-[15px] md:mx-0 md:max-w-xs">{mainText}</p>
           <a href={readMoreLink} className="mt-4 inline-block text-sm font-medium text-foreground underline decoration-from-font">
             Read More
           </a>
         </motion.div>
 
         {/* Center Image with Circle */}
-        <div className="relative order-1 md:order-2 flex justify-center items-center h-full">
+        <div className="relative order-1 flex h-[320px] items-center justify-center sm:h-[360px] md:order-2 md:h-full">
             <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-                className="absolute z-0 h-[300px] w-[300px] rounded-full bg-yellow-400/90 md:h-[400px] md:w-[400px] lg:h-[500px] lg:w-[500px]"
+                className="absolute z-0 h-64 w-64 rounded-full bg-yellow-400/90 sm:h-76 sm:w-76 md:h-96 md:w-96 lg:h-[500px] lg:w-[500px]"
             ></motion.div>
             <motion.img
                 src={imageSrc}
                 alt={imageAlt}
-                className="relative z-10 h-auto w-56 object-cover md:w-64 scale-150 lg:w-72"
+                className="relative z-10 h-auto w-44 scale-[1.4] object-cover sm:w-52 md:w-64 md:scale-150 lg:w-72"
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.4 }}
@@ -138,9 +137,9 @@ export const MinimalistHero = ({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1.2 }}
-          className="z-20 order-3 flex items-center justify-center text-center md:justify-start"
+          className="z-20 order-3 flex items-center justify-center text-center md:justify-start md:text-left"
         >
-          <h1 className="text-7xl font-extrabold text-foreground md:text-8xl lg:text-9xl">
+          <h1 className="text-[clamp(3.75rem,18vw,7rem)] font-extrabold leading-[0.95] text-foreground md:text-[clamp(5rem,9vw,8rem)]">
             {overlayText.part1}
             <br />
             {overlayText.part2}

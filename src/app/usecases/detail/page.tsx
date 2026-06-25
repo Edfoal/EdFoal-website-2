@@ -3,7 +3,7 @@
 import React, { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { FiArrowLeft, FiCheckCircle } from "react-icons/fi";
+import { FiArrowLeft } from "react-icons/fi";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import useLenis from "@/hooks/useLenis";
@@ -420,11 +420,11 @@ function CaseStudyDetailContent() {
       <Navbar />
 
       {/* Hero Banner Section */}
-      <section className="usecase-banner-body">
+      <section className="relative overflow-hidden px-4 pb-12 pt-28 sm:px-6 sm:pt-32 md:pb-16 lg:px-8">
         <div className="usecase-banner-grid-overlay" />
         
         {/* Back button container */}
-        <div className="max-w-7xl w-full mx-auto relative z-20 flex justify-start mb-6 -mt-8">
+        <div className="relative z-20 mx-auto mb-6 flex w-full max-w-7xl justify-start">
           <motion.a
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
@@ -438,8 +438,8 @@ function CaseStudyDetailContent() {
         </div>
 
         {/* Big Mockup Banner Image */}
-        <div className="w-full max-w-7xl mx-auto px-6 relative z-10 mb-8 mt-2">
-          <div className="relative rounded-[2rem] overflow-hidden border border-zinc-200/60 shadow-xl bg-zinc-50 aspect-[16/9] md:aspect-[21/9]">
+        <div className="relative z-10 mx-auto mb-8 mt-2 w-full max-w-7xl">
+          <div className="relative aspect-4/3 overflow-hidden rounded-3xl border border-zinc-200/60 bg-zinc-50 shadow-xl sm:aspect-video md:aspect-21/9 md:rounded-4xl">
             <img 
               src={study.heroImage} 
               alt={study.title} 
@@ -449,7 +449,7 @@ function CaseStudyDetailContent() {
           </div>
         </div>
 
-        <div className="usecase-banner-content">
+        <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-center text-center">
           {/* Badge Row */}
           <div className="flex flex-wrap gap-2.5 justify-center mb-6">
             {study.badges.map((badge, idx) => {
@@ -460,7 +460,7 @@ function CaseStudyDetailContent() {
               return (
                 <span 
                   key={idx} 
-                  className={`px-4 py-1.5 rounded-full text-[10px] uppercase tracking-wider ${badgeStyle}`}
+                  className={`rounded-full px-3 py-1.5 text-[9px] uppercase tracking-wider sm:px-4 sm:text-[10px] ${badgeStyle}`}
                 >
                   {badge}
                 </span>
@@ -472,7 +472,7 @@ function CaseStudyDetailContent() {
             initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="usecase-banner-main-heading max-w-5xl"
+            className="max-w-5xl text-[clamp(2.25rem,9vw,5rem)] font-black leading-[0.98] tracking-tight text-zinc-950"
             id="hero-title"
           >
             {study.title}
@@ -482,7 +482,7 @@ function CaseStudyDetailContent() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="usecase-banner-subtitle max-w-4xl"
+            className="mt-5 max-w-4xl text-sm leading-relaxed text-zinc-600 sm:text-base md:text-lg"
             id="hero-subtitle"
           >
             {study.subtitle}
@@ -491,16 +491,16 @@ function CaseStudyDetailContent() {
       </section>
 
       {/* Dynamic Content Area */}
-      <main className="cs-detail-wrapper w-full max-w-7xl mx-auto px-6 md:px-12 -mt-4 pb-24" id="cs-detail-content">
+      <main className="mx-auto w-full max-w-7xl px-4 pb-16 sm:px-6 md:px-8 lg:px-12 lg:pb-24" id="cs-detail-content">
         
         {/* Three Columns Key Metric Highlight block */}
-        <div className="grid grid-cols-3 bg-[#0a1224] rounded-[2rem] p-8 md:p-12 mb-16 text-center shadow-lg divide-x divide-zinc-800">
+        <div className="mb-12 grid grid-cols-1 divide-y divide-zinc-800 rounded-3xl bg-[#0a1224] p-5 text-center shadow-lg sm:grid-cols-3 sm:divide-x sm:divide-y-0 md:mb-16 md:rounded-4xl md:p-12">
           {study.stats.map((stat, idx) => (
-            <div key={idx} className="flex flex-col items-center justify-center py-2 px-4 first:pl-0 last:pr-0">
-              <span className="text-3xl md:text-5xl font-black text-white mb-2 tracking-tight">
+            <div key={idx} className="flex flex-col items-center justify-center px-4 py-4 first:pt-0 last:pb-0 sm:py-2 sm:first:pl-0 sm:last:pr-0">
+              <span className="mb-2 text-3xl font-black tracking-tight text-white md:text-5xl">
                 {stat.value}
               </span>
-              <span className="text-xs md:text-sm text-zinc-400 font-medium tracking-wide">
+              <span className="text-xs font-medium tracking-wide text-zinc-400 md:text-sm">
                 {stat.label}
               </span>
             </div>
@@ -508,33 +508,33 @@ function CaseStudyDetailContent() {
         </div>
 
         {/* Main Content Sections Stack */}
-        <div className="flex flex-col gap-16">
+        <div className="flex flex-col gap-12 md:gap-16">
 
           {/* Section 1: The Problem / The Situation */}
           <div className="flex flex-col gap-6">
             <div className="flex items-center gap-3">
               <span className="w-1.5 h-8 bg-blue-600 rounded-full shrink-0" />
-              <h2 className="text-2xl font-extrabold text-zinc-900 tracking-tight">
+              <h2 className="text-xl font-extrabold tracking-tight text-zinc-900 sm:text-2xl">
                 {study.sections.problem.title}
               </h2>
             </div>
             
-            <p className="text-zinc-600 text-base md:text-lg leading-relaxed max-w-5xl font-normal">
+            <p className="max-w-5xl text-sm font-normal leading-relaxed text-zinc-600 sm:text-base md:text-lg">
               {study.sections.problem.text}
             </p>
 
             {/* Split layout for problem boxes and illustration images */}
             {study.sections.problem.boxBullets && study.sections.problem.boxBullets.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-stretch mt-4">
+              <div className="mt-4 grid grid-cols-1 items-stretch gap-6 md:grid-cols-12 md:gap-8">
                 
                 {/* Red warning box */}
-                <div className="md:col-span-6 bg-red-50/40 border border-red-100 rounded-3xl p-6 md:p-8 flex flex-col justify-start">
+                <div className="flex flex-col justify-start rounded-3xl border border-red-100 bg-red-50/40 p-5 md:col-span-6 md:p-8">
                   <span className="text-xs font-black tracking-widest text-red-600 uppercase block mb-6">
                     {study.sections.problem.boxTitle}
                   </span>
-                  <ul className="flex flex-col gap-4">
+                  <ul className="flex flex-col gap-3.5 md:gap-4">
                     {study.sections.problem.boxBullets.map((bullet, idx) => (
-                      <li key={idx} className="flex items-start gap-3.5 text-sm md:text-base text-zinc-700 leading-relaxed font-medium">
+                      <li key={idx} className="flex items-start gap-3 text-sm font-medium leading-relaxed text-zinc-700 md:gap-3.5 md:text-base">
                         <span className="text-red-500 text-lg font-bold shrink-0 mt-0">×</span>
                         <span>{bullet}</span>
                       </li>
@@ -544,7 +544,7 @@ function CaseStudyDetailContent() {
 
                 {/* Problem Illustration Image */}
                 {study.sections.problem.image && (
-                  <div className="md:col-span-6 relative rounded-3xl overflow-hidden border border-zinc-200/50 shadow-sm min-h-[300px]">
+                  <div className="relative min-h-[220px] overflow-hidden rounded-3xl border border-zinc-200/50 shadow-sm md:col-span-6 md:min-h-[300px]">
                     <img 
                       src={study.sections.problem.image} 
                       alt="Problem Context" 
@@ -560,24 +560,24 @@ function CaseStudyDetailContent() {
           <div className="flex flex-col gap-6">
             <div className="flex items-center gap-3">
               <span className="w-1.5 h-8 bg-blue-600 rounded-full shrink-0" />
-              <h2 className="text-2xl font-extrabold text-zinc-900 tracking-tight">
+              <h2 className="text-xl font-extrabold tracking-tight text-zinc-900 sm:text-2xl">
                 {study.sections.solution.title}
               </h2>
             </div>
             
-            <p className="text-zinc-600 text-base md:text-lg leading-relaxed max-w-5xl font-normal">
+            <p className="max-w-5xl text-sm font-normal leading-relaxed text-zinc-600 sm:text-base md:text-lg">
               {study.sections.solution.text}
             </p>
 
             {/* Green system details checkmarks box */}
             {study.sections.solution.boxBullets && study.sections.solution.boxBullets.length > 0 && (
-              <div className="bg-emerald-50/40 border border-emerald-100/70 rounded-3xl p-6 md:p-8 mt-2 max-w-5xl">
+              <div className="mt-2 max-w-5xl rounded-3xl border border-emerald-100/70 bg-emerald-50/40 p-5 md:p-8">
                 <span className="text-xs font-black tracking-widest text-emerald-700 uppercase block mb-6">
                   {study.sections.solution.boxTitle}
                 </span>
-                <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <ul className="grid grid-cols-1 gap-3.5 md:grid-cols-2 md:gap-4">
                   {study.sections.solution.boxBullets.map((bullet, idx) => (
-                    <li key={idx} className="flex items-start gap-3.5 text-sm md:text-base text-zinc-700 leading-relaxed font-medium">
+                    <li key={idx} className="flex items-start gap-3 text-sm font-medium leading-relaxed text-zinc-700 md:gap-3.5 md:text-base">
                       <span className="text-emerald-600 text-base font-bold shrink-0 mt-0.5">✓</span>
                       <span>{bullet}</span>
                     </li>
@@ -592,21 +592,21 @@ function CaseStudyDetailContent() {
             <div className="flex flex-col gap-6">
               <div className="flex items-center gap-3">
                 <span className="w-1.5 h-8 bg-blue-600 rounded-full shrink-0" />
-                <h2 className="text-2xl font-extrabold text-zinc-900 tracking-tight">
+                <h2 className="text-xl font-extrabold tracking-tight text-zinc-900 sm:text-2xl">
                   {study.sections.results.title}
                 </h2>
               </div>
               
               {study.sections.results.text && (
-                <p className="text-zinc-600 text-base md:text-lg leading-relaxed max-w-5xl font-normal">
+                <p className="max-w-5xl text-sm font-normal leading-relaxed text-zinc-600 sm:text-base md:text-lg">
                   {study.sections.results.text}
                 </p>
               )}
 
               {/* Responsive Results Data Table */}
               {study.sections.results?.table && study.sections.results.table.length > 0 && (
-                <div className="mt-2 border border-zinc-200/60 rounded-[1.5rem] overflow-hidden shadow-sm max-w-5xl">
-                  <table className="w-full text-left border-collapse">
+                <div className="mt-2 max-w-5xl overflow-x-auto rounded-3xl border border-zinc-200/60 shadow-sm">
+                  <table className="w-full min-w-[560px] border-collapse text-left">
                     <thead>
                       <tr className="bg-[#0a1224] text-white">
                         {study.sections.results?.cols === 3 ? (
@@ -651,8 +651,8 @@ function CaseStudyDetailContent() {
           {study.sections.extra && (
             <div className="flex flex-col gap-6">
               {study.sections.extra.type === "quote" ? (
-                <div className="bg-blue-50/40 border-l-4 border-blue-600 rounded-r-3xl p-6 md:p-10 max-w-5xl my-2 shadow-sm">
-                  <p className="text-blue-900 text-lg md:text-xl font-bold italic leading-relaxed mb-4">
+                <div className="my-2 max-w-5xl rounded-r-3xl border-l-4 border-blue-600 bg-blue-50/40 p-5 shadow-sm sm:p-6 md:p-10">
+                  <p className="mb-4 text-base font-bold italic leading-relaxed text-blue-900 md:text-xl">
                     {study.sections.extra.text}
                   </p>
                   <span className="text-xs md:text-sm text-zinc-500 font-bold uppercase tracking-wider block">
@@ -663,11 +663,11 @@ function CaseStudyDetailContent() {
                 <div className="flex flex-col gap-6 max-w-5xl">
                   <div className="flex items-center gap-3">
                     <span className="w-1.5 h-8 bg-blue-600 rounded-full shrink-0" />
-                    <h2 className="text-2xl font-extrabold text-zinc-900 tracking-tight">
+                    <h2 className="text-xl font-extrabold tracking-tight text-zinc-900 sm:text-2xl">
                       {study.sections.extra.title}
                     </h2>
                   </div>
-                  <p className="text-zinc-600 text-base md:text-lg leading-relaxed font-normal">
+                  <p className="text-sm font-normal leading-relaxed text-zinc-600 sm:text-base md:text-lg">
                     {study.sections.extra.text}
                   </p>
                 </div>
@@ -677,15 +677,15 @@ function CaseStudyDetailContent() {
 
           {/* Section 5: Bottom CTA Block */}
           {study.sections.cta && (
-            <div className="bg-[#0a1224] rounded-[2rem] p-8 md:p-12 mt-4 flex flex-col md:flex-row items-center justify-between gap-8 shadow-xl max-w-5xl">
+            <div className="mt-4 flex max-w-5xl flex-col items-center justify-between gap-5 rounded-3xl bg-[#0a1224] p-5 shadow-xl sm:p-8 md:flex-row md:gap-8 md:rounded-4xl md:p-12">
               <div className="flex flex-col gap-2 max-w-xl text-left">
-                <h3 className="text-white text-lg md:text-xl font-bold leading-normal">
+                <h3 className="text-base font-bold leading-normal text-white md:text-xl">
                   {study.sections.cta.text}
                 </h3>
               </div>
               <a 
                 href={study.sections.cta.href}
-                className="bg-blue-600 text-white font-extrabold text-sm py-4 px-8 rounded-full shadow-lg hover:bg-blue-700 active:scale-95 transition-all duration-300 shrink-0 text-center w-full md:w-auto"
+                className="w-full shrink-0 rounded-full bg-blue-600 px-8 py-4 text-center text-sm font-extrabold text-white shadow-lg transition-all duration-300 hover:bg-blue-700 active:scale-95 md:w-auto"
               >
                 {study.sections.cta.buttonText}
               </a>
