@@ -418,6 +418,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
   }, [caseStudyId]);
 
   const study = caseStudyId ? (caseStudiesData[caseStudyId] || caseStudiesData["1"]) : null;
+  if (!study) return null;
 
   return (
     <AnimatePresence>
@@ -685,7 +686,6 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
           </div>
         </motion.div>
       </div>
-      )}
     </AnimatePresence>
   );
 };
