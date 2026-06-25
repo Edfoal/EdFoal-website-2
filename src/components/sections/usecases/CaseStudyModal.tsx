@@ -1,12 +1,8 @@
 "use client";
 
-import React, { Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
-import { FiArrowLeft, FiCheckCircle } from "react-icons/fi";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import useLenis from "@/hooks/useLenis";
+import React, { useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FiX, FiCheckCircle } from "react-icons/fi";
 
 // TypeScript Interfaces for the Case Study Data Structure
 interface ProblemSection {
@@ -67,8 +63,7 @@ interface CaseStudy {
   };
 }
 
-// Detailed static case study data dictionary typed correctly
-const caseStudiesData: Record<string, CaseStudy> = {
+export const caseStudiesData: Record<string, CaseStudy> = {
   "1": {
     id: "01",
     title: "AI IVR Automation for Mortgage Verification",
@@ -398,322 +393,297 @@ const caseStudiesData: Record<string, CaseStudy> = {
   }
 };
 
-function CaseStudyDetailContent() {
-  // Initialize Lenis scroll
-  useLenis();
+interface CaseStudyModalProps {
+  caseStudyId: string | null;
+  onClose: () => void;
+}
 
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id") || "1";
+export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
+  caseStudyId,
+  onClose,
+}) => {
+  // Prevent background scrolling when modal is open
+  useEffect(() => {
+    if (caseStudyId) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [caseStudyId]);
 
-  // Retrieve the correct study or fallback to ID 1
-  const study = caseStudiesData[id as keyof typeof caseStudiesData] || caseStudiesData["1"];
+  if (!caseStudyId) return null;
+
+  const study = caseStudiesData[caseStudyId] || caseStudiesData["1"];
 
   return (
-    <main className="relative min-h-screen bg-white text-zinc-900 selection:bg-purple-500/10 selection:text-purple-900 overflow-hidden">
-      {/* Light Background Gradients */}
-      <div className="absolute inset-0 w-full h-full overflow-hidden bg-white -z-50 pointer-events-none select-none">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,rgba(139,92,246,0.03),transparent_50%)]" />
-        <div className="absolute top-[15%] left-[10%] w-[350px] h-[350px] rounded-full bg-purple-400/5 blur-[120px]" />
-        <div className="absolute bottom-[20%] right-[15%] w-[450px] h-[450px] rounded-full bg-indigo-400/5 blur-[140px]" />
-      </div>
-
-      <Navbar />
-
-      {/* Hero Banner Section */}
-      <section className="usecase-banner-body">
-        <div className="usecase-banner-grid-overlay" />
+    <AnimatePresence>
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 overflow-hidden">
         
-        {/* Back button container */}
-        <div className="max-w-7xl w-full mx-auto relative z-20 flex justify-start mb-6 -mt-8">
-          <motion.a
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            href="/usecases"
-            className="inline-flex items-center gap-2 text-xs font-bold tracking-wider text-blue-600 hover:text-blue-800 transition-colors cursor-pointer group"
+        {/* Backdrop overlay */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+          className="absolute inset-0 bg-black/60 backdrop-blur-md cursor-pointer"
+        />
+
+        {/* Modal dialog box */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 30 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 30 }}
+          transition={{ type: "spring", duration: 0.5 }}
+          className="relative bg-white text-zinc-900 rounded-[2.5rem] shadow-2xl w-full max-w-5xl h-[90vh] md:h-[85vh] overflow-y-auto z-10 flex flex-col pointer-events-auto"
+        >
+          {/* Close button */}
+          <button
+            onClick={onClose}
+            aria-label="Close case study modal"
+            className="absolute top-6 right-6 md:top-8 md:right-8 z-30 p-3 bg-zinc-100 hover:bg-zinc-200/80 rounded-full text-zinc-600 hover:text-zinc-950 transition-colors shadow-sm cursor-pointer"
           >
-            <FiArrowLeft className="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" />
-            Back to all case studies
-          </motion.a>
-        </div>
+            <FiX className="w-5 h-5" />
+          </button>
 
-        {/* Big Mockup Banner Image */}
-        <div className="w-full max-w-7xl mx-auto px-6 relative z-10 mb-8 mt-2">
-          <div className="relative rounded-[2rem] overflow-hidden border border-zinc-200/60 shadow-xl bg-zinc-50 aspect-[16/9] md:aspect-[21/9]">
-            <img 
-              src={study.heroImage} 
-              alt={study.title} 
-              className="w-full h-full object-cover object-center"
-              loading="eager"
-            />
-          </div>
-        </div>
-
-        <div className="usecase-banner-content">
-          {/* Badge Row */}
-          <div className="flex flex-wrap gap-2.5 justify-center mb-6">
-            {study.badges.map((badge, idx) => {
-              let badgeStyle = "bg-zinc-100 text-zinc-600";
-              if (idx === 0) badgeStyle = "bg-zinc-100/80 text-zinc-500 font-bold border border-zinc-200/30";
-              if (idx === 1) badgeStyle = "bg-blue-50 text-blue-600 font-bold border border-blue-100/50";
-              if (idx === 2) badgeStyle = "bg-emerald-50 text-emerald-600 font-bold border border-emerald-100/50";
-              return (
-                <span 
-                  key={idx} 
-                  className={`px-4 py-1.5 rounded-full text-[10px] uppercase tracking-wider ${badgeStyle}`}
-                >
-                  {badge}
-                </span>
-              );
-            })}
-          </div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 25 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="usecase-banner-main-heading max-w-5xl"
-            id="hero-title"
-          >
-            {study.title}
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="usecase-banner-subtitle max-w-4xl"
-            id="hero-subtitle"
-          >
-            {study.subtitle}
-          </motion.p>
-        </div>
-      </section>
-
-      {/* Dynamic Content Area */}
-      <main className="cs-detail-wrapper w-full max-w-7xl mx-auto px-6 md:px-12 -mt-4 pb-24" id="cs-detail-content">
-        
-        {/* Three Columns Key Metric Highlight block */}
-        <div className="grid grid-cols-3 bg-[#0a1224] rounded-[2rem] p-8 md:p-12 mb-16 text-center shadow-lg divide-x divide-zinc-800">
-          {study.stats.map((stat, idx) => (
-            <div key={idx} className="flex flex-col items-center justify-center py-2 px-4 first:pl-0 last:pr-0">
-              <span className="text-3xl md:text-5xl font-black text-white mb-2 tracking-tight">
-                {stat.value}
-              </span>
-              <span className="text-xs md:text-sm text-zinc-400 font-medium tracking-wide">
-                {stat.label}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {/* Main Content Sections Stack */}
-        <div className="flex flex-col gap-16">
-
-          {/* Section 1: The Problem / The Situation */}
-          <div className="flex flex-col gap-6">
-            <div className="flex items-center gap-3">
-              <span className="w-1.5 h-8 bg-blue-600 rounded-full shrink-0" />
-              <h2 className="text-2xl font-extrabold text-zinc-900 tracking-tight">
-                {study.sections.problem.title}
-              </h2>
-            </div>
+          {/* Scrolling Modal Content */}
+          <div className="flex-1 overflow-y-auto px-6 py-8 md:p-12">
             
-            <p className="text-zinc-600 text-base md:text-lg leading-relaxed max-w-5xl font-normal">
-              {study.sections.problem.text}
+            {/* Mockup Banner Image */}
+            <div className="relative rounded-[2rem] overflow-hidden border border-zinc-200/50 shadow-md bg-zinc-50 aspect-[16/9] md:aspect-[21/9] mb-10 mt-6">
+              <img 
+                src={study.heroImage} 
+                alt={study.title} 
+                className="w-full h-full object-cover object-center"
+              />
+            </div>
+
+            {/* Badges Row */}
+            <div className="flex flex-wrap gap-2 mb-6 justify-start">
+              {study.badges.map((badge, idx) => {
+                let badgeStyle = "bg-zinc-100 text-zinc-600";
+                if (idx === 0) badgeStyle = "bg-zinc-100/80 text-zinc-500 font-bold border border-zinc-200/30";
+                if (idx === 1) badgeStyle = "bg-blue-50 text-blue-600 font-bold border border-blue-100/50";
+                if (idx === 2) badgeStyle = "bg-emerald-50 text-emerald-600 font-bold border border-emerald-100/50";
+                return (
+                  <span 
+                    key={idx} 
+                    className={`px-4 py-1.5 rounded-full text-[10px] uppercase tracking-wider ${badgeStyle}`}
+                  >
+                    {badge}
+                  </span>
+                );
+              })}
+            </div>
+
+            {/* Main Title & Subtitle */}
+            <h1 className="text-2xl md:text-4xl font-black text-zinc-900 tracking-tight leading-tight mb-4 pr-12">
+              {study.title}
+            </h1>
+            <p className="text-zinc-600 text-base md:text-lg leading-relaxed mb-10 max-w-4xl">
+              {study.subtitle}
             </p>
 
-            {/* Split layout for problem boxes and illustration images */}
-            {study.sections.problem.boxBullets && study.sections.problem.boxBullets.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-stretch mt-4">
-                
-                {/* Red warning box */}
-                <div className="md:col-span-6 bg-red-50/40 border border-red-100 rounded-3xl p-6 md:p-8 flex flex-col justify-start">
-                  <span className="text-xs font-black tracking-widest text-red-600 uppercase block mb-6">
-                    {study.sections.problem.boxTitle}
+            {/* 3-Column Metrics Block */}
+            <div className="grid grid-cols-3 bg-[#0a1224] rounded-[2rem] p-6 md:p-10 mb-12 text-center shadow-lg divide-x divide-zinc-800">
+              {study.stats.map((stat, idx) => (
+                <div key={idx} className="flex flex-col items-center justify-center px-2 md:px-4 first:pl-0 last:pr-0">
+                  <span className="text-2xl md:text-4xl font-black text-white mb-1.5 tracking-tight">
+                    {stat.value}
                   </span>
-                  <ul className="flex flex-col gap-4">
-                    {study.sections.problem.boxBullets.map((bullet, idx) => (
-                      <li key={idx} className="flex items-start gap-3.5 text-sm md:text-base text-zinc-700 leading-relaxed font-medium">
-                        <span className="text-red-500 text-lg font-bold shrink-0 mt-0">×</span>
-                        <span>{bullet}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <span className="text-[10px] md:text-xs text-zinc-400 font-medium tracking-wide">
+                    {stat.label}
+                  </span>
                 </div>
+              ))}
+            </div>
 
-                {/* Problem Illustration Image */}
-                {study.sections.problem.image && (
-                  <div className="md:col-span-6 relative rounded-3xl overflow-hidden border border-zinc-200/50 shadow-sm min-h-[300px]">
-                    <img 
-                      src={study.sections.problem.image} 
-                      alt="Problem Context" 
-                      className="w-full h-full object-cover object-center absolute inset-0"
-                    />
+            {/* Structured Content Sections */}
+            <div className="flex flex-col gap-12 max-w-4xl">
+
+              {/* Section 1: The Problem */}
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center gap-3">
+                  <span className="w-1.5 h-6 bg-blue-600 rounded-full shrink-0" />
+                  <h2 className="text-xl font-extrabold text-zinc-900 tracking-tight">
+                    {study.sections.problem.title}
+                  </h2>
+                </div>
+                <p className="text-zinc-600 text-sm md:text-base leading-relaxed">
+                  {study.sections.problem.text}
+                </p>
+
+                {study.sections.problem.boxBullets && study.sections.problem.boxBullets.length > 0 && (
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch mt-2">
+                    {/* Red warning box */}
+                    <div className="md:col-span-7 bg-red-50/40 border border-red-100 rounded-3xl p-6 flex flex-col justify-start">
+                      <span className="text-[10px] font-black tracking-widest text-red-600 uppercase block mb-4">
+                        {study.sections.problem.boxTitle}
+                      </span>
+                      <ul className="flex flex-col gap-3">
+                        {study.sections.problem.boxBullets.map((bullet, idx) => (
+                          <li key={idx} className="flex items-start gap-2.5 text-xs md:text-sm text-zinc-700 leading-relaxed font-medium">
+                            <span className="text-red-500 text-base font-bold shrink-0 mt-0">×</span>
+                            <span>{bullet}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Problem Image */}
+                    {study.sections.problem.image && (
+                      <div className="md:col-span-5 relative rounded-3xl overflow-hidden border border-zinc-200/50 shadow-sm min-h-[200px]">
+                        <img 
+                          src={study.sections.problem.image} 
+                          alt="Problem Context" 
+                          className="w-full h-full object-cover object-center absolute inset-0"
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
-            )}
-          </div>
 
-          {/* Section 2: What We Built / Our Approach / What We Found */}
-          <div className="flex flex-col gap-6">
-            <div className="flex items-center gap-3">
-              <span className="w-1.5 h-8 bg-blue-600 rounded-full shrink-0" />
-              <h2 className="text-2xl font-extrabold text-zinc-900 tracking-tight">
-                {study.sections.solution.title}
-              </h2>
-            </div>
-            
-            <p className="text-zinc-600 text-base md:text-lg leading-relaxed max-w-5xl font-normal">
-              {study.sections.solution.text}
-            </p>
-
-            {/* Green system details checkmarks box */}
-            {study.sections.solution.boxBullets && study.sections.solution.boxBullets.length > 0 && (
-              <div className="bg-emerald-50/40 border border-emerald-100/70 rounded-3xl p-6 md:p-8 mt-2 max-w-5xl">
-                <span className="text-xs font-black tracking-widest text-emerald-700 uppercase block mb-6">
-                  {study.sections.solution.boxTitle}
-                </span>
-                <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {study.sections.solution.boxBullets.map((bullet, idx) => (
-                    <li key={idx} className="flex items-start gap-3.5 text-sm md:text-base text-zinc-700 leading-relaxed font-medium">
-                      <span className="text-emerald-600 text-base font-bold shrink-0 mt-0.5">✓</span>
-                      <span>{bullet}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-
-          {/* Section 3: Results / The Outcome */}
-          {study.sections.results && (study.sections.results.table && study.sections.results.table.length > 0 || study.sections.results.text) && (
-            <div className="flex flex-col gap-6">
-              <div className="flex items-center gap-3">
-                <span className="w-1.5 h-8 bg-blue-600 rounded-full shrink-0" />
-                <h2 className="text-2xl font-extrabold text-zinc-900 tracking-tight">
-                  {study.sections.results.title}
-                </h2>
-              </div>
-              
-              {study.sections.results.text && (
-                <p className="text-zinc-600 text-base md:text-lg leading-relaxed max-w-5xl font-normal">
-                  {study.sections.results.text}
+              {/* Section 2: What We Built / Our Approach */}
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center gap-3">
+                  <span className="w-1.5 h-6 bg-blue-600 rounded-full shrink-0" />
+                  <h2 className="text-xl font-extrabold text-zinc-900 tracking-tight">
+                    {study.sections.solution.title}
+                  </h2>
+                </div>
+                <p className="text-zinc-600 text-sm md:text-base leading-relaxed">
+                  {study.sections.solution.text}
                 </p>
-              )}
 
-              {/* Responsive Results Data Table */}
-              {study.sections.results?.table && study.sections.results.table.length > 0 && (
-                <div className="mt-2 border border-zinc-200/60 rounded-[1.5rem] overflow-hidden shadow-sm max-w-5xl">
-                  <table className="w-full text-left border-collapse">
-                    <thead>
-                      <tr className="bg-[#0a1224] text-white">
-                        {study.sections.results?.cols === 3 ? (
-                          <>
-                            <th className="py-4 px-6 font-bold text-xs md:text-sm uppercase tracking-wider">Metric</th>
-                            <th className="py-4 px-6 font-bold text-xs md:text-sm uppercase tracking-wider">Before</th>
-                            <th className="py-4 px-6 font-bold text-xs md:text-sm uppercase tracking-wider">After</th>
-                          </>
-                        ) : (
-                          <>
-                            <th className="py-4 px-6 font-bold text-xs md:text-sm uppercase tracking-wider">Metric</th>
-                            <th className="py-4 px-6 font-bold text-xs md:text-sm uppercase tracking-wider">Outcome</th>
-                          </>
-                        )}
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-zinc-200/60 bg-white">
-                      {study.sections.results?.table?.map((row, idx) => (
-                        <tr key={idx} className="hover:bg-zinc-50/50 transition-colors">
-                          {study.sections.results?.cols === 3 ? (
-                            <>
-                              <td className="py-4.5 px-6 text-zinc-800 text-sm md:text-base font-semibold">{row.metric}</td>
-                              <td className="py-4.5 px-6 text-zinc-500 text-sm md:text-base font-medium">{row.before}</td>
-                              <td className="py-4.5 px-6 text-emerald-600 text-sm md:text-base font-black">{row.after}</td>
-                            </>
-                          ) : (
-                            <>
-                              <td className="py-4.5 px-6 text-zinc-800 text-sm md:text-base font-semibold">{row.metric}</td>
-                              <td className="py-4.5 px-6 text-emerald-600 text-sm md:text-base font-black">{row.outcome}</td>
-                            </>
-                          )}
-                        </tr>
+                {study.sections.solution.boxBullets && study.sections.solution.boxBullets.length > 0 && (
+                  <div className="bg-emerald-50/40 border border-emerald-100/70 rounded-3xl p-6 mt-2">
+                    <span className="text-[10px] font-black tracking-widest text-emerald-700 uppercase block mb-4">
+                      {study.sections.solution.boxTitle}
+                    </span>
+                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                      {study.sections.solution.boxBullets.map((bullet, idx) => (
+                        <li key={idx} className="flex items-start gap-2.5 text-xs md:text-sm text-zinc-700 leading-relaxed font-medium">
+                          <span className="text-emerald-600 text-sm font-bold shrink-0 mt-0.5">✓</span>
+                          <span>{bullet}</span>
+                        </li>
                       ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          )}
+                    </ul>
+                  </div>
+                )}
+              </div>
 
-          {/* Section 4: Extra Section (Quote, Text or Philosophy block) */}
-          {study.sections.extra && (
-            <div className="flex flex-col gap-6">
-              {study.sections.extra.type === "quote" ? (
-                <div className="bg-blue-50/40 border-l-4 border-blue-600 rounded-r-3xl p-6 md:p-10 max-w-5xl my-2 shadow-sm">
-                  <p className="text-blue-900 text-lg md:text-xl font-bold italic leading-relaxed mb-4">
-                    {study.sections.extra.text}
-                  </p>
-                  <span className="text-xs md:text-sm text-zinc-500 font-bold uppercase tracking-wider block">
-                    — {study.sections.extra.author}
-                  </span>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-6 max-w-5xl">
+              {/* Section 3: Results / The Outcome */}
+              {study.sections.results && (study.sections.results.table || study.sections.results.text) && (
+                <div className="flex flex-col gap-4">
                   <div className="flex items-center gap-3">
-                    <span className="w-1.5 h-8 bg-blue-600 rounded-full shrink-0" />
-                    <h2 className="text-2xl font-extrabold text-zinc-900 tracking-tight">
-                      {study.sections.extra.title}
+                    <span className="w-1.5 h-6 bg-blue-600 rounded-full shrink-0" />
+                    <h2 className="text-xl font-extrabold text-zinc-900 tracking-tight">
+                      {study.sections.results.title}
                     </h2>
                   </div>
-                  <p className="text-zinc-600 text-base md:text-lg leading-relaxed font-normal">
-                    {study.sections.extra.text}
-                  </p>
+                  {study.sections.results.text && (
+                    <p className="text-zinc-600 text-sm md:text-base leading-relaxed">
+                      {study.sections.results.text}
+                    </p>
+                  )}
+
+                  {study.sections.results?.table && study.sections.results.table.length > 0 && (
+                    <div className="mt-2 border border-zinc-200/60 rounded-2xl overflow-hidden shadow-sm">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="bg-[#0a1224] text-white">
+                            {study.sections.results?.cols === 3 ? (
+                              <>
+                                <th className="py-3 px-4 md:px-5 font-bold text-[10px] md:text-xs uppercase tracking-wider">Metric</th>
+                                <th className="py-3 px-4 md:px-5 font-bold text-[10px] md:text-xs uppercase tracking-wider">Before</th>
+                                <th className="py-3 px-4 md:px-5 font-bold text-[10px] md:text-xs uppercase tracking-wider">After</th>
+                              </>
+                            ) : (
+                              <>
+                                <th className="py-3 px-4 md:px-5 font-bold text-[10px] md:text-xs uppercase tracking-wider">Metric</th>
+                                <th className="py-3 px-4 md:px-5 font-bold text-[10px] md:text-xs uppercase tracking-wider">Outcome</th>
+                              </>
+                            )}
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-zinc-200/60 bg-white">
+                          {study.sections.results?.table?.map((row, idx) => (
+                            <tr key={idx} className="hover:bg-zinc-50/50 transition-colors">
+                              {study.sections.results?.cols === 3 ? (
+                                <>
+                                  <td className="py-3.5 px-4 md:px-5 text-zinc-850 text-xs md:text-sm font-semibold">{row.metric}</td>
+                                  <td className="py-3.5 px-4 md:px-5 text-zinc-500 text-xs md:text-sm font-medium">{row.before}</td>
+                                  <td className="py-3.5 px-4 md:px-5 text-emerald-600 text-xs md:text-sm font-black">{row.after}</td>
+                                </>
+                              ) : (
+                                <>
+                                  <td className="py-3.5 px-4 md:px-5 text-zinc-850 text-xs md:text-sm font-semibold">{row.metric}</td>
+                                  <td className="py-3.5 px-4 md:px-5 text-emerald-600 text-xs md:text-sm font-black">{row.outcome}</td>
+                                </>
+                              )}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
                 </div>
               )}
+
+              {/* Section 4: Client Feedback / Philosophy */}
+              {study.sections.extra && (
+                <div className="flex flex-col gap-4">
+                  {study.sections.extra.type === "quote" ? (
+                    <div className="bg-blue-50/40 border-l-4 border-blue-600 rounded-r-3xl p-6 md:p-8 shadow-sm">
+                      <p className="text-blue-900 text-base md:text-lg font-bold italic leading-relaxed mb-3">
+                        {study.sections.extra.text}
+                      </p>
+                      <span className="text-[10px] md:text-xs text-zinc-500 font-bold uppercase tracking-wider block">
+                        — {study.sections.extra.author}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-4">
+                      <div className="flex items-center gap-3">
+                        <span className="w-1.5 h-6 bg-blue-600 rounded-full shrink-0" />
+                        <h2 className="text-xl font-extrabold text-zinc-900 tracking-tight">
+                          {study.sections.extra.title}
+                        </h2>
+                      </div>
+                      <p className="text-zinc-600 text-sm md:text-base leading-relaxed">
+                        {study.sections.extra.text}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Section 5: Bottom CTA Block */}
+              {study.sections.cta && (
+                <div className="bg-[#0a1224] rounded-[2rem] p-6 md:p-10 mt-2 flex flex-col md:flex-row items-center justify-between gap-6">
+                  <div className="flex flex-col gap-1.5 text-left">
+                    <h3 className="text-white text-base md:text-lg font-bold leading-normal">
+                      {study.sections.cta.text}
+                    </h3>
+                  </div>
+                  <a 
+                    href={study.sections.cta.href}
+                    onClick={onClose}
+                    className="bg-blue-600 text-white font-extrabold text-xs py-3.5 px-6 rounded-full shadow-lg hover:bg-blue-700 active:scale-95 transition-all duration-300 shrink-0 text-center w-full md:w-auto"
+                  >
+                    {study.sections.cta.buttonText}
+                  </a>
+                </div>
+              )}
+
             </div>
-          )}
 
-          {/* Section 5: Bottom CTA Block */}
-          {study.sections.cta && (
-            <div className="bg-[#0a1224] rounded-[2rem] p-8 md:p-12 mt-4 flex flex-col md:flex-row items-center justify-between gap-8 shadow-xl max-w-5xl">
-              <div className="flex flex-col gap-2 max-w-xl text-left">
-                <h3 className="text-white text-lg md:text-xl font-bold leading-normal">
-                  {study.sections.cta.text}
-                </h3>
-              </div>
-              <a 
-                href={study.sections.cta.href}
-                className="bg-blue-600 text-white font-extrabold text-sm py-4 px-8 rounded-full shadow-lg hover:bg-blue-700 active:scale-95 transition-all duration-300 shrink-0 text-center w-full md:w-auto"
-              >
-                {study.sections.cta.buttonText}
-              </a>
-            </div>
-          )}
-
-        </div>
-
-      </main>
-
-      <Footer />
-    </main>
-  );
-}
-
-export default function UsecaseDetailPage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-white text-zinc-900 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-          <span className="text-blue-600 text-xs font-semibold tracking-widest uppercase">
-            Loading Case Study...
-          </span>
-        </div>
+          </div>
+        </motion.div>
       </div>
-    }>
-      <CaseStudyDetailContent />
-    </Suspense>
+    </AnimatePresence>
   );
-}
+};
