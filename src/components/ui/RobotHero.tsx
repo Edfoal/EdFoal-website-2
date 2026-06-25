@@ -24,7 +24,7 @@ export function RobotHero({ kicker, title, subtitle, id }: RobotHeroProps) {
         style={{ maxWidth: "1460px" }}
       >
         {/* 3D Spline Card */}
-        <Card 
+        <Card
           className="w-full h-auto bg-black/[0.96] relative overflow-hidden border-white/10 border-b-0 rounded-b-none"
           style={{
             maskImage: "linear-gradient(to bottom, black 80%, transparent 100%)",

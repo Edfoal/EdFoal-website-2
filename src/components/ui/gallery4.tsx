@@ -23,6 +23,7 @@ export interface Gallery4Props {
   title?: string;
   description?: string;
   items: Gallery4Item[];
+  onItemClick?: (id: string) => void;
 }
 
 const data = [
@@ -77,6 +78,7 @@ const Gallery4 = ({
   title = "Case Studies",
   description = "Discover how leading companies and developers are leveraging modern web technologies to build exceptional digital experiences. These case studies showcase real-world applications and success stories.",
   items = data,
+  onItemClick,
 }: Gallery4Props) => {
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const [canScrollPrev, setCanScrollPrev] = useState(false);
@@ -173,7 +175,16 @@ const Gallery4 = ({
                 key={item.id}
                 className="w-[290px] sm:w-[340px] md:w-[370px] shrink-0 grow-0 basis-auto snap-start pl-0"
               >
-                <a href={item.href} className="group rounded-[2rem] block overflow-hidden border border-zinc-200/50 hover:shadow-2xl transition-all duration-500">
+                <a 
+                  href={item.href} 
+                  onClick={(e) => {
+                    if (onItemClick) {
+                      e.preventDefault();
+                      onItemClick(item.id);
+                    }
+                  }}
+                  className="group rounded-[2rem] block overflow-hidden border border-zinc-200/50 hover:shadow-2xl transition-all duration-500"
+                >
                   <div className="group relative h-full min-h-[27rem] max-w-full overflow-hidden rounded-[2rem] md:aspect-[3/4] lg:aspect-[3/4]">
                     <img
                       src={item.image}

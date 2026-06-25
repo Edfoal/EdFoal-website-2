@@ -1,15 +1,18 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import useLenis from "@/hooks/useLenis";
-import { RobotHero } from "@/components/ui/RobotHero";
+import { WovenLightHero } from "@/components/ui/woven-light-hero";
 import { Gallery4 } from "@/components/ui/gallery4";
+import { CaseStudyModal } from "@/components/sections/usecases/CaseStudyModal";
 
 export default function UsecasesPage() {
   // Initialize Lenis scroll smoothing
   useLenis();
+
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   const caseStudies = [
     {
@@ -17,42 +20,42 @@ export default function UsecasesPage() {
       title: "AI IVR Automation for Mortgage Verification",
       description: "Cut verification calls from 20–30 minutes to under 5 minutes with zero human involvement.",
       href: "/usecases/detail?id=1",
-      image: "/cs-ivr-automation.png",
+      image: "https://ik.imagekit.io/edfoalwork/Edfoal-Images/image_y04y5U6-4.png",
     },
     {
       id: "2",
       title: "AI Web Scraping for Foreclosure Lead Discovery",
       description: "Replaced 6 hours of daily manual data collection with a 5-minute automated pipeline.",
       href: "/usecases/detail?id=2",
-      image: "/cs-web-scraping.png",
+      image: "https://ik.imagekit.io/edfoalwork/Edfoal-Images/image_oiI6Lz1Ty.png",
     },
     {
       id: "3",
       title: "Enterprise AI Strategy for a UK Insurance Firm",
       description: "Delivered a board-ready AI adoption roadmap with a three-horizon framework in two months.",
       href: "/usecases/detail?id=3",
-      image: "/cs-ai-strategy.png",
+      image: "https://ik.imagekit.io/edfoalwork/Edfoal-Images/image.png",
     },
     {
       id: "4",
       title: "AI Product Strategy for Gen AI Startups",
       description: "Helped founders validate concepts, reduce product risk, and create investor-ready roadmaps.",
       href: "/usecases/detail?id=4",
-      image: "/cs-product-strategy.png",
+      image: "https://ik.imagekit.io/edfoalwork/Edfoal-Images/image_tzgfHoUqT.png",
     },
     {
       id: "5",
       title: "Automating Data Entry for a 200-Person Team",
       description: "Identified the right 50% of tasks to automate — saving $1M annually while avoiding wasteful AI spend.",
       href: "/usecases/detail?id=5",
-      image: "/cs-data-automation.png",
+      image: "https://ik.imagekit.io/edfoalwork/Edfoal-Images/image_716Qg8M-Y.png",
     },
     {
       id: "6",
       title: "AI-Powered Lead Generation Bot on Telegram",
       description: "Built a human-sounding AI bot that 5× outreach volume with a 25% lead qualification rate.",
       href: "/usecases/detail?id=6",
-      image: "/cs-lead-gen-bot.png",
+      image: "https://ik.imagekit.io/edfoalwork/Edfoal-Images/image_zJ6-VBV2A.png",
     },
   ];
 
@@ -81,18 +84,7 @@ export default function UsecasesPage() {
       <Navbar />
 
       {/* Hero Section */}
-      <RobotHero
-        kicker="Case Studies"
-        title={
-          <>
-            Real Results, <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
-              Real Impact
-            </span>
-          </>
-        }
-        subtitle="Explore how we're transforming businesses with cutting-edge AI solutions — backed by measurable outcomes."
-      />
+      <WovenLightHero />
 
       {/* Case Studies Card Grid Section */}
       <div data-theme="light">
@@ -100,8 +92,12 @@ export default function UsecasesPage() {
           title="Our Case Studies"
           description="Each project below represents a real engagement with measurable outcomes. Click to explore the full story."
           items={caseStudies}
+          onItemClick={(id) => setActiveId(id)}
         />
       </div>
+
+      {/* Case Study Detail Modal Overlay */}
+      <CaseStudyModal caseStudyId={activeId} onClose={() => setActiveId(null)} />
 
       <Footer />
     </main>

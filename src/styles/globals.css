@@ -694,3 +694,13 @@ html.lenis body {
     transform: rotate(360deg);
   }
 }
+
+/* Hide Spline watermark */
+[data-spline-watermark],
+a[href*="spline.design"] img,
+canvas + a[href*="spline"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}

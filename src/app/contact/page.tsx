@@ -15,7 +15,7 @@ import { FaFacebook, FaXTwitter, FaLinkedin, FaYoutube } from "react-icons/fa6";
 import { OriginButton } from "@/components/ui/OriginButton";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { RobotHero } from "@/components/ui/RobotHero";
+import { MinimalistHero } from "@/components/ui/minimalist-hero";
 import useLenis from "@/hooks/useLenis";
 import { cn } from "@/lib/utils";
 
@@ -143,19 +143,42 @@ export default function ContactPage() {
         {/* Floating Navbar */}
         <Navbar />
 
-        {/* RobotHero Section */}
-        <RobotHero
-          kicker="Contact Us"
-          title={
-            <span className="text-[#f5e1b8]">Tailored AI Solutions</span>
-          }
-          subtitle="Explore how we're transforming businesses with cutting-edge AI solutions tailored just for you!"
-        />
+        {/* MinimalistHero Section */}
+        <div className="relative">
+          <MinimalistHero
+            mainText="Explore how we're transforming businesses with cutting-edge AI solutions tailored just for you! Reach out to our AI strategy and engineering team to get started."
+            readMoreLink="#contact-form-section"
+            imageSrc="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=800"
+            imageAlt="Contact Edfoal AI Solutions"
+            overlayText={{
+              part1: "get in",
+              part2: "touch.",
+            }}
+            socialLinks={[
+              { icon: FaFacebook, href: "#" },
+              { icon: FaXTwitter, href: "#" },
+              { icon: FaLinkedin, href: "#" },
+              { icon: FaYoutube, href: "#" },
+            ]}
+            locationText="Edfoal AI Solutions"
+            hideHeader={true}
+            hideFooter={true}
+            className="bg-black text-white mx-2.5 mt-2.5 w-auto"
+            style={{
+              "--background": "0 0% 0%",
+              "--foreground": "0 0% 100%",
+              background: "#080808",
+              color: "#ffffff"
+            } as React.CSSProperties}
+          />
+          {/* Bottom fade overlay to transition the black card background into the white content area below */}
+          <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white to-transparent pointer-events-none z-20" />
+        </div>
 
         {/* Main Content & Footer inside light theme wrapper */}
         <div data-theme="light">
           {/* Main Content Section */}
-          <section className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 md:px-12 pt-16 pb-20">
+          <section id="contact-form-section" className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 md:px-12 pt-16 pb-20">
           <div className="w-full rounded-3xl border border-zinc-200 bg-white overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.04)]">
             <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[650px]">
               
