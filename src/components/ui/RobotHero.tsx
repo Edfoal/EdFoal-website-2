@@ -38,7 +38,7 @@ export function RobotHero({ kicker, title, subtitle, id }: RobotHeroProps) {
             fill="white"
           />
 
-          <div className="flex flex-col lg:flex-row min-h-[300px] md:min-h-[400px] lg:min-h-[450px] w-full relative items-center">
+          <div className="flex flex-col lg:flex-row min-h-[400px] md:min-h-[500px] lg:min-h-[660px] w-full relative items-center">
             {/* Left content */}
             <div className="w-full lg:w-[45%] p-6 md:p-8 relative z-10 flex flex-col justify-center lg:ml-12" style={{ margin: "0 0 5rem 5rem" }}>
               {kicker && (
@@ -56,7 +56,7 @@ export function RobotHero({ kicker, title, subtitle, id }: RobotHeroProps) {
             </div>
 
             {/* Right content — 3D Spline Scene */}
-            <div className="w-full lg:w-[55%] h-[300px] md:h-[400px] lg:h-[550px] relative flex items-center justify-center overflow-visible">
+            <div className="w-full lg:w-[55%] h-[400px] md:h-[500px] lg:h-[650px] relative flex items-center justify-center overflow-visible">
               <div className="absolute w-[150%] h-[130%] transform scale-[0.8] md:scale-[0.65] lg:scale-[0.7] origin-center flex items-center justify-center">
                 <SplineScene
                   scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
