@@ -406,11 +406,14 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
   useEffect(() => {
     if (caseStudyId) {
       document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
+      document.documentElement.style.overflow = "unset";
     }
     return () => {
       document.body.style.overflow = "unset";
+      document.documentElement.style.overflow = "unset";
     };
   }, [caseStudyId]);
 
@@ -444,6 +447,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
             exit={{ scale: 0, rotate: "180deg" }}
             onClick={(e) => e.stopPropagation()}
             className="relative bg-white text-zinc-900 rounded-[2.5rem] shadow-2xl w-full max-w-5xl h-[90vh] md:h-[85vh] overflow-y-auto z-10 flex flex-col pointer-events-auto"
+            data-lenis-prevent
           >
           {/* Close button */}
           <button
@@ -455,7 +459,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
           </button>
 
           {/* Scrolling Modal Content */}
-          <div className="flex-1 overflow-y-auto px-6 py-8 md:p-12">
+          <div className="flex-1 overflow-y-auto px-6 py-8 md:p-12" data-lenis-prevent>
             
             {/* Mockup Banner Image */}
             <div className="relative rounded-[2rem] overflow-hidden border border-zinc-200/50 shadow-md bg-zinc-50 aspect-[16/9] md:aspect-[21/9] mb-10 mt-6">
