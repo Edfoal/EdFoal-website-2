@@ -49,32 +49,31 @@ export const WovenLightHero: React.FC<WovenLightHeroProps> = ({
   const totalChars = titleLines.reduce((acc, line) => acc + line.length, 0);
 
   return (
-    <div className="relative flex h-[65vh] mx-2.5 mt-2.5 flex-col items-center justify-center overflow-hidden bg-black">
+    <div className="relative mx-1.5 mt-1.5 flex h-[72svh] min-h-130 max-h-190 flex-col items-center justify-center overflow-hidden rounded-xl bg-[#001427] sm:mx-2.5 sm:mt-2.5 sm:min-h-140 lg:h-[70svh]">
       <WovenCanvas />
       
       {/* Bottom fade overlay to transition the black canvas background into the white content area below */}
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white to-transparent pointer-events-none z-10" />
+      <div className="absolute bottom-0 left-0 right-0 z-10 h-32 bg-linear-to-t from-white to-transparent pointer-events-none sm:h-40" />
       
-      <div className="relative z-10 text-center px-4 w-full max-w-5xl mx-auto flex flex-col items-center select-none">
+      <div className="relative z-10 mx-auto flex w-full max-w-5xl select-none flex-col items-center px-4 text-center sm:px-6 lg:px-8">
         {/* kicker/label */}
         {kicker && (
           <motion.span
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8, duration: 0.8 }}
-            className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-zinc-400 block mb-6"
-            style={{ fontFamily: "'Inter', sans-serif" }}
+            className="mb-4 block font-['Inter',sans-serif] text-[10px] font-black uppercase tracking-[0.3em] text-[#E2076D] sm:mb-6 md:text-xs"
           >
             {kicker}
           </motion.span>
         )}
 
         {/* Multi-line Title */}
-        <h1 className="text-5xl md:text-7xl lg:text-8xl text-white font-extrabold leading-[1.1] tracking-tight mb-6" style={{ fontFamily: "'Playfair Display', serif", textShadow: '0 0 50px rgba(255, 255, 255, 0.3)' }}>
+        <h1 className="mb-5 font-['Playfair_Display',serif] text-[clamp(3rem,14vw,6rem)] font-extrabold leading-[1.02] tracking-tight text-white [text-shadow:0_0_50px_rgba(255,255,255,0.3)] sm:mb-6 md:text-[clamp(4.5rem,9vw,6rem)]">
           {titleLines.map((line, lineIdx) => (
             <span key={lineIdx} className="block">
               {line.split(" ").map((word, wordIdx) => (
-                <span key={wordIdx} className="inline-block mr-3 last:mr-0">
+                <span key={wordIdx} className="mr-2 inline-block last:mr-0 sm:mr-3">
                   {word.split("").map((char, charIdx) => {
                     const delayIdx = lineIdx * 15 + wordIdx * 5 + charIdx;
                     return (
@@ -83,7 +82,7 @@ export const WovenLightHero: React.FC<WovenLightHeroProps> = ({
                         custom={delayIdx} 
                         initial={{ opacity: 0, y: 30 }} 
                         animate={textControls} 
-                        style={{ display: 'inline-block' }}
+                        className="inline-block"
                       >
                         {char}
                       </motion.span>
@@ -100,8 +99,7 @@ export const WovenLightHero: React.FC<WovenLightHeroProps> = ({
           custom={totalChars}
           initial={{ opacity: 0, y: 20 }}
           animate={textControls}
-          className="mx-auto mt-4 max-w-2xl text-base md:text-lg text-slate-300 leading-relaxed font-medium"
-          style={{ fontFamily: "'Inter', sans-serif" }}
+          className="mx-auto mt-3 max-w-2xl font-['Inter',sans-serif] text-sm font-medium leading-relaxed text-slate-300 sm:mt-4 sm:text-base md:text-lg"
         >
           {subtitle}
         </motion.p>
@@ -141,9 +139,10 @@ const WovenCanvas = () => {
 
   useEffect(() => {
     if (!mountRef.current) return;
+    const mount = mountRef.current;
 
-    const width = mountRef.current.clientWidth || window.innerWidth;
-    const height = mountRef.current.clientHeight || window.innerHeight;
+    const width = mount.clientWidth || window.innerWidth;
+    const height = mount.clientHeight || window.innerHeight;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
@@ -160,7 +159,7 @@ const WovenCanvas = () => {
     renderer.domElement.style.height = '100%';
     renderer.domElement.style.display = 'block';
 
-    mountRef.current.appendChild(renderer.domElement);
+    mount.appendChild(renderer.domElement);
 
     const mouse = new THREE.Vector2(0, 0);
     const clock = new THREE.Clock();
@@ -217,8 +216,7 @@ const WovenCanvas = () => {
 
     const handleMouseMove = (event: MouseEvent) => {
         // Calculate mouse position relative to the container instead of window
-        if (!mountRef.current) return;
-        const rect = mountRef.current.getBoundingClientRect();
+        const rect = mount.getBoundingClientRect();
         mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
         mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
     };
@@ -269,9 +267,8 @@ const WovenCanvas = () => {
     animate();
 
     const handleResize = () => {
-        if (!mountRef.current) return;
-        const w = mountRef.current.clientWidth;
-        const h = mountRef.current.clientHeight;
+        const w = mount.clientWidth;
+        const h = mount.clientHeight;
         camera.aspect = w / h;
         camera.updateProjectionMatrix();
         renderer.setSize(w, h);
@@ -281,7 +278,7 @@ const WovenCanvas = () => {
     return () => {
         window.removeEventListener('resize', handleResize);
         window.removeEventListener('mousemove', handleMouseMove);
-        mountRef.current?.removeChild(renderer.domElement);
+        mount.removeChild(renderer.domElement);
     };
   }, []);
 

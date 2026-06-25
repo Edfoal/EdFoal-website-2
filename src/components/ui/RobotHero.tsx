@@ -16,55 +16,47 @@ export function RobotHero({ kicker, title, subtitle, id }: RobotHeroProps) {
   return (
     <section
       id={id}
-      className="w-full h-full relative overflow-hidden bg-white"
-      style={{ padding: "10px 10px 0px 10px" }}
+      className="relative h-full w-full overflow-hidden bg-white p-1.5 sm:p-2.5"
     >
-      <div
-        className="w-full mx-auto"
-        style={{ maxWidth: "1460px" }}
-      >
+      <div className="mx-auto w-full max-w-[100vw]">
         {/* 3D Spline Card */}
         <Card
-          className="w-full h-auto bg-black/[0.96] relative overflow-hidden border-white/10 border-b-0 rounded-b-none"
-          style={{
-            maskImage: "linear-gradient(to bottom, black 80%, transparent 100%)",
-            WebkitMaskImage: "linear-gradient(to bottom, black 80%, transparent 100%)"
-          }}
+          className="relative h-auto w-full overflow-hidden rounded-xl border-white/10 border-b-0 bg-[#001427] mask-[linear-gradient(to_bottom,black_80%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_80%,transparent_100%)]"
         >
           {/* Static ultra-smooth gradient overlay to blend card with background */}
-          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/50 to-transparent pointer-events-none z-20" />
-          <Spotlight
-            className="-top-40 left-0 md:left-60 md:-top-20"
+          <div className="absolute items-center bottom-0 left-0 right-0 h-32 bg-linear-to-t from-white via-white/50 to-transparent pointer-events-none z-20" />
+            <Spotlight
+              className="-top-40 left-0 md:left-60 md:-top-20 "
             fill="white"
-          />
+            />
 
-          <div className="flex flex-col lg:flex-row min-h-[300px] md:min-h-[400px] lg:min-h-[450px] w-full relative items-center">
-            {/* Left content */}
-            <div className="w-full lg:w-[45%] p-6 md:p-8 relative z-10 flex flex-col justify-center lg:ml-12" style={{ margin: "0 0 5rem 5rem" }}>
-              {kicker && (
-                <div className="text-xs font-semibold tracking-widest text-purple-400 uppercase mb-4">
+            <div className="relative mx-auto flex min-h-160 w-full max-w-360 flex-col items-center sm:min-h-170 lg:min-h-140 lg:flex-row">
+              {/* Left content */}
+            <div className="relative z-10 flex w-full flex-col justify-center px-5 pb-8 pt-20 text-center sm:px-8 sm:pb-10 sm:pt-24 md:px-10 lg:w-[45%] lg:px-0 lg:py-18 lg:pr-8 lg:text-left">
+                {kicker && (
+                  <div className="text-xs font-semibold tracking-widest text-purple-400 uppercase mb-4">
                   {kicker}
-                </div>
-              )}
-              <h3 className="text-3xl md:text-5xl lg:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 leading-tight mb-4 mt-6 lg:mt-8" style={{ margin: "2rem 0 1rem 0" }}>
+                  </div>
+                )}
+                <h3 className="mb-4 mt-8 bg-linear-to-b from-neutral-50 to-neutral-400 bg-clip-text text-4xl font-bold leading-tight text-transparent sm:text-5xl md:text-6xl lg:mt-0 lg:text-6xl">
                 {title}
-              </h3>
+                </h3>
 
-              <div className="space-y-4 text-neutral-400 max-w-xl text-base md:text-lg leading-relaxed">
+              <div className="mx-auto max-w-xl space-y-4 text-base leading-relaxed text-neutral-400 md:text-lg lg:mx-0">
                 {typeof subtitle === "string" ? <p>{subtitle}</p> : subtitle}
-              </div>
+                </div>
             </div>
 
             {/* Right content — 3D Spline Scene */}
-            <div className="w-full lg:w-[55%] h-[300px] md:h-[400px] lg:h-[550px] relative flex items-center justify-center overflow-visible">
-              <div className="absolute w-[150%] h-[130%] transform scale-[0.8] md:scale-[0.65] lg:scale-[0.7] origin-center flex items-center justify-center">
+            <div className="relative flex h-80 w-full items-center justify-center overflow-visible sm:h-90 md:h-105 lg:h-137.5 lg:w-[55%]">
+              <div className="absolute flex h-[130%] w-[150%] origin-center scale-[0.78] items-center justify-center sm:scale-[0.72] md:scale-[0.65] lg:scale-[0.7]">
                 <SplineScene
                   scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
                   className="w-full h-full"
                 />
               </div>
             </div>
-          </div>
+            </div>
         </Card>
       </div>
     </section>

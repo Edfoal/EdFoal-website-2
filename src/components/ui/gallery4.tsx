@@ -126,14 +126,14 @@ const Gallery4 = ({
   }, [carouselApi]);
 
   return (
-    <section className="py-20 md:py-24">
-      <div className="container mx-auto px-6 md:px-12">
-        <div className="mb-8 flex items-end justify-between md:mb-14 lg:mb-16">
-          <div className="flex flex-col gap-4">
-            <h2 className="text-3xl font-bold md:text-5xl text-zinc-950 tracking-tight">
+    <section className="py-14 sm:py-16 md:py-20 lg:py-24">
+      <div className="mx-auto w-full max-w-360 px-4 sm:px-6 md:px-8 lg:px-[max(32px,4vw)]">
+        <div className="mb-8 flex flex-col gap-6 md:mb-14 md:flex-row md:items-end md:justify-between lg:mb-16">
+          <div className="flex max-w-3xl flex-col gap-3 text-center md:text-left">
+            <h2 className="text-[clamp(2rem,9vw,3rem)] font-bold leading-[1.05] tracking-tight text-zinc-950 md:text-5xl">
               {title}
             </h2>
-            <p className="max-w-xl text-zinc-500 text-lg leading-relaxed">{description}</p>
+            <p className="mx-auto max-w-2xl text-sm leading-relaxed text-zinc-500 sm:text-base md:mx-0 md:text-lg">{description}</p>
           </div>
           <div className="hidden shrink-0 gap-2 md:flex">
             <Button
@@ -143,7 +143,7 @@ const Gallery4 = ({
                 carouselApi?.scrollPrev();
               }}
               disabled={!canScrollPrev}
-              className="rounded-full border border-zinc-200 w-12 h-12 flex items-center justify-center text-zinc-700 bg-white hover:bg-zinc-50 hover:border-zinc-300 disabled:opacity-40 disabled:pointer-events-auto cursor-pointer"
+              className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300 hover:bg-zinc-50 disabled:pointer-events-auto disabled:opacity-40"
             >
               <ArrowLeft className="size-5" />
             </Button>
@@ -154,14 +154,14 @@ const Gallery4 = ({
                 carouselApi?.scrollNext();
               }}
               disabled={!canScrollNext}
-              className="rounded-full border border-zinc-200 w-12 h-12 flex items-center justify-center text-zinc-700 bg-white hover:bg-zinc-50 hover:border-zinc-300 disabled:opacity-40 disabled:pointer-events-auto cursor-pointer"
+              className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300 hover:bg-zinc-50 disabled:pointer-events-auto disabled:opacity-40"
             >
               <ArrowRight className="size-5" />
             </Button>
           </div>
         </div>
       </div>
-      <div className="w-full">
+      <div className="w-full overflow-hidden">
         <Carousel
           setApi={setCarouselApi}
           opts={{
@@ -169,11 +169,11 @@ const Gallery4 = ({
             containScroll: "trimSnaps",
           }}
         >
-          <CarouselContent className="ml-0 2xl:ml-[max(8rem,calc(50vw-700px))] 2xl:mr-[max(0rem,calc(50vw-700px))] px-6 md:px-12 gap-6 md:gap-8">
+          <CarouselContent className="ml-0 gap-4 px-4 sm:gap-5 sm:px-6 md:gap-8 md:px-8 lg:px-[max(32px,4vw)] 2xl:ml-[max(8rem,calc(50vw-700px))] 2xl:mr-[max(0rem,calc(50vw-700px))]">
             {items.map((item) => (
               <CarouselItem
                 key={item.id}
-                className="w-[290px] sm:w-[340px] md:w-[370px] shrink-0 grow-0 basis-auto snap-start pl-0"
+                className="w-[min(84vw,20rem)] shrink-0 grow-0 basis-auto snap-start pl-0 sm:w-84 md:w-92"
               >
                 <a 
                   href={item.href} 
@@ -183,24 +183,24 @@ const Gallery4 = ({
                       onItemClick(item.id);
                     }
                   }}
-                  className="group rounded-[2rem] block overflow-hidden border border-zinc-200/50 hover:shadow-2xl transition-all duration-500"
+                  className="group block overflow-hidden rounded-3xl border border-zinc-200/50 transition-all duration-500 hover:shadow-2xl sm:rounded-4xl"
                 >
-                  <div className="group relative h-full min-h-[27rem] max-w-full overflow-hidden rounded-[2rem] md:aspect-[3/4] lg:aspect-[3/4]">
+                  <div className="group relative h-full min-h-96 max-w-full overflow-hidden rounded-3xl sm:min-h-104 sm:rounded-4xl md:aspect-3/4">
                     <img
                       src={item.image}
                       alt={item.title}
                       className="absolute h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
                       loading="lazy"
                     />
-                    <div className="absolute inset-0 h-full bg-gradient-to-t from-black/95 via-black/40 to-transparent z-10 transition-opacity duration-300 group-hover:via-black/55" />
-                    <div className="absolute inset-x-0 bottom-0 flex flex-col items-start p-6 text-white md:p-8 z-20">
-                      <div className="mb-2 text-xl font-bold tracking-wide leading-snug group-hover:text-blue-300 transition-colors">
+                    <div className="absolute inset-0 z-10 h-full bg-linear-to-t from-black/95 via-black/40 to-transparent transition-opacity duration-300 group-hover:via-black/55" />
+                    <div className="absolute inset-x-0 bottom-0 z-20 flex flex-col items-start p-5 text-white sm:p-6 md:p-8">
+                      <div className="mb-2 text-lg font-bold leading-snug tracking-wide transition-colors group-hover:text-blue-300 sm:text-xl">
                         {item.title}
                       </div>
-                      <div className="mb-6 line-clamp-3 text-xs md:text-sm text-zinc-300 leading-relaxed font-normal">
+                      <div className="mb-5 line-clamp-3 text-xs font-normal leading-relaxed text-zinc-300 md:mb-6 md:text-sm">
                         {item.description}
                       </div>
-                      <div className="flex items-center text-xs font-bold uppercase tracking-wider group-hover:text-blue-300 transition-colors mt-1 pt-4 border-t border-white/10 w-full">
+                      <div className="mt-1 flex w-full items-center border-t border-white/10 pt-4 text-xs font-bold uppercase tracking-wider transition-colors group-hover:text-blue-300">
                         Read case study{" "}
                         <ArrowRight className="ml-2 size-4 transition-transform group-hover:translate-x-1" />
                       </div>
@@ -211,7 +211,7 @@ const Gallery4 = ({
             ))}
           </CarouselContent>
         </Carousel>
-        <div className="mt-8 flex justify-center gap-2.5">
+        <div className="mt-7 flex justify-center gap-2.5 sm:mt-8">
           {items.map((_, index) => (
             <button
               key={index}

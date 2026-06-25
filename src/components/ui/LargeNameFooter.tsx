@@ -11,6 +11,8 @@ import {
   type MotionValue,
 } from "motion/react";
 
+const footerLogoUrl = "https://ik.imagekit.io/edfoalImage/assets/image/footerlogo.png";
+
 interface FooterSocialLinkProps {
   item: { label: string; href: string };
   mouseX: MotionValue<number>;
@@ -49,26 +51,33 @@ function Footer() {
   const mouseX = useMotionValue(Infinity);
 
   return (
-    <footer className="relative bg-[#030914] border-t border-zinc-900 overflow-hidden select-none">
-      {/* Watermark — purely decorative, scales with the section instead of a fixed-height parent */}
+    <footer className="relative overflow-hidden border-t border-zinc-900 bg-[#030914] select-none">
+      {/* Logo-style gradient watermark */}
       <div
         aria-hidden="true"
-        className="pointer-events-none select-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-0"
+        className="pointer-events-none absolute bottom-11 left-1/2 z-0 -translate-x-1/2 select-none whitespace-nowrap text-[clamp(3.75rem,22vw,12rem)] leading-none tracking-[0.01em] opacity-100 sm:bottom-6 lg:bottom-2"
+        style={{
+          fontFamily: "AndroidLogo, sans-serif",
+          backgroundImage:
+            "linear-gradient(180deg, rgba(225,235,244,0.5) 0%, rgba(176,194,211,0.3) 52%, rgba(176,194,211,0.04) 100%)",
+          WebkitBackgroundClip: "text",
+          backgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          color: "transparent",
+        }}
       >
-        <span className="text-[16vw] font-black tracking-tight leading-none whitespace-nowrap text-white/[0.035]">
-          EdFoal
-        </span>
+        EdFoal
       </div>
 
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pt-16 pb-6 md:px-12 lg:px-20">
+      <div className="relative z-10 mx-auto w-full max-w-360 px-5 pb-6 pt-10 sm:px-6 sm:pt-14 md:px-12 lg:px-20 lg:pt-16">
         {/* Main Grid */}
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-16">
+        <div className="grid grid-cols-1 gap-9 text-left lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)] lg:items-start lg:gap-16">
 
           {/* Left — Logo, Description, Socials */}
-          <div className="flex flex-col lg:col-span-4">
+          <div className="flex flex-col items-start">
             <Link href="/" className="mb-4 inline-block">
               <img
-                src="https://ik.imagekit.io/edfoalImage/assets/image/footerlogo.png"
+                src={footerLogoUrl}
                 alt="Edfoal Logo"
                 className="h-7 w-auto object-contain"
               />
@@ -80,7 +89,7 @@ function Footer() {
             <motion.div
               onMouseMove={(e) => mouseX.set(e.pageX)}
               onMouseLeave={() => mouseX.set(Infinity)}
-              className="mt-3 flex items-center gap-6 text-[15px] font-bold text-white"
+              className="mt-3 flex flex-wrap items-center justify-start gap-6 text-[15px] font-bold text-white"
             >
               {[
                 { label: "Fb.", href: "https://facebook.com" },
@@ -94,7 +103,7 @@ function Footer() {
           </div>
 
           {/* Right — 3 Columns */}
-          <div className="grid grid-cols-1 gap-10 sm:grid-cols-3 lg:col-span-8">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-9 sm:grid-cols-3 sm:gap-6 lg:ml-auto lg:w-full lg:max-w-190 lg:justify-items-start">
 
             {/* Our Pages */}
             <div>
@@ -135,14 +144,14 @@ function Footer() {
             </div>
 
             {/* Contact Us */}
-            <div>
+            <div className="col-span-2 sm:col-span-1">
               <h3 className="mb-4 text-[14px] font-semibold tracking-wide text-[#e2d59f]">
                 Contact Us
               </h3>
-              <div className="space-y-5">
+              <div className="grid gap-4 sm:block sm:space-y-5">
                 <div className="flex items-start gap-3">
                   <Mail className="mt-0.5 h-4 w-4 shrink-0 text-[#e2d59f]" />
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-[13px] font-semibold leading-tight text-white">Send Mail</p>
                     {/* TODO: confirm the real EdFoal contact email — current domain looks like a leftover placeholder */}
                     <Link
@@ -155,14 +164,14 @@ function Footer() {
                 </div>
                 <div className="flex items-start gap-3">
                   <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[#e2d59f]" />
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-[13px] font-semibold leading-tight text-white">Call Us</p>
                     <p className="mt-0.5 text-[12.5px] text-zinc-400">+91 1234567890</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <Clock className="mt-0.5 h-4 w-4 shrink-0 text-[#e2d59f]" />
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-[13px] font-semibold leading-tight text-white">Opening Hours</p>
                     <p className="mt-0.5 text-[12.5px] text-zinc-400">Mon - Fri, <br />9:00 - 20:00</p>
                   </div>
@@ -173,8 +182,8 @@ function Footer() {
         </div>
 
         {/* Divider + Copyright */}
-        <div className="mt-12 flex items-center justify-center border-t border-zinc-800/50 pt-5">
-          <p className="text-xs text-zinc-500">
+        <div className="relative z-10 mt-10 flex items-center justify-center border-t border-[#e2d59f]/70 pt-5 sm:mt-12">
+          <p className="text-center text-xs text-zinc-500">
             Your Company - 2024 All right Reserved
           </p>
         </div>

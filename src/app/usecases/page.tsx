@@ -64,13 +64,7 @@ export default function UsecasesPage() {
       {/* Light Background Gradients & Grid */}
       <div className="absolute inset-0 w-full h-full overflow-hidden bg-white -z-50 pointer-events-none select-none">
         {/* Light Grid Overlay */}
-        <div 
-          className="absolute inset-0 opacity-70"
-          style={{
-            backgroundSize: "50px 50px",
-            backgroundImage: "linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px)"
-          }}
-        />
+        <div className="absolute inset-0 opacity-70 bg-size-[50px_50px] bg-[linear-gradient(to_right,rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.03)_1px,transparent_1px)]" />
 
         {/* Noise overlay */}
         <div className="noise-overlay" />

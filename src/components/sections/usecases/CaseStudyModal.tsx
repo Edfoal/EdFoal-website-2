@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiX, FiCheckCircle } from "react-icons/fi";
+import { FiX } from "react-icons/fi";
 
 // TypeScript Interfaces for the Case Study Data Structure
 interface ProblemSection {
@@ -420,7 +420,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 overflow-hidden">
+      <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden p-2 sm:p-4 md:p-6">
         
         {/* Backdrop overlay */}
         <motion.div
@@ -437,22 +437,22 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 30 }}
           transition={{ type: "spring", duration: 0.5 }}
-          className="relative bg-white text-zinc-900 rounded-[2.5rem] shadow-2xl w-full max-w-5xl h-[90vh] md:h-[85vh] overflow-y-auto z-10 flex flex-col pointer-events-auto"
+          className="relative z-10 flex h-[92dvh] w-full max-w-5xl flex-col overflow-y-auto rounded-3xl bg-white text-zinc-900 shadow-2xl pointer-events-auto sm:h-[90dvh] md:h-[85vh] md:rounded-[2.5rem]"
         >
           {/* Close button */}
           <button
             onClick={onClose}
             aria-label="Close case study modal"
-            className="absolute top-6 right-6 md:top-8 md:right-8 z-30 p-3 bg-zinc-100 hover:bg-zinc-200/80 rounded-full text-zinc-600 hover:text-zinc-950 transition-colors shadow-sm cursor-pointer"
+            className="absolute right-4 top-4 z-30 cursor-pointer rounded-full bg-zinc-100 p-2.5 text-zinc-600 shadow-sm transition-colors hover:bg-zinc-200/80 hover:text-zinc-950 md:right-8 md:top-8 md:p-3"
           >
             <FiX className="w-5 h-5" />
           </button>
 
           {/* Scrolling Modal Content */}
-          <div className="flex-1 overflow-y-auto px-6 py-8 md:p-12">
+          <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6 sm:py-8 md:p-12">
             
             {/* Mockup Banner Image */}
-            <div className="relative rounded-[2rem] overflow-hidden border border-zinc-200/50 shadow-md bg-zinc-50 aspect-[16/9] md:aspect-[21/9] mb-10 mt-6">
+            <div className="relative mb-8 mt-8 aspect-4/3 overflow-hidden rounded-3xl border border-zinc-200/50 bg-zinc-50 shadow-md sm:aspect-video md:mb-10 md:mt-6 md:aspect-21/9 md:rounded-4xl">
               <img 
                 src={study.heroImage} 
                 alt={study.title} 
@@ -461,7 +461,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
             </div>
 
             {/* Badges Row */}
-            <div className="flex flex-wrap gap-2 mb-6 justify-start">
+            <div className="mb-5 flex flex-wrap justify-start gap-2 md:mb-6">
               {study.badges.map((badge, idx) => {
                 let badgeStyle = "bg-zinc-100 text-zinc-600";
                 if (idx === 0) badgeStyle = "bg-zinc-100/80 text-zinc-500 font-bold border border-zinc-200/30";
@@ -470,7 +470,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
                 return (
                   <span 
                     key={idx} 
-                    className={`px-4 py-1.5 rounded-full text-[10px] uppercase tracking-wider ${badgeStyle}`}
+                    className={`rounded-full px-3 py-1.5 text-[9px] uppercase tracking-wider sm:px-4 sm:text-[10px] ${badgeStyle}`}
                   >
                     {badge}
                   </span>
@@ -479,21 +479,21 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
             </div>
 
             {/* Main Title & Subtitle */}
-            <h1 className="text-2xl md:text-4xl font-black text-zinc-900 tracking-tight leading-tight mb-4 pr-12">
+            <h1 className="mb-4 pr-10 text-2xl font-black leading-tight tracking-tight text-zinc-900 sm:pr-12 md:text-4xl">
               {study.title}
             </h1>
-            <p className="text-zinc-600 text-base md:text-lg leading-relaxed mb-10 max-w-4xl">
+            <p className="mb-8 max-w-4xl text-sm leading-relaxed text-zinc-600 sm:text-base md:mb-10 md:text-lg">
               {study.subtitle}
             </p>
 
             {/* 3-Column Metrics Block */}
-            <div className="grid grid-cols-3 bg-[#0a1224] rounded-[2rem] p-6 md:p-10 mb-12 text-center shadow-lg divide-x divide-zinc-800">
+            <div className="mb-10 grid grid-cols-1 divide-y divide-zinc-800 rounded-3xl bg-[#0a1224] p-5 text-center shadow-lg sm:grid-cols-3 sm:divide-x sm:divide-y-0 md:mb-12 md:rounded-4xl md:p-10">
               {study.stats.map((stat, idx) => (
-                <div key={idx} className="flex flex-col items-center justify-center px-2 md:px-4 first:pl-0 last:pr-0">
-                  <span className="text-2xl md:text-4xl font-black text-white mb-1.5 tracking-tight">
+                <div key={idx} className="flex flex-col items-center justify-center px-2 py-4 first:pt-0 last:pb-0 sm:py-0 md:px-4 md:first:pl-0 md:last:pr-0">
+                  <span className="mb-1.5 text-2xl font-black tracking-tight text-white md:text-4xl">
                     {stat.value}
                   </span>
-                  <span className="text-[10px] md:text-xs text-zinc-400 font-medium tracking-wide">
+                  <span className="text-[10px] font-medium tracking-wide text-zinc-400 md:text-xs">
                     {stat.label}
                   </span>
                 </div>
@@ -501,7 +501,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
             </div>
 
             {/* Structured Content Sections */}
-            <div className="flex flex-col gap-12 max-w-4xl">
+            <div className="flex max-w-4xl flex-col gap-10 md:gap-12">
 
               {/* Section 1: The Problem */}
               <div className="flex flex-col gap-4">
@@ -518,7 +518,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
                 {study.sections.problem.boxBullets && study.sections.problem.boxBullets.length > 0 && (
                   <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch mt-2">
                     {/* Red warning box */}
-                    <div className="md:col-span-7 bg-red-50/40 border border-red-100 rounded-3xl p-6 flex flex-col justify-start">
+                      <div className="flex flex-col justify-start rounded-3xl border border-red-100 bg-red-50/40 p-5 md:col-span-7 md:p-6">
                       <span className="text-[10px] font-black tracking-widest text-red-600 uppercase block mb-4">
                         {study.sections.problem.boxTitle}
                       </span>
@@ -534,7 +534,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
 
                     {/* Problem Image */}
                     {study.sections.problem.image && (
-                      <div className="md:col-span-5 relative rounded-3xl overflow-hidden border border-zinc-200/50 shadow-sm min-h-[200px]">
+                      <div className="relative min-h-[220px] overflow-hidden rounded-3xl border border-zinc-200/50 shadow-sm md:col-span-5">
                         <img 
                           src={study.sections.problem.image} 
                           alt="Problem Context" 
@@ -559,7 +559,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
                 </p>
 
                 {study.sections.solution.boxBullets && study.sections.solution.boxBullets.length > 0 && (
-                  <div className="bg-emerald-50/40 border border-emerald-100/70 rounded-3xl p-6 mt-2">
+                  <div className="mt-2 rounded-3xl border border-emerald-100/70 bg-emerald-50/40 p-5 md:p-6">
                     <span className="text-[10px] font-black tracking-widest text-emerald-700 uppercase block mb-4">
                       {study.sections.solution.boxTitle}
                     </span>
@@ -591,8 +591,8 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
                   )}
 
                   {study.sections.results?.table && study.sections.results.table.length > 0 && (
-                    <div className="mt-2 border border-zinc-200/60 rounded-2xl overflow-hidden shadow-sm">
-                      <table className="w-full text-left border-collapse">
+                    <div className="mt-2 overflow-x-auto rounded-2xl border border-zinc-200/60 shadow-sm">
+                      <table className="w-full min-w-[560px] border-collapse text-left">
                         <thead>
                           <tr className="bg-[#0a1224] text-white">
                             {study.sections.results?.cols === 3 ? (
@@ -663,7 +663,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({
 
               {/* Section 5: Bottom CTA Block */}
               {study.sections.cta && (
-                <div className="bg-[#0a1224] rounded-[2rem] p-6 md:p-10 mt-2 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="mt-2 flex flex-col items-center justify-between gap-5 rounded-3xl bg-[#0a1224] p-5 sm:p-6 md:flex-row md:gap-6 md:rounded-4xl md:p-10">
                   <div className="flex flex-col gap-1.5 text-left">
                     <h3 className="text-white text-base md:text-lg font-bold leading-normal">
                       {study.sections.cta.text}

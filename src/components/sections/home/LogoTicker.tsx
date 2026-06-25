@@ -54,8 +54,8 @@ export default function LogoTicker() {
       {/* Scrolling Logos Container */}
       <div className="w-full overflow-hidden relative py-2 z-20">
         {/* Fade gradients on inner scroll edges */}
-        <div className="absolute top-0 bottom-0 left-0 w-10 md:w-16 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-        <div className="absolute top-0 bottom-0 right-0 w-10 md:w-16 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+        <div className="absolute top-0 bottom-0 left-0 w-10 md:w-16 bg-linear-to-r from-white to-transparent z-10 pointer-events-none" />
+        <div className="absolute top-0 bottom-0 right-0 w-10 md:w-16 bg-linear-to-l from-white to-transparent z-10 pointer-events-none" />
 
         <div className="flex w-full overflow-hidden">
           <div className="ticker-track gap-16 md:gap-24">
