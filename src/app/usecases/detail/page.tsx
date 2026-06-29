@@ -689,10 +689,10 @@ function CaseStudyDetailContent() {
                 <OriginButton
                   className="h-12 w-full rounded-full border-[0.5px] px-8 text-sm font-semibold tracking-wide"
                   style={{
-                    "--ic-card": "#2563eb",
-                    "--ic-card-foreground": "#ffffff",
-                    "--ic-border": "#2563eb",
-                    "--ic-foreground": "#1d4ed8",
+                    "--ic-card": "#ffffff",
+                    "--ic-card-foreground": "#000000",
+                    "--ic-border": "#ffffff",
+                    "--ic-foreground": "#000000",
                     "--ic-background": "#ffffff",
                   } as React.CSSProperties}
                 >
