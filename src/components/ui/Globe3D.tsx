@@ -3,7 +3,6 @@ import React, { useRef, useMemo, useState, useCallback, Suspense } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Html, useTexture } from "@react-three/drei";
 import * as THREE from "three";
-import { useInView } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 // ============================================================================
@@ -516,13 +515,9 @@ export function Globe3D({
     [config],
   );
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(containerRef, { margin: "200px" });
-
   return (
-    <div ref={containerRef} className={cn("relative h-[500px] w-full", className)}>
+    <div className={cn("relative h-[500px] w-full", className)}>
       <Canvas
-        frameloop={isInView ? "always" : "never"}
         gl={{
           antialias: true,
           alpha: true,

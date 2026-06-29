@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { Color, Scene, Fog, PerspectiveCamera, Vector3, Group, Quaternion } from "three";
-import { useInView } from "framer-motion";
 import ThreeGlobe from "three-globe";
 import { useThree, Canvas, extend, useFrame } from "@react-three/fiber";
 import { OrbitControls, Html } from "@react-three/drei";
@@ -347,17 +346,8 @@ export function World(props: WorldProps) {
   const scene = new Scene();
   scene.fog = new Fog(0xffffff, 400, 2000);
   const currentCameraZ = globeConfig.cameraZ || cameraZ;
-  
-  const containerRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(containerRef, { margin: "200px" });
-
   return (
-    <div ref={containerRef} className="w-full h-full relative">
-      <Canvas
-        frameloop={isInView ? "always" : "never"}
-        scene={scene}
-        camera={new PerspectiveCamera(50, aspect, 0.1, 2000)}
-      >
+    <Canvas scene={scene} camera={new PerspectiveCamera(50, aspect, 0.1, 2000)}>
         <WebGLRendererConfig />
         <ambientLight color={globeConfig.ambientLight} intensity={0.6} />
         <directionalLight
@@ -388,7 +378,6 @@ export function World(props: WorldProps) {
           maxPolarAngle={Math.PI - Math.PI / 3}
         />
       </Canvas>
-    </div>
   );
 }
 
