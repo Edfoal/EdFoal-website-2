@@ -7,12 +7,14 @@ import useLenis from "@/hooks/useLenis";
 import { WovenLightHero } from "@/components/ui/woven-light-hero";
 import { Gallery4 } from "@/components/ui/gallery4";
 import { CaseStudyModal } from "@/components/sections/usecases/CaseStudyModal";
+import { GetStartedModal } from "@/components/sections/usecases/GetStartedModal";
 
 export default function UsecasesPage() {
   // Initialize Lenis scroll smoothing
   useLenis();
 
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [isGetStartedOpen, setIsGetStartedOpen] = useState(false);
 
   const caseStudies = [
     {
@@ -78,7 +80,7 @@ export default function UsecasesPage() {
       <Navbar />
 
       {/* Hero Section */}
-      <WovenLightHero />
+      <WovenLightHero onGetStartedClick={() => setIsGetStartedOpen(true)} />
 
       {/* Case Studies Card Grid Section */}
       <div data-theme="light">
@@ -92,6 +94,9 @@ export default function UsecasesPage() {
 
       {/* Case Study Detail Modal Overlay */}
       <CaseStudyModal caseStudyId={activeId} onClose={() => setActiveId(null)} />
+
+      {/* Get Started Services Modal Overlay */}
+      <GetStartedModal isOpen={isGetStartedOpen} onClose={() => setIsGetStartedOpen(false)} />
 
       <Footer />
     </main>

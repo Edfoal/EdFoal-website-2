@@ -3,18 +3,21 @@
 import React, { useRef, useEffect } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import * as THREE from 'three';
+import { OriginButton } from "@/components/ui/OriginButton";
 
 interface WovenLightHeroProps {
   kicker?: string;
   titleLines?: string[];
   subtitle?: string;
+  onGetStartedClick?: () => void;
 }
 
 // --- Main Hero Component ---
 export const WovenLightHero: React.FC<WovenLightHeroProps> = ({
   kicker = "Case Studies",
   titleLines = ["Real Results,", "Real Impact"],
-  subtitle = "Explore how we're transforming businesses with cutting-edge AI solutions — backed by measurable outcomes."
+  subtitle = "Explore how we're transforming businesses with cutting-edge AI solutions — backed by measurable outcomes.",
+  onGetStartedClick
 }) => {
   const textControls = useAnimation();
   const buttonControls = useAnimation();
@@ -105,11 +108,21 @@ export const WovenLightHero: React.FC<WovenLightHeroProps> = ({
         </motion.p>
 
         {/* Action Button */}
-        {/* <motion.div initial={{ opacity: 0 }} animate={buttonControls} className="mt-10">
-          <button className="rounded-full border-2 border-white/20 bg-white/10 px-8 py-3 font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/20 cursor-pointer" style={{ fontFamily: "'Inter', sans-serif" }}>
-            Explore Case Studies
-          </button>
-        </motion.div> */}
+        <motion.div initial={{ opacity: 0 }} animate={buttonControls} className="mt-8 z-20">
+          <OriginButton
+            onClick={onGetStartedClick}
+            className="h-12 rounded-full border-[0.5px] px-8 text-sm font-semibold tracking-wide"
+            style={{
+              "--ic-card": "rgba(255, 255, 255, 0.1)",
+              "--ic-card-foreground": "#ffffff",
+              "--ic-border": "rgba(255, 255, 255, 0.25)",
+              "--ic-foreground": "#ffffff",
+              "--ic-background": "rgba(255, 255, 255, 0.25)",
+            } as React.CSSProperties}
+          >
+            Get Started
+          </OriginButton>
+        </motion.div>
       </div>
     </div>
   );
