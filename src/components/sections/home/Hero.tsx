@@ -102,7 +102,7 @@ export default function HeroSection() {
       <div
         id="hero-section"
         ref={containerRef}
-        className="relative mx-auto h-[180svh] w-full max-w-[100vw] overflow-hidden rounded-xl bg-[#001427] sm:h-[190svh] lg:h-[180vh]"
+        className="relative mx-auto h-[180svh] w-full max-w-[100vw] rounded-xl bg-[#001427] sm:h-[190svh] lg:h-[180vh]"
       >
         {/* Pinned canvas layer */}
         <div
