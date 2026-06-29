@@ -74,19 +74,10 @@ const servicesData: ServiceDetail[] = [
 interface GetStartedModalProps {
   isOpen: boolean;
   onClose: () => void;
-  initialTab?: string;
+  serviceId: string;
 }
 
-export function GetStartedModal({ isOpen, onClose, initialTab }: GetStartedModalProps) {
-  const [activeTab, setActiveTab] = useState<string>("tailored-ai");
-
-  // Sync active tab with initialTab prop when modal opens
-  useEffect(() => {
-    if (isOpen && initialTab) {
-      setActiveTab(initialTab);
-    }
-  }, [isOpen, initialTab]);
-
+export function GetStartedModal({ isOpen, onClose, serviceId }: GetStartedModalProps) {
   // Prevent background scrolling when open
   useEffect(() => {
     if (isOpen) {
@@ -99,7 +90,7 @@ export function GetStartedModal({ isOpen, onClose, initialTab }: GetStartedModal
     };
   }, [isOpen]);
 
-  const activeService = servicesData.find((s) => s.id === activeTab) || servicesData[0];
+  const activeService = servicesData.find((s) => s.id === serviceId) || servicesData[0];
 
   return (
     <AnimatePresence>
@@ -131,40 +122,17 @@ export function GetStartedModal({ isOpen, onClose, initialTab }: GetStartedModal
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="absolute right-4 top-4 text-zinc-400 hover:text-zinc-650 transition-colors z-20 cursor-pointer p-2 rounded-full hover:bg-zinc-100"
+              className="absolute right-4 top-4 text-zinc-400 hover:text-zinc-655 transition-colors z-20 cursor-pointer p-2 rounded-full hover:bg-zinc-100 md:right-6 md:top-6"
               aria-label="Close modal"
             >
               <FiX className="w-6 h-6" />
             </button>
 
-            {/* Tab Navigation Menu */}
-            <div className="flex border-b border-zinc-150 px-6 sm:px-10 pt-6 gap-6 md:gap-8 overflow-x-auto select-none no-scrollbar">
-              {servicesData.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={cn(
-                    "pb-4 font-bold text-xs sm:text-sm tracking-tight relative transition-colors cursor-pointer whitespace-nowrap shrink-0",
-                    activeTab === tab.id ? "text-blue-600 font-extrabold" : "text-zinc-400 hover:text-zinc-655"
-                  )}
-                >
-                  {tab.name}
-                  {activeTab === tab.id && (
-                    <motion.div
-                      layoutId="activeServiceTabIndicator"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                </button>
-              ))}
-            </div>
-
             {/* Content Body area */}
-            <div className="p-6 sm:p-10 md:p-12 overflow-y-auto flex-1 bg-white">
+            <div className="p-6 pt-12 sm:p-10 sm:pt-14 md:p-12 md:pt-16 overflow-y-auto flex-1 bg-white">
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={activeTab}
+                  key={serviceId}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}

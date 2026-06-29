@@ -82,7 +82,7 @@ export default function ServicesPage() {
       <GetStartedModal
         isOpen={isGetStartedOpen}
         onClose={() => setIsGetStartedOpen(false)}
-        initialTab={selectedServiceTab}
+        serviceId={selectedServiceTab}
       />
 
       <Footer />
