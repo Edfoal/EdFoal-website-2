@@ -49,7 +49,7 @@ const servicesData: ServiceDetail[] = [
       "Real-Time Decision Making",
       "Enhanced Accuracy & Productivity"
     ],
-    imageUrl: "https://ik.imagekit.io/edfoalImage/assets/image/service1.jpg"
+    imageUrl: "https://edfoal.com/assets/image/service1.jpg"
   },
   {
     id: "consultancy",
