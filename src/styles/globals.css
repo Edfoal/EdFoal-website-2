@@ -722,3 +722,11 @@ canvas + a[href*="spline"] {
     writing-mode: vertical-rl;
   }
 }
+
+/* Ensure buttons and form inputs inherit font family */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
