@@ -39,16 +39,16 @@ function getTrianglesFromGeometry(geom: THREE.BufferGeometry): {
     const indices = indexAttribute.array;
     for (let i = 0; i < indices.length; i += 3) {
       const idx0 = indices[i];
-      const idx1 = indices[i+1];
-      const idx2 = indices[i+2];
+      const idx1 = indices[i + 1];
+      const idx2 = indices[i + 2];
 
-      const v0 = new THREE.Vector3(positions[idx0*3], positions[idx0*3+1], positions[idx0*3+2]);
-      const v1 = new THREE.Vector3(positions[idx1*3], positions[idx1*3+1], positions[idx1*3+2]);
-      const v2 = new THREE.Vector3(positions[idx2*3], positions[idx2*3+1], positions[idx2*3+2]);
+      const v0 = new THREE.Vector3(positions[idx0 * 3], positions[idx0 * 3 + 1], positions[idx0 * 3 + 2]);
+      const v1 = new THREE.Vector3(positions[idx1 * 3], positions[idx1 * 3 + 1], positions[idx1 * 3 + 2]);
+      const v2 = new THREE.Vector3(positions[idx2 * 3], positions[idx2 * 3 + 1], positions[idx2 * 3 + 2]);
 
-      const n0 = normals ? new THREE.Vector3(normals[idx0*3], normals[idx0*3+1], normals[idx0*3+2]) : new THREE.Vector3(0, 1, 0);
-      const n1 = normals ? new THREE.Vector3(normals[idx1*3], normals[idx1*3+1], normals[idx1*3+2]) : new THREE.Vector3(0, 1, 0);
-      const n2 = normals ? new THREE.Vector3(normals[idx2*3], normals[idx2*3+1], normals[idx2*3+2]) : new THREE.Vector3(0, 1, 0);
+      const n0 = normals ? new THREE.Vector3(normals[idx0 * 3], normals[idx0 * 3 + 1], normals[idx0 * 3 + 2]) : new THREE.Vector3(0, 1, 0);
+      const n1 = normals ? new THREE.Vector3(normals[idx1 * 3], normals[idx1 * 3 + 1], normals[idx1 * 3 + 2]) : new THREE.Vector3(0, 1, 0);
+      const n2 = normals ? new THREE.Vector3(normals[idx2 * 3], normals[idx2 * 3 + 1], normals[idx2 * 3 + 2]) : new THREE.Vector3(0, 1, 0);
 
       const edge1 = new THREE.Vector3().subVectors(v1, v0);
       const edge2 = new THREE.Vector3().subVectors(v2, v0);
@@ -64,13 +64,13 @@ function getTrianglesFromGeometry(geom: THREE.BufferGeometry): {
       const idx1 = i + 1;
       const idx2 = i + 2;
 
-      const v0 = new THREE.Vector3(positions[idx0*3], positions[idx0*3+1], positions[idx0*3+2]);
-      const v1 = new THREE.Vector3(positions[idx1*3], positions[idx1*3+1], positions[idx1*3+2]);
-      const v2 = new THREE.Vector3(positions[idx2*3], positions[idx2*3+1], positions[idx2*3+2]);
+      const v0 = new THREE.Vector3(positions[idx0 * 3], positions[idx0 * 3 + 1], positions[idx0 * 3 + 2]);
+      const v1 = new THREE.Vector3(positions[idx1 * 3], positions[idx1 * 3 + 1], positions[idx1 * 3 + 2]);
+      const v2 = new THREE.Vector3(positions[idx2 * 3], positions[idx2 * 3 + 1], positions[idx2 * 3 + 2]);
 
-      const n0 = normals ? new THREE.Vector3(normals[idx0*3], normals[idx0*3+1], normals[idx0*3+2]) : new THREE.Vector3(0, 1, 0);
-      const n1 = normals ? new THREE.Vector3(normals[idx1*3], normals[idx1*3+1], normals[idx1*3+2]) : new THREE.Vector3(0, 1, 0);
-      const n2 = normals ? new THREE.Vector3(normals[idx2*3], normals[idx2*3+1], normals[idx2*3+2]) : new THREE.Vector3(0, 1, 0);
+      const n0 = normals ? new THREE.Vector3(normals[idx0 * 3], normals[idx0 * 3 + 1], normals[idx0 * 3 + 2]) : new THREE.Vector3(0, 1, 0);
+      const n1 = normals ? new THREE.Vector3(normals[idx1 * 3], normals[idx1 * 3 + 1], normals[idx1 * 3 + 2]) : new THREE.Vector3(0, 1, 0);
+      const n2 = normals ? new THREE.Vector3(normals[idx2 * 3], normals[idx2 * 3 + 1], normals[idx2 * 3 + 2]) : new THREE.Vector3(0, 1, 0);
 
       const edge1 = new THREE.Vector3().subVectors(v1, v0);
       const edge2 = new THREE.Vector3().subVectors(v2, v0);
@@ -278,7 +278,7 @@ const defaultAnim: AnimStateProps = {
 
 function BrainParticles({ animState }: ParticleBrainProps) {
   const groupRef = useRef<THREE.Group>(null);
-  const COUNT    = 12000;
+  const COUNT = 12000;
 
   const mouseRef = useRef({ x: 0, y: 0, active: 0 });
   const smoothMouseRef = useRef({ x: 0, y: 0, active: 0 });
@@ -303,17 +303,17 @@ function BrainParticles({ animState }: ParticleBrainProps) {
   const { scene } = useGLTF("/brain.glb");
 
   const { positions, colors, normals, seeds, speeds, depths } = useMemo(() => {
-    const posArr   = new Float32Array(COUNT * 3);
-    const colArr   = new Float32Array(COUNT * 3);
-    const normArr  = new Float32Array(COUNT * 3);
-    const seedArr  = new Float32Array(COUNT);
+    const posArr = new Float32Array(COUNT * 3);
+    const colArr = new Float32Array(COUNT * 3);
+    const normArr = new Float32Array(COUNT * 3);
+    const seedArr = new Float32Array(COUNT);
     const speedArr = new Float32Array(COUNT);
     const depthArr = new Float32Array(COUNT);
 
     let brainMesh: THREE.Mesh | null = null;
     scene.traverse((node) => {
-      if ((node as any).isMesh && !brainMesh) {
-        brainMesh = node as THREE.Mesh;
+      if (node instanceof THREE.Mesh && !brainMesh) {
+        brainMesh = node;
       }
     });
 
@@ -360,11 +360,15 @@ function BrainParticles({ animState }: ParticleBrainProps) {
       return low;
     };
 
-    const cWhite  = new THREE.Color("#64B5F6");
-    const cAmber  = new THREE.Color("#2196F3");
+    const cWhite = new THREE.Color("#64B5F6");
+    const cAmber = new THREE.Color("#2196F3");
     const cPurple = new THREE.Color("#e91e63");
-    const cCyan   = new THREE.Color("#00d4ff");
-    const rng = () => Math.random();
+    const cCyan = new THREE.Color("#00d4ff");
+    let seed = 42.0;
+    const rng = () => {
+      const x = Math.sin(seed++) * 10000;
+      return x - Math.floor(x);
+    };
 
     for (let i = 0; i < COUNT; i++) {
       const r = rng() * totalArea;
@@ -445,25 +449,25 @@ function BrainParticles({ animState }: ParticleBrainProps) {
     // Triangle size matching reference image
     const s = 0.0125;
     const verts = new Float32Array([
-       0,        0, -s * 1.15,
-      -s*0.866,  0,  s * 0.577,
-       s*0.866,  0,  s * 0.577,
+      0, 0, -s * 1.15,
+      -s * 0.866, 0, s * 0.577,
+      s * 0.866, 0, s * 0.577,
     ]);
-    const norms = new Float32Array([0,1,0, 0,1,0, 0,1,0]);
-    const bary  = new Float32Array([1,0,0, 0,1,0, 0,0,1]);
+    const norms = new Float32Array([0, 1, 0, 0, 1, 0, 0, 1, 0]);
+    const bary = new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]);
 
     const geom = new THREE.InstancedBufferGeometry();
-    geom.setAttribute("position",     new THREE.BufferAttribute(verts, 3));
-    geom.setAttribute("normal",       new THREE.BufferAttribute(norms, 3));
-    geom.setAttribute("aBarycentric", new THREE.BufferAttribute(bary,  3));
-    geom.setIndex(new THREE.BufferAttribute(new Uint16Array([0,1,2]), 1));
+    geom.setAttribute("position", new THREE.BufferAttribute(verts, 3));
+    geom.setAttribute("normal", new THREE.BufferAttribute(norms, 3));
+    geom.setAttribute("aBarycentric", new THREE.BufferAttribute(bary, 3));
+    geom.setIndex(new THREE.BufferAttribute(new Uint16Array([0, 1, 2]), 1));
 
     geom.setAttribute("aInstancePos", new THREE.InstancedBufferAttribute(positions, 3));
-    geom.setAttribute("aColor",       new THREE.InstancedBufferAttribute(colors,    3));
-    geom.setAttribute("aNormal",      new THREE.InstancedBufferAttribute(normals,   3));
-    geom.setAttribute("aSeed",        new THREE.InstancedBufferAttribute(seeds,     1));
-    geom.setAttribute("aSpeed",       new THREE.InstancedBufferAttribute(speeds,    1));
-    geom.setAttribute("aDepth",       new THREE.InstancedBufferAttribute(depths,    1));
+    geom.setAttribute("aColor", new THREE.InstancedBufferAttribute(colors, 3));
+    geom.setAttribute("aNormal", new THREE.InstancedBufferAttribute(normals, 3));
+    geom.setAttribute("aSeed", new THREE.InstancedBufferAttribute(seeds, 1));
+    geom.setAttribute("aSpeed", new THREE.InstancedBufferAttribute(speeds, 1));
+    geom.setAttribute("aDepth", new THREE.InstancedBufferAttribute(depths, 1));
     geom.instanceCount = COUNT;
     return geom;
   }, [positions, colors, normals, seeds, speeds, depths]);
@@ -502,16 +506,16 @@ function BrainParticles({ animState }: ParticleBrainProps) {
       const mouse3D = new THREE.Vector3(smoothMouseRef.current.x, smoothMouseRef.current.y, 0);
       mouse3D.unproject(cam);
       const dir = mouse3D.clone().sub(cam.position).normalize();
-      
+
       const groupWorldPos = new THREE.Vector3();
       groupRef.current.getWorldPosition(groupWorldPos);
-      
+
       const distToPlane = dir.z !== 0 ? (groupWorldPos.z - cam.position.z) / dir.z : 0;
       const worldMouse = cam.position.clone().add(dir.multiplyScalar(distToPlane));
-      
+
       const localMouse = worldMouse.clone();
       groupRef.current.worldToLocal(localMouse);
-      
+
       brainShaderMaterial.uniforms.uMouse.value.copy(localMouse);
       brainShaderMaterial.uniforms.uMouseActive.value = smoothMouseRef.current.active;
 

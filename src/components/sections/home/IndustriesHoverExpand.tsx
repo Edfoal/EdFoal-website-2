@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useSyncExternalStore } from "react";
 import { cn } from "@/lib/utils";
 
 /* ───── Industry data ───── */
@@ -43,11 +43,15 @@ const HoverExpandPanel = ({
   className?: string;
 }) => {
   const [activeImage, setActiveImage] = useState<number>(1);
-  const [hasHover, setHasHover] = useState(false);
-
-  useEffect(() => {
-    setHasHover(window.matchMedia("(hover: hover)").matches);
-  }, []);
+  const hasHover = useSyncExternalStore(
+    (callback) => {
+      const media = window.matchMedia("(hover: hover)");
+      media.addEventListener("change", callback);
+      return () => media.removeEventListener("change", callback);
+    },
+    () => window.matchMedia("(hover: hover)").matches,
+    () => false
+  );
 
   return (
     <motion.div

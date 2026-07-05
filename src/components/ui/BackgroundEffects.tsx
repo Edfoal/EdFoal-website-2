@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useSyncExternalStore } from "react";
 import { motion } from "framer-motion";
 
 export default function BackgroundEffects() {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   if (!mounted) return null;
 

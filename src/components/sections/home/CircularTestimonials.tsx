@@ -109,6 +109,16 @@ export const CircularTestimonials = ({
     };
   }, [autoplay, testimonialsLength]);
 
+  // Navigation handlers
+  const handleNext = () => {
+    setActiveIndex((prev) => (prev + 1) % testimonialsLength);
+    if (autoplayIntervalRef.current) clearInterval(autoplayIntervalRef.current);
+  };
+  const handlePrev = () => {
+    setActiveIndex((prev) => (prev - 1 + testimonialsLength) % testimonialsLength);
+    if (autoplayIntervalRef.current) clearInterval(autoplayIntervalRef.current);
+  };
+
   // Keyboard navigation
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -117,17 +127,6 @@ export const CircularTestimonials = ({
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-    // eslint-disable-next-line
-  }, [activeIndex, testimonialsLength]);
-
-  // Navigation handlers
-  const handleNext = useCallback(() => {
-    setActiveIndex((prev) => (prev + 1) % testimonialsLength);
-    if (autoplayIntervalRef.current) clearInterval(autoplayIntervalRef.current);
-  }, [testimonialsLength]);
-  const handlePrev = useCallback(() => {
-    setActiveIndex((prev) => (prev - 1 + testimonialsLength) % testimonialsLength);
-    if (autoplayIntervalRef.current) clearInterval(autoplayIntervalRef.current);
   }, [testimonialsLength]);
 
   // Compute transforms for each image (always show 3: left, center, right)

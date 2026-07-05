@@ -9,28 +9,28 @@ import {
   useSpring,
   useTransform,
 } from "motion/react";
- 
-import clsx from "clsx";
+
+import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 import Link from "next/link";
- 
-const cn = (...args: any[]) => twMerge(clsx(args));
- 
+
+const cn = (...args: ClassValue[]) => twMerge(clsx(args));
+
 export interface AnimatedDockProps {
   className?: string;
   items: DockItemData[];
 }
- 
+
 export interface DockItemData {
   link: string;
   Icon: React.ReactNode;
   target?: string;
 }
- 
+
 export const AnimatedDock = ({ className, items }: AnimatedDockProps) => {
   const mouseX = useMotionValue(Infinity);
- 
+
   return (
     <motion.div
       onMouseMove={(e) => mouseX.set(e.pageX)}
@@ -54,12 +54,12 @@ export const AnimatedDock = ({ className, items }: AnimatedDockProps) => {
     </motion.div>
   );
 };
- 
+
 interface DockItemProps {
   mouseX: MotionValue<number>;
   children: React.ReactNode;
 }
- 
+
 export const DockItem = ({ mouseX, children }: DockItemProps) => {
   const ref = useRef<HTMLDivElement>(null);
 

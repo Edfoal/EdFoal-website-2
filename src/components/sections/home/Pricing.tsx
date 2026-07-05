@@ -66,7 +66,7 @@ export default function Pricing() {
           Predictable Scaled Plans
         </h2>
         <p className="text-gray-400 text-lg leading-relaxed max-w-xl mx-auto">
-          Choose the cognitive depth that fits your team's structural requirements.
+          Choose the cognitive depth that fits your team&apos;s structural requirements.
         </p>
       </div>
 
@@ -79,11 +79,10 @@ export default function Pricing() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 0.6, delay: idx * 0.1 }}
-            className={`rounded-2xl p-8 flex flex-col justify-between transition-all duration-300 relative ${
-              plan.isPopular
+            className={`rounded-2xl p-8 flex flex-col justify-between transition-all duration-300 relative ${plan.isPopular
                 ? "glass-panel border-purple-500/30 shadow-[0_0_35px_rgba(139,92,246,0.15)] bg-purple-950/5 lg:-translate-y-4"
                 : "glass-panel border-white/5 hover:border-white/10"
-            }`}
+              }`}
           >
             {/* Middle Popular Badge */}
             {plan.isPopular && (
@@ -96,7 +95,7 @@ export default function Pricing() {
             <div>
               <h3 className="text-lg font-semibold text-white mb-2">{plan.name}</h3>
               <p className="text-gray-400 text-xs font-normal mb-6 min-h-[32px]">{plan.description}</p>
-              
+
               <div className="flex items-baseline mb-6">
                 <span className="text-gray-400 text-xl font-normal">$</span>
                 <span className="text-4xl md:text-5xl font-extrabold text-white tracking-tight">{plan.price}</span>
@@ -120,11 +119,10 @@ export default function Pricing() {
             {/* Plan Call to Action */}
             <a
               href={`#${plan.name.toLowerCase()}`}
-              className={`w-full text-center py-3 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 ${
-                plan.isPopular
+              className={`w-full text-center py-3 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 ${plan.isPopular
                   ? "bg-purple-600 hover:bg-purple-500 text-white shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:-translate-y-0.5 glow-btn"
                   : "bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:border-white/20 hover:-translate-y-0.5"
-              }`}
+                }`}
             >
               {plan.cta}
             </a>
