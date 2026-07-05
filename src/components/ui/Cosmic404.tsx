@@ -4,7 +4,13 @@ import createGlobe, { type COBEOptions } from "cobe";
 import { useCallback, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
-const GLOBE_CONFIG: any = {
+interface CustomGlobeConfig extends Omit<COBEOptions, "width" | "height"> {
+  width?: number;
+  height?: number;
+  onRender?: (state: Record<string, number>) => void;
+}
+
+const GLOBE_CONFIG: CustomGlobeConfig = {
   width: 600,
   height: 600,
   onRender: () => {},
@@ -28,7 +34,7 @@ const GLOBE_CONFIG: any = {
 
 export interface GlobeProps {
   className?: string;
-  config?: any;
+  config?: CustomGlobeConfig;
 }
 
 export function Globe({ className, config = GLOBE_CONFIG }: GlobeProps) {
@@ -36,7 +42,7 @@ export function Globe({ className, config = GLOBE_CONFIG }: GlobeProps) {
   const phiRef = useRef(0);
   const widthRef = useRef(0);
 
-  const onRender = useCallback((state: Record<string, any>) => {
+  const onRender = useCallback((state: Record<string, number>) => {
     phiRef.current += 0.005; 
     state.phi = phiRef.current;
     state.width = widthRef.current * 2;
@@ -59,7 +65,7 @@ export function Globe({ className, config = GLOBE_CONFIG }: GlobeProps) {
       width: widthRef.current * 2,
       height: widthRef.current * 2,
       onRender,
-    });
+    } as unknown as COBEOptions);
 
     return () => {
       globe.destroy();
