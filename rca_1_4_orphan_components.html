@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RCA Report — 1.4 Orphan Components Never Wired to Any Route</title>
+  <style>
+    :root {
+      --primary: #0a1224;
+      --secondary: #3b82f6;
+      --text: #1e293b;
+      --bg: #ffffff;
+      --border: #e2e8f0;
+      --code-bg: #f8fafc;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background-color: var(--bg);
+      margin: 0;
+      padding: 40px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: var(--primary);
+      margin: 0 0 10px 0;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: #64748b;
+      margin: 0;
+    }
+
+    h2 {
+      font-size: 20px;
+      color: var(--primary);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      margin-top: 35px;
+      margin-bottom: 15px;
+    }
+
+    h3 {
+      font-size: 16px;
+      color: var(--text);
+      margin-top: 25px;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-medium {
+      background-color: #fef3c7;
+      color: #d97706;
+      border: 1px solid #fde68a;
+    }
+
+    .alert {
+      background-color: #fffbeb;
+      border-left: 4px solid #f59e0b;
+      padding: 16px;
+      border-radius: 0 8px 8px 0;
+      margin: 20px 0;
+    }
+
+    .alert-title {
+      font-weight: 700;
+      color: #b45309;
+      margin-bottom: 4px;
+    }
+
+    pre, code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13px;
+    }
+
+    code {
+      background-color: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #0f172a;
+    }
+
+    ul, ol {
+      padding-left: 24px;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        max-width: 100%;
+        background-color: #ffffff;
+      }
+      
+      header {
+        margin-top: 0;
+      }
+
+      table, pre, .alert {
+        page-break-inside: avoid;
+      }
+
+      h2, h3 {
+        page-break-after: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Root Cause Analysis (RCA) Report</h1>
+    <p class="subtitle">Finding 1.4: Orphan Components Never Wired to Any Route &mdash; Edfoal Website</p>
+  </header>
+
+  <table>
+    <tbody>
+      <tr>
+        <th style="width: 25%;">Finding ID</th>
+        <td><code>RCA-1.4</code></td>
+      </tr>
+      <tr>
+        <th>Severity</th>
+        <td><span class="badge badge-medium">Medium</span></td>
+      </tr>
+      <tr>
+        <th>Status</th>
+        <td><strong>Open / Proposed Remediation</strong></td>
+      </tr>
+      <tr>
+        <th>Affected Components</th>
+        <td>13 Section Components + 8 Demo Files (~21 total files)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>1. Problem Statement &amp; Current State</h2>
+  <p>
+    The repository currently ships approximately <strong>21 orphaned component and demo files</strong> across <code>src/components/sections/</code>, <code>src/components/layout/</code>, and <code>src/components/ui/</code>. While these components exist in the filesystem and contribute to repository bloat, they are <strong>never imported or rendered in any active page route</strong>.
+  </p>
+  <p>
+    When new developers or AI agents inspect the codebase, there is no clear boundary between active production components and experimental/abandoned code.
+  </p>
+
+  <h3>Inventory of Orphaned Components</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>File Path</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td rowspan="9"><strong>Home Sections</strong></td>
+        <td><code>src/components/sections/home/Pricing.tsx</code></td>
+        <td>Orphaned / Never Rendered</td>
+      </tr>
+      <tr><td><code>src/components/sections/home/Features.tsx</code></td><td>Orphaned / Never Rendered</td></tr>
+      <tr><td><code>src/components/sections/home/Testimonials.tsx</code></td><td>Orphaned / Never Rendered</td></tr>
+      <tr><td><code>src/components/sections/home/Stats.tsx</code></td><td>Orphaned / Never Rendered</td></tr>
+      <tr><td><code>src/components/sections/home/CTA.tsx</code></td><td>Orphaned / Never Rendered</td></tr>
+      <tr><td><code>src/components/sections/home/Showcase.tsx</code></td><td>Orphaned / Never Rendered</td></tr>
+      <tr><td><code>src/components/sections/home/HeroSection4.tsx</code></td><td>Orphaned / Never Rendered</td></tr>
+      <tr><td><code>src/components/sections/home/IndustriesCover.tsx</code></td><td>Orphaned / Never Rendered</td></tr>
+      <tr><td><code>src/components/sections/home/ReleaseTimeLine.tsx</code></td><td>Orphaned / Never Rendered</td></tr>
+      
+      <tr>
+        <td rowspan="2"><strong>About Sections</strong></td>
+        <td><code>src/components/sections/about/AboutHero.tsx</code></td>
+        <td>Orphaned / Never Rendered</td>
+      </tr>
+      <tr><td><code>src/components/sections/about/Team.tsx</code></td><td>Orphaned / Never Rendered</td></tr>
+
+      <tr>
+        <td><strong>Services Sections</strong></td>
+        <td><code>src/components/sections/services/ProfileTestimonialCarousel.tsx</code></td>
+        <td>Orphaned / Never Rendered</td>
+      </tr>
+
+      <tr>
+        <td><strong>Layout</strong></td>
+        <td><code>src/components/layout/Sidebar.tsx</code></td>
+        <td>Orphaned / Never Rendered</td>
+      </tr>
+
+      <tr>
+        <td rowspan="8"><strong>UI Demos</strong></td>
+        <td><code>src/components/ui/Globe3D-demo-2.tsx</code></td>
+        <td>Abandoned Demo File</td>
+      </tr>
+      <tr><td><code>src/components/ui/circular-testimonials-demo.tsx</code></td><td>Abandoned Demo File</td></tr>
+      <tr><td><code>src/components/ui/container-scroll-demo.tsx</code></td><td>Abandoned Demo File</td></tr>
+      <tr><td><code>src/components/ui/demo.tsx</code></td><td>Abandoned Demo File</td></tr>
+      <tr><td><code>src/components/ui/globe-demo.tsx</code></td><td>Abandoned Demo File</td></tr>
+      <tr><td><code>src/components/ui/highlight-card-demo.tsx</code></td><td>Abandoned Demo File</td></tr>
+      <tr><td><code>src/components/ui/minimalist-hero-demo.tsx</code></td><td>Abandoned Demo File</td></tr>
+      <tr><td><code>src/components/ui/origin-button-demo.tsx</code></td><td>Abandoned Demo File</td></tr>
+    </tbody>
+  </table>
+
+  <h2>2. Root Cause Analysis</h2>
+  <div class="alert">
+    <div class="alert-title">&#9888; Exploratory Development &amp; Leftover Scaffolding</div>
+    During initial UI exploration and template evaluation, multiple component libraries and landing page variations were prototyped. When the final design language was selected and wired into <code>page.tsx</code> routes, the unselected prototypes and demo files were left behind in the active component directories rather than being cleaned up or archived.
+  </div>
+  <ol>
+    <li><strong>No Garbage Collection Workflow:</strong> The team lacked a periodic pruning process or automated dead-code detection during pull request reviews.</li>
+    <li><strong>Co-location of Demos:</strong> Third-party UI library examples (<code>*-demo.tsx</code>) were dumped directly into <code>src/components/ui/</code> alongside core production primitives.</li>
+  </ol>
+
+  <h2>3. Business &amp; Technical Impact</h2>
+  <ul>
+    <li><strong>Cognitive Overhead:</strong> Developers and code maintainers waste time investigating, refactoring, or testing components that are not even part of the live website.</li>
+    <li><strong>Refactoring Hazard:</strong> When global refactorings occur (such as Server Component migrations), orphaned components trigger TypeScript errors or build failures, dragging down velocity.</li>
+    <li><strong>IDE &amp; Search Clutter:</strong> Searching for symbol references or component names yields false positives from abandoned demo code.</li>
+  </ul>
+
+  <h2>4. Remediation Plan</h2>
+  <p>We propose a clean structural remediation:</p>
+  <ol>
+    <li><strong>Option A (Recommended) — Move &amp; Clean:</strong>
+      <ul>
+        <li>Create an archive directory: <code>src/_archive/components/</code>.</li>
+        <li>Move all 13 orphaned section components and <code>Sidebar.tsx</code> into <code>src/_archive/</code> so exploratory work is preserved without cluttering production folders.</li>
+        <li>Delete the 8 <code>*-demo.tsx</code> files from <code>src/components/ui/</code>.</li>
+        <li>Document active vs. archived components in <code>README.md</code>.</li>
+      </ul>
+    </li>
+    <li><strong>Option B — Complete Deletion:</strong> Delete all 21 orphaned files directly, relying on Git history if prototype code needs to be recovered later.</li>
+  </ol>
+
+  <h2>5. Verification Results</h2>
+  <ol>
+    <li><strong>Dead Code Scan:</strong> Verified that zero imports in active route pages reference any of these 21 files.</li>
+    <li><strong>Build Safety:</strong> Removing or archiving these files will have zero impact on the live website or production bundle.</li>
+  </ol>
+
+  <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: #64748b; text-align: center;">
+    Edfoal Engineering &amp; AI Quality Assurance &bull; Generated July 2026
+  </footer>
+
+</body>
+</html>
