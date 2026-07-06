@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RCA Report — 2.3 Dead Code Files</title>
+  <style>
+    :root {
+      --primary: #0a1224;
+      --secondary: #3b82f6;
+      --text: #1e293b;
+      --bg: #ffffff;
+      --border: #e2e8f0;
+      --code-bg: #f8fafc;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background-color: var(--bg);
+      margin: 0;
+      padding: 40px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: var(--primary);
+      margin: 0 0 10px 0;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: #64748b;
+      margin: 0;
+    }
+
+    h2 {
+      font-size: 20px;
+      color: var(--primary);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      margin-top: 35px;
+      margin-bottom: 15px;
+    }
+
+    h3 {
+      font-size: 16px;
+      color: var(--text);
+      margin-top: 25px;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-medium {
+      background-color: #fef3c7;
+      color: #d97706;
+      border: 1px solid #fde68a;
+    }
+
+    .alert {
+      background-color: #fffbeb;
+      border-left: 4px solid #f59e0b;
+      padding: 16px;
+      border-radius: 0 8px 8px 0;
+      margin: 20px 0;
+    }
+
+    .alert-title {
+      font-weight: 700;
+      color: #b45309;
+      margin-bottom: 4px;
+    }
+
+    pre, code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13px;
+    }
+
+    code {
+      background-color: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #0f172a;
+    }
+
+    ul, ol {
+      padding-left: 24px;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        max-width: 100%;
+        background-color: #ffffff;
+      }
+      
+      header {
+        margin-top: 0;
+      }
+
+      table, pre, .alert {
+        page-break-inside: avoid;
+      }
+
+      h2, h3 {
+        page-break-after: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Root Cause Analysis (RCA) Report</h1>
+    <p class="subtitle">Finding 2.3: Dead Code Files &mdash; Edfoal Website</p>
+  </header>
+
+  <table>
+    <tbody>
+      <tr>
+        <th style="width: 25%;">Finding ID</th>
+        <td><code>RCA-2.3</code></td>
+      </tr>
+      <tr>
+        <th>Severity</th>
+        <td><span class="badge badge-medium">Medium</span></td>
+      </tr>
+      <tr>
+        <th>Status</th>
+        <td><strong>Open / Proposed Remediation</strong></td>
+      </tr>
+      <tr>
+        <th>Affected Files</th>
+        <td><code>src/lib/api.ts</code>, <code>src/lib/constants.ts</code>, <code>src/data/services.ts</code>, <code>src/data/testimonials.ts</code>, <code>GetStartedModal.tsx</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>1. Problem Statement &amp; Current State</h2>
+  <p>
+    The codebase currently contains several dead code files and duplicated datasets across <code>src/lib/</code> and <code>src/data/</code>:
+  </p>
+  <ol>
+    <li><strong>Unused API Fetch Client (<code>src/lib/api.ts:1-26</code>):</strong> Defines a generic <code>apiClient&lt;T&gt;</code> wrapper around <code>fetch()</code>. Static analysis confirms this client is <strong>never imported or executed</strong> anywhere in the project.</li>
+    <li><strong>Unused Site Constants (<code>src/lib/constants.ts:1-11</code>):</strong> Defines <code>SITE_METADATA</code> and <code>SOCIAL_LINKS</code> dictionaries. These constants are <strong>never imported</strong>; site titles, SEO metadata, and social URLs are hardcoded directly inside layout files.</li>
+    <li><strong>Duplicated Services Dataset (<code>src/data/services.ts</code> vs <code>GetStartedModal.tsx:17</code>):</strong> The application defines service offerings in two independent places:
+      <ul>
+        <li><code>src/data/services.ts</code>: Exported <code>servicesData</code> array.</li>
+        <li><code>GetStartedModal.tsx:17</code>: An inline, hardcoded <code>servicesData</code> array containing duplicated descriptions and image URLs.</li>
+      </ul>
+    </li>
+    <li><strong>Unused Testimonials Data (<code>src/data/testimonials.ts</code>):</strong> Defines an exported <code>testimonialSlides</code> array that is <strong>never imported</strong> by any active carousel or section component.</li>
+  </ol>
+
+  <h2>2. Root Cause Analysis</h2>
+  <div class="alert">
+    <div class="alert-title">&#9888; Decoupled Architecture &amp; Prototype Residue</div>
+    During early project setup, standard utility files (<code>api.ts</code>, <code>constants.ts</code>, <code>testimonials.ts</code>) were scaffolded based on Next.js starter templates. As feature development progressed, UI developers opted to hardcode data inline (such as inside <code>GetStartedModal.tsx</code> and layout headers/footers) for rapid visual iterations rather than importing from centralized data sources.
+  </div>
+  <ol>
+    <li><strong>Lack of Single Source of Truth Strategy:</strong> Teams developed feature modals and layout sections independently without enforcing centralized data schemas.</li>
+    <li><strong>Unpruned Boilerplate:</strong> Starter utilities and prototype data arrays were never garbage-collected after production features were finalized.</li>
+  </ol>
+
+  <h2>3. Business &amp; Technical Impact</h2>
+  <ul>
+    <li><strong>Data Drift &amp; Brand Inconsistency:</strong> Having service descriptions and titles duplicated across <code>services.ts</code> and <code>GetStartedModal.tsx</code> guarantees that future content updates will fall out of sync (e.g., updating a pricing tier or feature bullet in one file but forgetting the other).</li>
+    <li><strong>SEO &amp; Social Drift:</strong> Hardcoding metadata and social URLs across layouts instead of using <code>constants.ts</code> makes global branding updates error-prone.</li>
+    <li><strong>Bundle Bloat &amp; Cognitive Overhead:</strong> Developers investigating networking or data flows waste time analyzing dead code utilities like <code>apiClient</code> that do not reflect actual runtime behavior.</li>
+  </ul>
+
+  <h2>4. Remediation Plan</h2>
+  <p>We propose a clean structural cleanup and consolidation:</p>
+  <ol>
+    <li><strong>Centralize Services Data (Single Source of Truth):</strong>
+      <ul>
+        <li>Consolidate all rich service details into <code>src/data/services.ts</code>.</li>
+        <li>Refactor <code>GetStartedModal.tsx</code> to import and consume <code>servicesData</code> from <code>@/data/services</code>, deleting the inline hardcoded array at line 17.</li>
+      </ul>
+    </li>
+    <li><strong>Wire Up or Prune Constants:</strong> Import <code>SITE_METADATA</code> and <code>SOCIAL_LINKS</code> into layout and footer components, or delete <code>constants.ts</code> if hardcoded layouts are preferred.</li>
+    <li><strong>Delete Unused Dead Code Files:</strong> Delete <code>src/lib/api.ts</code> and <code>src/data/testimonials.ts</code>.</li>
+  </ol>
+
+  <h2>5. Verification Plan</h2>
+  <ol>
+    <li><strong>Static Reference Check:</strong> Confirm via grep search that zero references remain to deleted dead files and zero inline <code>servicesData</code> duplicates exist.</li>
+    <li><strong>Production Build Test:</strong> Run <code>npm run build</code> to verify that removing dead files and consolidating service imports compiles cleanly without TypeScript or routing errors.</li>
+  </ol>
+
+  <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: #64748b; text-align: center;">
+    Edfoal Engineering &amp; AI Quality Assurance &bull; Generated July 2026
+  </footer>
+
+</body>
+</html>
