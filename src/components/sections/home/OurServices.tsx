@@ -34,22 +34,6 @@ export default function OurServices() {
           <Globe3DDemoSecond />
         </div>
       </div>
-      {/* <div
-        className="w-full text-center flex flex-col items-center justify-center"
-        style={{
-          maxWidth: "1450px",
-          marginLeft: "auto",
-          marginRight: "auto"
-        }}
-      >
-        <h2 className="text-sm  font-bold text-gray-500 tracking-tight leading-tight">
-          Our Serives
-        </h2>
-
-        <div className="w-full flex justify-center">
-          <Globe3DDemoSecond />
-        </div>
-      </div> */}
     </section>
   );
 }
