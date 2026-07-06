@@ -2,6 +2,7 @@
 
 import React from "react";
 import { ArrowUpRight, Zap } from "lucide-react";
+import { BRAND_NAME } from "@/lib/constants";
 
 const ChartIcon = () => (
   <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-md shrink-0">
@@ -67,7 +68,7 @@ export default function WhyChooseUs() {
             </span>
           </p>
           <p className="mx-auto mb-8 mt-4 max-w-4xl text-sm font-medium leading-relaxed text-gray-500 sm:mb-10 md:text-[16px] lg:mb-6">
-            EdFoal AI combines expertise, innovation, and tailored solutions to drive your business forward. We create custom AI systems designed to meet your unique needs, ensuring seamless integration and scalable growth as your business evolves.
+            {BRAND_NAME} AI combines expertise, innovation, and tailored solutions to drive your business forward. We create custom AI systems designed to meet your unique needs, ensuring seamless integration and scalable growth as your business evolves.
           </p>
         </div>
 

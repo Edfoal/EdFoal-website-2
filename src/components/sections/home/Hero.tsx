@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ParticleBrain from "./ParticleBrain";
 import { OriginButton } from "@/components/ui/OriginButton";
+import { BRAND_NAME } from "@/lib/constants";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -134,7 +135,7 @@ export default function HeroSection() {
               </div>
 
               <p className="mb-7 max-w-lg text-sm leading-[1.7] text-white/75 sm:text-[15px] lg:mb-8.5 lg:max-w-none lg:text-white/68">
-                Unlock new levels of efficiency, innovation, and customer satisfaction through EdFoal AI&apos;s cutting-edge, custom-tailored AI services. Let us help you evolve with the power of AI.
+                Unlock new levels of efficiency, innovation, and customer satisfaction through {BRAND_NAME} AI&apos;s cutting-edge, custom-tailored AI services. Let us help you evolve with the power of AI.
               </p>
 
               <div className="inline-flex h-11 w-full max-w-52 items-center justify-center rounded-full sm:h-10 sm:w-50">

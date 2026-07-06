@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Root Cause Analysis (RCA) Report — RCA-2.5</title>
+  <style>
+    :root {
+      --primary: #0f172a;
+      --secondary: #3b82f6;
+      --text: #334155;
+      --bg: #ffffff;
+      --border: #cbd5e1;
+      --code-bg: #f8fafc;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background-color: var(--bg);
+      margin: 0;
+      padding: 40px;
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 26px;
+      color: var(--primary);
+      margin: 0 0 8px 0;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: #64748b;
+      margin: 0;
+      font-weight: 500;
+    }
+
+    h2 {
+      font-size: 18px;
+      color: var(--primary);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+      margin-top: 35px;
+      margin-bottom: 15px;
+    }
+
+    h3 {
+      font-size: 15px;
+      color: #0f172a;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 13px;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-low {
+      background-color: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+
+    pre, code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+    }
+
+    code {
+      background-color: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #0f172a;
+    }
+
+    pre {
+      background-color: #f8fafc;
+      border: 1px solid var(--border);
+      padding: 12px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+
+    ul, ol {
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        max-width: 100%;
+        background-color: #ffffff;
+      }
+      
+      header {
+        margin-top: 0;
+      }
+
+      table, pre {
+        page-break-inside: avoid;
+      }
+
+      h2, h3 {
+        page-break-after: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Root Cause Analysis (RCA) Report</h1>
+    <p class="subtitle">Engineering Audit &amp; Technical Assessment &mdash; Edfoal Website</p>
+  </header>
+
+  <h2>Finding Information</h2>
+  <table>
+    <tbody>
+      <tr>
+        <th style="width: 25%;">Finding ID</th>
+        <td><code>RCA-2.5</code></td>
+      </tr>
+      <tr>
+        <th>Severity</th>
+        <td><span class="badge badge-low">Low</span></td>
+      </tr>
+      <tr>
+        <th>Status</th>
+        <td><strong>Open / Proposed Remediation</strong></td>
+      </tr>
+      <tr>
+        <th>Affected Files</th>
+        <td><code>src/app/layout.tsx:12</code>, <code>src/lib/constants.ts:2</code>, <code>src/components/ui/LargeNameFooter.tsx:69</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>1. Problem Statement &amp; Current State</h2>
+  <p>
+    An engineering and branding audit of the codebase reveals that the project currently uses multiple inconsistent representations of the company brand name across the application.
+  </p>
+  <p>
+    Specifically, textual inspection across layout headers, metadata definitions, and user interface components identified three distinct variations:
+  </p>
+  <ul>
+    <li>"Edfoal"</li>
+    <li>"EdFoal"</li>
+    <li>"EdFoal AI"</li>
+  </ul>
+  <p>
+    At present, there is no centralized source of truth for the brand name. Instead, string literals are hardcoded independently across layout files, SEO metadata declarations, and UI components. This decentralization has resulted in noticeable branding discrepancies between page headers, document titles, promotional callouts, and footer sections.
+  </p>
+
+  <h2>2. Root Cause Analysis (Business &amp; Engineering)</h2>
+  <p>
+    To provide a comprehensive assessment for project stakeholders, the root cause of this inconsistency has been evaluated from both business governance and software engineering perspectives.
+  </p>
+
+  <h3>Business Root Cause</h3>
+  <p>
+    From an organizational and process standpoint, the inconsistency stems from a lack of formal branding governance during the development lifecycle:
+  </p>
+  <ul>
+    <li><strong>Lack of Formal Branding Governance:</strong> There was no mandatory brand style guide enforced during the copywriting and UI prototyping phases.</li>
+    <li><strong>Absence of Centralized Documentation:</strong> Contributors lacked an authoritative reference document specifying the canonical capitalization and spacing of the brand name.</li>
+    <li><strong>Independent Content Evolution:</strong> Different developers and content creators worked on separate pages and features asynchronously, leading to divergent spellings and naming conventions over time.</li>
+    <li><strong>Unenforced Guidelines:</strong> Even where brand preferences existed informally, they were not communicated as a strict requirement to external contractors or engineering teams.</li>
+  </ul>
+
+  <h3>Engineering Root Cause</h3>
+  <p>
+    From a technical and architectural perspective, the issue is a classic violation of modular design and configuration management principles:
+  </p>
+  <ul>
+    <li><strong>Hardcoded String Literals:</strong> The brand name is manually typed as a raw string across dozens of individual component files rather than being referenced from a shared configuration variable.</li>
+    <li><strong>Absence of a Global Constant:</strong> No global <code>BRAND_NAME</code> constant or configuration export was established during the initial project scaffolding.</li>
+    <li><strong>Copy-Paste Prototyping:</strong> Developers copied text directly from design mockups or previous components without standardizing the underlying data structures.</li>
+    <li><strong>Scope of Code Reviews:</strong> Pull request reviews and technical evaluations focused primarily on functional correctness, responsive layout, and runtime performance rather than textual or branding consistency.</li>
+    <li><strong>Lack of Automated Validation:</strong> The repository lacks automated linting rules, custom static analysis checks, or pre-commit hooks to detect and flag non-canonical brand strings.</li>
+  </ul>
+
+  <h2>3. Business &amp; Technical Impact</h2>
+  <p>
+    Although categorized as a low-severity finding due to the lack of runtime functional impairment, the ongoing presence of inconsistent branding introduces tangible risks and inefficiencies.
+  </p>
+
+  <h3>Business Impact</h3>
+  <ul>
+    <li><strong>Reduced Brand Professionalism:</strong> Presenting variations such as "Edfoal" and "EdFoal" on the same website diminishes the perceived maturity and attention to detail of the organization.</li>
+    <li><strong>Inconsistent User Experience:</strong> Visitors navigating across different sections of the platform may experience subtle confusion regarding the official identity of the company and its product suite.</li>
+    <li><strong>Weakened Brand Identity:</strong> Inconsistent capitalization dilutes brand recognition in competitive markets and digital advertising channels.</li>
+    <li><strong>Marketing Asset Inconsistency:</strong> External promotional materials, social media share cards (OpenGraph tags), and search engine search results display conflicting brand names.</li>
+  </ul>
+
+  <h3>Technical Impact</h3>
+  <ul>
+    <li><strong>High Refactoring Overhead:</strong> Modifying or rebranding the company name currently requires manual edits across multiple disparate files rather than a single line change.</li>
+    <li><strong>Increased Maintenance Effort:</strong> Future developers must expend cognitive effort deciding which spelling to use when creating new pages or components.</li>
+    <li><strong>Regression Risk:</strong> Manual multi-file updates carry a high probability of human error, increasing the likelihood that certain instances will be overlooked during future updates.</li>
+    <li><strong>Violation of Core Engineering Principles:</strong> Hardcoding shared domain concepts violates the DRY (Don't Repeat Yourself) and Single Source of Truth principles, encouraging further technical debt and data duplication.</li>
+  </ul>
+
+  <h2>4. Recommended Remediation</h2>
+  <p>
+    We recommend implementing a centralized branding configuration strategy to eliminate redundancy and enforce canonical brand consistency across the entire application.
+  </p>
+
+  <h3>Step 1</h3>
+  <p>Create a single source of truth within the shared utilities or constants module.</p>
+  <p>Example modification in <code>src/lib/constants.ts</code>:</p>
+  <pre><code>export const BRAND_NAME = "EdFoal";</code></pre>
+
+  <h3>Step 2</h3>
+  <p>Replace every hardcoded occurrence of the brand string across the codebase ("Edfoal", "EdFoal", and "EdFoal AI") with a programmatically imported reference:</p>
+  <pre><code>import { BRAND_NAME } from "@/lib/constants";</code></pre>
+  <p>Use <code>BRAND_NAME</code> wherever the canonical company name is required in JSX, layout headers, and text blocks.</p>
+
+  <h3>Step 3</h3>
+  <p>If a marketing page or service offering intentionally uses an expanded product title such as "EdFoal AI", this string must be derived programmatically from the canonical constant rather than manually typed as a raw string.</p>
+  <p>Example derivation:</p>
+  <pre><code>const productTitle = `${BRAND_NAME} AI`;</code></pre>
+
+  <h3>Step 4</h3>
+  <p>Systematically update all document metadata declarations, navigation bars, footer components, layout wrappers, SEO tags, and OpenGraph page titles to consume the centralized constant from <code>src/lib/constants.ts</code>.</p>
+
+  <h2>5. Verification Plan</h2>
+  <p>
+    To confirm the successful execution of the remediation plan and prevent future regression, the following verification protocol must be executed:
+  </p>
+  <ol>
+    <li><strong>Repository-Wide Static Scan:</strong> Perform a comprehensive regular expression and text search across the entire project repository (<code>src/</code>) for string literals matching:
+      <ul>
+        <li><code>Edfoal</code></li>
+        <li><code>EdFoal</code></li>
+        <li><code>EdFoal AI</code></li>
+      </ul>
+    </li>
+    <li><strong>Single Source of Truth Audit:</strong> Confirm that only <code>src/lib/constants.ts</code> (or the designated configuration file) contains the raw canonical brand string literal.</li>
+    <li><strong>Static Analysis &amp; Linting:</strong> Execute the automated linting suite to ensure no syntax errors or unused import warnings were introduced:
+      <pre><code>npm run lint</code></pre>
+    </li>
+    <li><strong>Production Bundle Verification:</strong> Execute the production build compiler to verify that template literals and constant imports compile cleanly into static and server-rendered routes:
+      <pre><code>npm run build</code></pre>
+    </li>
+    <li><strong>Visual &amp; SEO Inspection:</strong> Perform manual verification across browser endpoints and view-source metadata to confirm that the brand name renders consistently across all visual layouts and search engine tags.</li>
+  </ol>
+
+  <h2>6. Conclusion</h2>
+  <p>
+    Finding RCA-2.5 represents a low-severity architectural and operational finding with zero impact on runtime software functionality or system availability. However, resolving this discrepancy is a high-value structural optimization. By establishing a Single Source of Truth for organizational identity, the engineering team directly enhances brand professionalism, eliminates maintenance friction, and reinforces long-term code quality across the repository.
+  </p>
+
+  <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 11px; color: #64748b; text-align: center;">
+    Engineering Audit &amp; Technical Assessment Report &bull; Generated July 2026
+  </footer>
+
+</body>
+</html>

@@ -3,6 +3,7 @@ import * as React from "react";
 import { useRef } from "react";
 import Link from "next/link";
 import { Mail, Phone, Clock } from "lucide-react";
+import { BRAND_NAME } from "@/lib/constants";
 import { navigationItems } from "@/data/navigation";
 import {
   motion,
@@ -67,7 +68,7 @@ function Footer() {
           color: "transparent",
         }}
       >
-        EdFoal
+        {BRAND_NAME}
       </div>
 
       <div className="relative z-10 mx-auto w-full max-w-360 px-5 pb-6 pt-10 sm:px-6 sm:pt-14 md:px-12 lg:px-20 lg:pt-16">
@@ -79,12 +80,12 @@ function Footer() {
             <Link href="/" className="mb-4 inline-block">
               <img
                 src={footerLogoUrl}
-                alt="Edfoal Logo"
+                alt={`${BRAND_NAME} Logo`}
                 className="h-7 w-auto object-contain"
               />
             </Link>
             <p className="mb-4 max-w-[280px] text-[13.5px] leading-relaxed text-zinc-400">
-              At EdFoal AI, we create tailored AI solutions to reduce costs, save
+              At {BRAND_NAME} AI, we create tailored AI solutions to reduce costs, save
               time, and enhance business efficiency for growth.
             </p>
             <motion.div

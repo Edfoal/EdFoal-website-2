@@ -2,11 +2,12 @@ import React from "react";
 import type { Metadata } from "next";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { BRAND_NAME } from "@/lib/constants";
 import ContactContent from "@/components/sections/contact/ContactContent";
 
 export const metadata: Metadata = {
-  title: "Contact Us | Edfoal",
-  description: "Get in touch with our AI strategy and engineering team to explore cutting-edge AI solutions tailored just for you.",
+  title: `Contact Us | ${BRAND_NAME}`,
+  description: `Get in touch with our ${BRAND_NAME} AI strategy and engineering team to explore cutting-edge AI solutions tailored just for you.`,
 };
 
 export default function ContactPage() {

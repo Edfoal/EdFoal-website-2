@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BackgroundEffects from "@/components/ui/BackgroundEffects";
+import { BRAND_NAME } from "@/lib/constants";
 import BlogPostDetailContent from "@/components/sections/blog/BlogPostDetailContent";
 import { postsData } from "@/data/blogPosts";
 
@@ -16,7 +17,7 @@ export async function generateMetadata({ params }: BlogPostProps): Promise<Metad
   const { slug } = await params;
   const post = postsData[slug];
   return {
-    title: post ? `${post.title} | Edfoal Blog` : "Article Not Found | Edfoal",
+    title: post ? `${post.title} | ${BRAND_NAME} Blog` : `Article Not Found | ${BRAND_NAME}`,
     description: post ? post.content[0] : "The requested article could not be found.",
   };
 }

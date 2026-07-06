@@ -6,6 +6,7 @@ import { InfiniteSlider } from '@/components/ui/InfiniteSlider'
 import { ProgressiveBlur } from '@/components/ui/ProgressiveBlur'
 import { cn } from '@/lib/utils'
 import { Menu, X } from 'lucide-react'
+import { BRAND_NAME } from '@/lib/constants'
 
 export interface HeroSectionProps {
     showNavbar?: boolean
@@ -266,7 +267,7 @@ const Logo = ({ className }: { className?: string }) => {
     return (
         <img
             src="https://ik.imagekit.io/edfoalImage/assets/image/footerlogo.png"
-            alt="Edfoal Logo"
+            alt={`${BRAND_NAME} Logo`}
             width={120}
             height={18}
             className={cn('h-5 w-auto object-contain invert dark:invert-0', className)}

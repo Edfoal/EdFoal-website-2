@@ -6,13 +6,14 @@ import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { OriginButton } from "@/components/ui/OriginButton";
+import { BRAND_NAME } from "@/lib/constants";
 import { navigationItems } from "@/data/navigation";
 
 const EdfoalLogo = ({ isLight }: { isLight: boolean }) => (
   <div className="flex items-center select-none group cursor-pointer">
     <img
       src="https://ik.imagekit.io/edfoalImage/assets/image/footerlogo.png"
-      alt="Edfoal"
+      alt={BRAND_NAME}
       width={150}
       height={22}
       className={`h-4 w-auto object-contain transform transition-transform duration-300 group-hover:scale-105 min-[420px]:h-5 sm:h-[22px] ${isLight ? "invert" : ""
@@ -87,7 +88,7 @@ export default function Navbar() {
 
           {/* 1. Left Column: Brand Logo */}
           <div className="flex flex-initial items-center justify-start">
-            <Link href="/" className="flex items-center" aria-label="Go to Edfoal homepage">
+            <Link href="/" className="flex items-center" aria-label={`Go to ${BRAND_NAME} homepage`}>
               <EdfoalLogo isLight={isLight} />
             </Link>
           </div>

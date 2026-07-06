@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
 import "@/styles/globals.css";
+import { BRAND_NAME } from "@/lib/constants";
 import SmoothScroll from "@/components/ui/SmoothScroll";
 
 const spaceGrotesk = Space_Grotesk({
@@ -10,8 +11,8 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Edfoal | Transform Learning Into Intelligence",
-  description: "Edfoal helps students, educators, and organizations unlock knowledge through AI-powered learning experiences and intelligent insights.",
+  title: `${BRAND_NAME} | Transform Learning Into Intelligence`,
+  description: `${BRAND_NAME} helps students, educators, and organizations unlock knowledge through AI-powered learning experiences and intelligent insights.`,
 };
 
 export default function RootLayout({

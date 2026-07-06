@@ -2,6 +2,7 @@ import React from "react";
 import type { Metadata } from "next";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { BRAND_NAME } from "@/lib/constants";
 import CaseStudyDetailContent from "@/components/sections/usecases/CaseStudyDetailContent";
 import { caseStudiesData } from "@/data/caseStudies";
 
@@ -14,7 +15,7 @@ export async function generateMetadata({ searchParams }: UsecaseDetailProps): Pr
   const studyId = id || "1";
   const study = caseStudiesData[studyId] || caseStudiesData["1"];
   return {
-    title: `${study.title} | Edfoal Case Studies`,
+    title: `${study.title} | ${BRAND_NAME} Case Studies`,
     description: study.subtitle,
   };
 }
