@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Root Cause Analysis (RCA) Report — RCA-4.3</title>
+  <style>
+    :root {
+      --primary: #0f172a;
+      --secondary: #3b82f6;
+      --text: #334155;
+      --bg: #ffffff;
+      --border: #cbd5e1;
+      --code-bg: #f8fafc;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background-color: var(--bg);
+      margin: 0;
+      padding: 40px;
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 26px;
+      color: var(--primary);
+      margin: 0 0 8px 0;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: #64748b;
+      margin: 0;
+      font-weight: 500;
+    }
+
+    h2 {
+      font-size: 18px;
+      color: var(--primary);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+      margin-top: 35px;
+      margin-bottom: 15px;
+    }
+
+    h3 {
+      font-size: 15px;
+      color: #0f172a;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 13px;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-low {
+      background-color: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+
+    .badge-open {
+      background-color: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fde68a;
+    }
+
+    .badge-pass {
+      background-color: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .callout {
+      background-color: #f8fafc;
+      border-left: 4px solid var(--secondary);
+      padding: 16px 20px;
+      margin: 20px 0;
+      border-radius: 0 6px 6px 0;
+      font-size: 13.5px;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    pre {
+      background-color: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background-color: #f1f5f9;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #0f172a;
+    }
+
+    pre code {
+      background-color: transparent;
+      padding: 0;
+    }
+
+    .diff-remove {
+      color: #b91c1c;
+      background-color: #fef2f2;
+      display: block;
+      width: 100%;
+    }
+
+    .diff-add {
+      color: #15803d;
+      background-color: #f0fdf4;
+      display: block;
+      width: 100%;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 8px;
+      font-size: 13.5px;
+    }
+
+    .footer-meta {
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: #64748b;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        max-width: 100%;
+      }
+      header {
+        margin-bottom: 20px;
+      }
+      .callout, pre, table {
+        page-break-inside: avoid;
+      }
+      h2 {
+        page-break-after: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Root Cause Analysis (RCA) Report</h1>
+    <p class="subtitle">Engineering Audit & Technical Assurance Document</p>
+  </header>
+
+  <section>
+    <h2>Finding Information</h2>
+    <table>
+      <tbody>
+        <tr>
+          <th style="width: 25%;">Finding ID</th>
+          <td><strong>RCA-4.3</strong></td>
+        </tr>
+        <tr>
+          <th>Severity</th>
+          <td><span class="badge badge-low">Low</span> <em>(Dead Code Today / Latent Hazard)</em></td>
+        </tr>
+        <tr>
+          <th>Status</th>
+          <td><span class="badge badge-open">Open / Proposed Remediation</span></td>
+        </tr>
+        <tr>
+          <th>Affected Files</th>
+          <td><code>src/lib/api.ts:18-22</code></td>
+        </tr>
+        <tr>
+          <th>Core Issue</th>
+          <td>Generic HTTP client forwards raw server error body text directly to caller, risking internal detail leakage.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>1. Problem Statement & Current State</h2>
+    <p>
+      During an architecture and security audit of core utility libraries, a <strong>latent information leakage vulnerability</strong> was identified in the generic fetch client <code>src/lib/api.ts</code> between lines 18 and 22.
+    </p>
+    <p>
+      When an HTTP request returns a non-200 status code (<code>!response.ok</code>), the client executes <code>await response.text()</code> and directly injects the raw server response body into a thrown JavaScript <code>Error</code> object:
+    </p>
+    <pre><code>  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(
+      `API error [${response.status}]: ${errorBody || response.statusText}`
+    );
+  }</code></pre>
+    <p>
+      If a backend server or upstream API returns an unhandled 500 Internal Server Error, database query failure, or stack trace, throwing the raw <code>errorBody</code> directly to the caller risks leaking sensitive internal backend details (such as SQL syntax, table names, file system paths, or internal microservice IPs) to the client browser or frontend error reporting UI.
+    </p>
+    <p>
+      Although <code>src/lib/api.ts</code> is currently <strong>dead code</strong> (not active in any production page routing today), leaving raw response forwarding in a core library represents an immediate latent hazard as soon as future feature development adopts this utility.
+    </p>
+  </section>
+
+  <section>
+    <h2>2. Root Cause Analysis</h2>
+    <div class="callout">
+      <div class="callout-title">
+        <span>🔍 Naïve Error Handling in Utility Scaffold</span>
+      </div>
+      <p style="margin: 0;">
+        During initial project scaffolding, <code>src/lib/api.ts</code> was authored as a quick-start HTTP wrapper. The developer prioritized immediate debugging convenience—dumping whatever text the backend returned into the error message—without implementing data sanitization or separation between server logging and client-facing error messages.
+      </p>
+    </div>
+    <ul>
+      <li><strong>Lack of Boundary Sanitization:</strong> The utility assumes all API error responses are safe, human-readable strings intended for end users, ignoring the fact that upstream web servers often dump raw HTML stack traces or database exception details during unhandled crashes.</li>
+      <li><strong>Missing Structured Error Schema:</strong> The application lacks a standardized error schema (e.g., <code>{ code: string; message: string }</code>) for API communications, forcing the client to treat arbitrary text payloads as valid error messages.</li>
+      <li><strong>Dead Code Stagnation:</strong> Because the function is not actively invoked in the current codebase, standard QA and penetration testing did not trigger or expose the vulnerability during runtime testing.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>3. Business & Technical Impact</h2>
+    <ul>
+      <li><strong>Information Leakage & Attack Surface Expansion:</strong> If future developers wire this client to a backend authentication or billing endpoint, raw server exceptions (e.g., <code>PGError: relation "users" does not exist</code>) could be exposed in browser devtools or user error modals, providing malicious actors with valuable reconnaissance data.</li>
+      <li><strong>Unprofessional UI Degradation:</strong> If an upstream server returns a custom HTML error page (such as a Cloudflare or Nginx 502 Bad Gateway HTML dump), throwing raw text causes ugly HTML markup strings to render inside frontend alert toasts or error boundaries.</li>
+      <li><strong>Engineering Rigor:</strong> Proactively hardening utility libraries before they are wired into active feature flows prevents technical debt and security regressions.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>4. Remediation Plan</h2>
+    <p>
+      We propose hardening <code>src/lib/api.ts</code> by adhering to the defensive rule: <strong>"Parse structured errors; never forward raw server responses."</strong>
+    </p>
+    <h3>Step 1: Harden <code>apiClient</code> in <code>src/lib/api.ts</code></h3>
+    <p>Modify lines 18–23 to safely parse structured JSON error messages if provided by the backend, while defaulting to a clean, sanitized HTTP status message for all unhandled text or HTML responses:</p>
+    <pre><code>   if (!response.ok) {
+<span class="diff-remove">-    const errorBody = await response.text();</span>
+<span class="diff-remove">-    throw new Error(</span>
+<span class="diff-remove">-      `API error [${response.status}]: ${errorBody || response.statusText}`</span>
+<span class="diff-remove">-    );</span>
+<span class="diff-add">+    let errorMessage = `Request failed with status ${response.status} (${response.statusText})`;</span>
+<span class="diff-add">+    </span>
+<span class="diff-add">+    try {</span>
+<span class="diff-add">+      const errorJson = await response.json();</span>
+<span class="diff-add">+      if (errorJson && typeof errorJson.message === "string") {</span>
+<span class="diff-add">+        errorMessage = errorJson.message;</span>
+<span class="diff-add">+      }</span>
+<span class="diff-add">+    } catch {</span>
+<span class="diff-add">+      // Fallback: If response is not JSON (e.g. HTML stack trace), do NOT leak raw body to client</span>
+<span class="diff-add">+    }</span>
+<span class="diff-add">+</span>
+<span class="diff-add">+    throw new Error(errorMessage);</span>
+   }</code></pre>
+  </section>
+
+  <section>
+    <h2>5. Verification & Assurance Plan</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Verification Step</th>
+          <th>Methodology</th>
+          <th>Expected Outcome</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Linter Audit</strong></td>
+          <td>Execute <code>npm run lint</code> across the workspace.</td>
+          <td><span class="badge badge-pass">Pass (0 Errors)</span> — Confirms TypeScript interfaces and syntax remain clean.</td>
+        </tr>
+        <tr>
+          <td><strong>Production Build</strong></td>
+          <td>Execute <code>npm run build</code> with Turbopack.</td>
+          <td><span class="badge badge-pass">Pass (Clean Build)</span> — Confirms utility compilation succeeds without breaking dependencies.</td>
+        </tr>
+        <tr>
+          <td><strong>Sanitization Check</strong></td>
+          <td>Simulate non-200 response with raw HTML body.</td>
+          <td><span class="badge badge-pass">Sanitized Output</span> — Confirms raw HTML is suppressed in favor of safe status message.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="footer-meta">
+    <span>Engineering Audit & Architecture Team</span>
+    <span>Generated for EdFoal Website Repository</span>
+  </div>
+
+</body>
+</html>

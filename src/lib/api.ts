@@ -16,10 +16,18 @@ export async function apiClient<T>(
   });
 
   if (!response.ok) {
-    const errorBody = await response.text();
-    throw new Error(
-      `API error [${response.status}]: ${errorBody || response.statusText}`
-    );
+    let errorMessage = `Request failed with status ${response.status} (${response.statusText})`;
+
+    try {
+      const errorJson = await response.json();
+      if (errorJson && typeof errorJson.message === "string") {
+        errorMessage = errorJson.message;
+      }
+    } catch {
+      // Fallback: If response is not JSON (e.g. HTML stack trace), do NOT leak raw body to client
+    }
+
+    throw new Error(errorMessage);
   }
 
   return response.json() as Promise<T>;

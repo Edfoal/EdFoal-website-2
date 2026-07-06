@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Root Cause Analysis (RCA) Report — RCA-2.7</title>
+  <style>
+    :root {
+      --primary: #0f172a;
+      --secondary: #3b82f6;
+      --text: #334155;
+      --bg: #ffffff;
+      --border: #cbd5e1;
+      --code-bg: #f8fafc;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background-color: var(--bg);
+      margin: 0;
+      padding: 40px;
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 26px;
+      color: var(--primary);
+      margin: 0 0 8px 0;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: #64748b;
+      margin: 0;
+      font-weight: 500;
+    }
+
+    h2 {
+      font-size: 18px;
+      color: var(--primary);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+      margin-top: 35px;
+      margin-bottom: 15px;
+    }
+
+    h3 {
+      font-size: 15px;
+      color: #0f172a;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 13px;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-low {
+      background-color: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+
+    .badge-open {
+      background-color: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fde68a;
+    }
+
+    .badge-pass {
+      background-color: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .callout {
+      background-color: #f8fafc;
+      border-left: 4px solid var(--secondary);
+      padding: 16px 20px;
+      margin: 20px 0;
+      border-radius: 0 6px 6px 0;
+      font-size: 13.5px;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    pre {
+      background-color: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background-color: #f1f5f9;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #0f172a;
+    }
+
+    pre code {
+      background-color: transparent;
+      padding: 0;
+    }
+
+    .diff-remove {
+      color: #b91c1c;
+      background-color: #fef2f2;
+      display: block;
+      width: 100%;
+    }
+
+    .diff-add {
+      color: #15803d;
+      background-color: #f0fdf4;
+      display: block;
+      width: 100%;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 8px;
+      font-size: 13.5px;
+    }
+
+    .footer-meta {
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: #64748b;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        max-width: 100%;
+      }
+      header {
+        margin-bottom: 20px;
+      }
+      .callout, pre, table {
+        page-break-inside: avoid;
+      }
+      h2 {
+        page-break-after: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Root Cause Analysis (RCA) Report</h1>
+    <p class="subtitle">Engineering Audit & Technical Assurance Document</p>
+  </header>
+
+  <section>
+    <h2>Finding Information</h2>
+    <table>
+      <tbody>
+        <tr>
+          <th style="width: 25%;">Finding ID</th>
+          <td><strong>RCA-2.7</strong></td>
+        </tr>
+        <tr>
+          <th>Severity</th>
+          <td><span class="badge badge-low">Low</span></td>
+        </tr>
+        <tr>
+          <th>Status</th>
+          <td><span class="badge badge-open">Open / Proposed Remediation</span></td>
+        </tr>
+        <tr>
+          <th>Affected Files</th>
+          <td><code>src/components/sections/home/OurServices.tsx:37-52</code></td>
+        </tr>
+        <tr>
+          <th>Core Issue</th>
+          <td>Large commented-out code block left in active production UI file.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>1. Problem Statement & Current State</h2>
+    <p>
+      During a comprehensive codebase audit, a <strong>16-line commented-out JSX block</strong> was identified in the production component <code>src/components/sections/home/OurServices.tsx</code> (lines 37–52).
+    </p>
+    <p>
+      The inactive code represents an obsolete layout wrapper attempting to render a duplicate <code>&lt;Globe3DDemoSecond /&gt;</code> component alongside a section heading containing a typographical error (<code>"Our Serives"</code>):
+    </p>
+    <pre><code>{/* &lt;div
+  className="w-full text-center flex flex-col items-center justify-center"
+  style={{
+    maxWidth: "1450px",
+    marginLeft: "auto",
+    marginRight: "auto"
+  }}
+&gt;
+  &lt;h2 className="text-sm font-bold text-gray-500 tracking-tight leading-tight"&gt;
+    Our Serives
+  &lt;/h2&gt;
+
+  &lt;div className="w-full flex justify-center"&gt;
+    &lt;Globe3DDemoSecond /&gt;
+  &lt;/div&gt;
+&lt;/div&gt; */}</code></pre>
+    <p>
+      While JavaScript bundlers (Webpack and Turbopack) automatically strip HTML and JSX comments during production minification without impacting runtime bundle size, retaining large dead code blocks inside active source files violates clean code standards and degrades long-term repository maintainability.
+    </p>
+  </section>
+
+  <section>
+    <h2>2. Root Cause Analysis</h2>
+    <div class="callout">
+      <div class="callout-title">
+        <span>🔍 Prototyping Residue & Version Control Fallacy</span>
+      </div>
+      <p style="margin: 0;">
+        During rapid UI prototyping and responsive layout experimentation, frontend developers frequently comment out previous layout iterations instead of deleting them. When the final design (lines 33–35) was finalized and approved, the older draft was left commented out in the source file under the mistaken assumption that it might be needed for future reference.
+      </p>
+    </div>
+    <ul>
+      <li><strong>The "Just in Case" Anti-Pattern:</strong> Developers often preserve deprecated code in comments out of fear of losing work, overlooking the fundamental purpose of Git version control, which permanently archives all historical file states.</li>
+      <li><strong>Absence of Dead-Code Linting Rules:</strong> The repository currently lacks automated pre-commit hooks or linter rules (e.g., SonarQube rules or custom ESLint plugins against multi-line commented code blocks) to flag and prevent inactive code from merging into production branches.</li>
+      <li><strong>Abandoned Draft Confirmation:</strong> The presence of the typographical error <code>"Our Serives"</code> confirms that this block was an early, unpolished layout draft that was superseded by the cleaner implementation above it.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>3. Business & Technical Impact</h2>
+    <ul>
+      <li><strong>Developer Cognitive Load:</strong> Engineers reading, debugging, or refactoring <code>OurServices.tsx</code> must visually parse and filter out 16 lines of dead JSX noise, increasing cognitive friction during onboarding and code reviews.</li>
+      <li><strong>Risk of Zombie Code Revival:</strong> Future contributors or AI coding assistants attempting to modify the home page layout might mistakenly uncomment or reference this obsolete block, re-introducing broken styling and typos into production.</li>
+      <li><strong>Engineering Rigor & Cleanliness:</strong> Although the finding carries a <strong>Low</strong> severity rating due to zero runtime performance degradation, systematically pruning dead code reinforces professional engineering rigor and prevents codebase decay.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>4. Remediation Plan</h2>
+    <p>
+      We propose adopting the industry-standard remediation rule for dead code: <strong>"Delete it. Git has history."</strong>
+    </p>
+    <h3>Step 1: Prune Dead JSX from <code>OurServices.tsx</code></h3>
+    <p>Delete lines 37–52 from <code>src/components/sections/home/OurServices.tsx</code> completely:</p>
+    <pre><code>         &lt;div className="flex w-full justify-center"&gt;
+           &lt;Globe3DDemoSecond /&gt;
+         &lt;/div&gt;
+       &lt;/div&gt;
+<span class="diff-remove">-      {/* &lt;div</span>
+<span class="diff-remove">-        className="w-full text-center flex flex-col items-center justify-center"</span>
+<span class="diff-remove">-        style={{</span>
+<span class="diff-remove">-          maxWidth: "1450px",</span>
+<span class="diff-remove">-          marginLeft: "auto",</span>
+<span class="diff-remove">-          marginRight: "auto"</span>
+<span class="diff-remove">-        }}</span>
+<span class="diff-remove">-      &gt;</span>
+<span class="diff-remove">-        &lt;h2 className="text-sm font-bold text-gray-500 tracking-tight leading-tight"&gt;</span>
+<span class="diff-remove">-          Our Serives</span>
+<span class="diff-remove">-        &lt;/h2&gt;</span>
+<span class="diff-remove">-</span>
+<span class="diff-remove">-        &lt;div className="w-full flex justify-center"&gt;</span>
+<span class="diff-remove">-          &lt;Globe3DDemoSecond /&gt;</span>
+<span class="diff-remove">-        &lt;/div&gt;</span>
+<span class="diff-remove">-      &lt;/div&gt; */}</span>
+     &lt;/section&gt;
+   &lt;/div&gt;
+ &lt;/section&gt;</code></pre>
+  </section>
+
+  <section>
+    <h2>5. Verification & Assurance Plan</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Verification Step</th>
+          <th>Methodology</th>
+          <th>Expected Outcome</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Linter Audit</strong></td>
+          <td>Execute <code>npm run lint</code> across the workspace.</td>
+          <td><span class="badge badge-pass">Pass (0 Errors)</span> — Confirms JSX structure and syntax remain clean.</td>
+        </tr>
+        <tr>
+          <td><strong>Production Build</strong></td>
+          <td>Execute <code>npm run build</code> with Turbopack.</td>
+          <td><span class="badge badge-pass">Pass (Clean Build)</span> — Confirms static generation and component compilation succeed.</td>
+        </tr>
+        <tr>
+          <td><strong>Git History Assurance</strong></td>
+          <td>Execute <code>git log -S "Our Serives"</code> or check branch blame.</td>
+          <td><span class="badge badge-pass">Archived in Git</span> — Confirms historical drafts remain recoverable anytime via Git.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="footer-meta">
+    <span>Engineering Audit & Architecture Team</span>
+    <span>Generated for EdFoal Website Repository</span>
+  </div>
+
+</body>
+</html>
