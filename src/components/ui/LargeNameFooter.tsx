@@ -10,7 +10,7 @@ import {
   useSpring,
   useTransform,
   type MotionValue,
-} from "motion/react";
+} from "framer-motion";
 
 const footerLogoUrl = "https://ik.imagekit.io/edfoalImage/assets/image/footerlogo.png";
 
