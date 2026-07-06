@@ -3,6 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { FiGithub as Github, FiLinkedin as Linkedin, FiTwitter as Twitter } from "react-icons/fi";
+import { BRAND_NAME } from "@/lib/constants";
 
 interface TeamMember {
   name: string;
@@ -49,7 +50,7 @@ export default function Team() {
             Our Team
           </span>
           <h2 className="text-3xl md:text-5xl font-extrabold text-zinc-900 tracking-tight">
-            The Minds Behind EdFoal
+            The Minds Behind {BRAND_NAME}
           </h2>
         </div>
 

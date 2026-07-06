@@ -7,6 +7,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BackgroundEffects from "@/components/ui/BackgroundEffects";
 import useLenis from "@/hooks/useLenis";
+import { BRAND_NAME } from "@/lib/constants";
 
 interface BlogPostProps {
   params: Promise<{
@@ -118,7 +119,7 @@ export default function BlogPostDetail({ params }: BlogPostProps) {
 
         {/* Footer share */}
         <footer className="flex items-center justify-between border-t border-white/5 pt-8">
-          <span className="text-xs text-zinc-500 font-semibold">Written by EdFoal AI Team</span>
+          <span className="text-xs text-zinc-500 font-semibold">Written by {BRAND_NAME} AI Team</span>
           <button className="flex items-center gap-2 text-xs font-semibold tracking-wide text-zinc-400 hover:text-white transition-colors">
             <Share2 className="w-4 h-4" />
             Share Post

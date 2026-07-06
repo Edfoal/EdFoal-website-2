@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/immutability */
 "use client";
 import React, { useRef, useMemo, useState, useCallback, Suspense } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";

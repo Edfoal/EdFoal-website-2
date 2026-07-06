@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { BRAND_NAME } from "@/lib/constants";
 
 export default function AboutHero() {
   return (
@@ -37,16 +38,16 @@ export default function AboutHero() {
           </span>
           
           <h1 className="text-3xl md:text-5xl font-extrabold text-zinc-950 tracking-tight leading-[1.15] mb-8">
-            Who We Are at EdFoal AI
+            Who We Are at {BRAND_NAME} AI
           </h1>
 
           <div className="space-y-6 text-zinc-600 text-base md:text-lg leading-relaxed font-normal">
             <p>
-              At EdFoal AI, we are passionate about leveraging the transformative power of artificial intelligence to help businesses succeed. Founded with the vision of making AI accessible and impactful, we specialize in designing tailored AI solutions that reduce costs, save time, and enhance overall efficiency. Our mission is simple: to empower businesses with intelligent tools that solve their unique challenges and create new opportunities for growth.
+              At {BRAND_NAME} AI, we are passionate about leveraging the transformative power of artificial intelligence to help businesses succeed. Founded with the vision of making AI accessible and impactful, we specialize in designing tailored AI solutions that reduce costs, save time, and enhance overall efficiency. Our mission is simple: to empower businesses with intelligent tools that solve their unique challenges and create new opportunities for growth.
             </p>
             <p>
               We understand that no two businesses are the same, which is why we take a personalized approach to every project. Our team of AI experts works closely with clients to understand their specific needs, design innovative AI systems, and implement seamless solutions that integrate perfectly into existing operations.
-              Whether you're looking to automate processes, gain actionable insights from data, or develop a completely custom AI solution, EdFoal AI is your trusted partner in driving results. We help companies of all sizes unlock their full potential and stay competitive in today’s rapidly evolving marketplace.
+              Whether you&apos;re looking to automate processes, gain actionable insights from data, or develop a completely custom AI solution, {BRAND_NAME} AI is your trusted partner in driving results. We help companies of all sizes unlock their full potential and stay competitive in today’s rapidly evolving marketplace.
             </p>
           </div>
         </motion.div>

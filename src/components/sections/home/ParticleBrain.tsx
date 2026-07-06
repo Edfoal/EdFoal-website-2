@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/purity, @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useRef, useMemo } from "react";

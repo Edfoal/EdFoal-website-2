@@ -2,6 +2,7 @@
 
 import React, { useRef } from "react";
 import { useScroll, useTransform, motion } from "framer-motion";
+import { BRAND_NAME } from "@/lib/constants";
 
 /* ───── Step cards data ───── */
 
@@ -132,7 +133,7 @@ function ProcessMockup() {
             >
               Welcome back to
               <br />
-              Edfoal, Let&apos;s Build
+              {BRAND_NAME}, Let&apos;s Build
             </h3>
           </div>
           <div className="flex flex-wrap gap-2">

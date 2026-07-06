@@ -9,6 +9,7 @@ import Footer from "@/components/layout/Footer";
 import useLenis from "@/hooks/useLenis";
 import Link from "next/link";
 import { OriginButton } from "@/components/ui/OriginButton";
+import { BRAND_NAME } from "@/lib/constants";
 
 // TypeScript Interfaces for the Case Study Data Structure
 interface ProblemSection {
@@ -123,7 +124,7 @@ const caseStudiesData: Record<string, CaseStudy> = {
       extra: {
         title: "Client Feedback",
         type: "quote",
-        text: "\"EdFoal's AI-IVR system transformed how we handle mortgage verifications. Our teams now focus on high-value tasks while the AI handles repetitive work with speed and accuracy.\"",
+        text: `"${BRAND_NAME}'s AI-IVR system transformed how we handle mortgage verifications. Our teams now focus on high-value tasks while the AI handles repetitive work with speed and accuracy."`,
         author: "Operations Lead, Leading Mortgage Services Provider (name withheld)"
       },
       cta: {
@@ -230,7 +231,7 @@ const caseStudiesData: Record<string, CaseStudy> = {
       },
       results: {
         title: "The Outcome",
-        text: "The executive received a comprehensive AI adoption roadmap — short-term initiatives, mid-term transformation programmes, and a long-term innovation strategy — all supported by implementation timelines and ROI projections. The strategy was presented to senior management and approved. Following the strategy engagement, the company retained EdFoal to implement several of the immediate AI initiatives identified in the roadmap.",
+        text: `The executive received a comprehensive AI adoption roadmap — short-term initiatives, mid-term transformation programmes, and a long-term innovation strategy — all supported by implementation timelines and ROI projections. The strategy was presented to senior management and approved. Following the strategy engagement, the company retained ${BRAND_NAME} to implement several of the immediate AI initiatives identified in the roadmap.`,
         cols: 0,
         table: []
       },

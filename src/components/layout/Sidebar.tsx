@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { X, Home, Info, Briefcase, Mail, BookOpen } from "lucide-react";
+import { BRAND_NAME } from "@/lib/constants";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -40,7 +41,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           {/* Header */}
           <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/5">
             <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-500">
-              EdFoal
+              {BRAND_NAME}
             </span>
             <button
               onClick={onClose}
@@ -71,7 +72,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
         {/* Footer info */}
         <div className="text-[10px] text-zinc-600">
-          © {new Date().getFullYear()} EdFoal. All rights reserved.
+          © {new Date().getFullYear()} {BRAND_NAME}. All rights reserved.
         </div>
       </motion.div>
     </>

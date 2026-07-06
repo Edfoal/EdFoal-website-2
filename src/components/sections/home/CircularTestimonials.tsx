@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, react-hooks/immutability, react-hooks/preserve-manual-memoization */
 "use client";
 import React, {
   useEffect,

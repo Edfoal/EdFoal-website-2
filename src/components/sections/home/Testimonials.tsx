@@ -2,12 +2,13 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { BRAND_NAME } from "@/lib/constants";
 
 const testimonials = [
   {
     name: "Alex Rivera",
     company: "Synthesia Core",
-    quote: "Edfoal consolidated our engineering context instantly. We stopped asking 'where is that specification' and started asking our workspace core.",
+    quote: `${BRAND_NAME} consolidated our engineering context instantly. We stopped asking 'where is that specification' and started asking our workspace core.`,
     initials: "AR",
     bg: "from-purple-600/30 to-violet-600/20",
   },
@@ -21,7 +22,7 @@ const testimonials = [
   {
     name: "Marcus Vance",
     company: "Cognitive Scale",
-    quote: "We deployed specialist agents in minutes using their sub-agent routing. Edfoal is the ultimate enterprise automation middleware.",
+    quote: `We deployed specialist agents in minutes using their sub-agent routing. ${BRAND_NAME} is the ultimate enterprise automation middleware.`,
     initials: "MV",
     bg: "from-violet-600/30 to-indigo-600/20",
   },
@@ -59,7 +60,7 @@ export default function Testimonials() {
           Validated by Global Operators
         </h2>
         <p className="text-gray-400 text-lg leading-relaxed max-w-xl mx-auto">
-          See how leading operations trust Edfoal to drive system decisions and automations.
+          See how leading operations trust {BRAND_NAME} to drive system decisions and automations.
         </p>
       </div>
 
@@ -87,7 +88,7 @@ export default function Testimonials() {
             >
               {/* Quote */}
               <p className="text-gray-300 text-sm sm:text-base leading-relaxed font-normal italic mb-6">
-                "{t.quote}"
+                &quot;{t.quote}&quot;
               </p>
 
               {/* User Info */}

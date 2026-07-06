@@ -8,6 +8,7 @@ import Footer from "@/components/layout/Footer";
 import BackgroundEffects from "@/components/ui/BackgroundEffects";
 import HeroMinimalism from "@/components/ui/HeroMinimalism";
 import useLenis from "@/hooks/useLenis";
+import { BRAND_NAME } from "@/lib/constants";
 
 const blogPosts = [
   {
@@ -48,7 +49,7 @@ export default function BlogPage() {
       <HeroMinimalism
         kicker="Insights & Strategy"
         title={
-          <span className="text-[#f5e1b8]">The EdFoal Blog</span>
+          <span className="text-[#f5e1b8]">The {BRAND_NAME} Blog</span>
         }
         subtitle="Stay up to date with the latest innovations, strategies, and technical insights from our expert AI consultants."
         showFooter={false}

@@ -2,6 +2,7 @@
 
 import React from "react";
 import { RobotHero } from "@/components/ui/RobotHero";
+import { BRAND_NAME } from "@/lib/constants";
 
 export default function AboutUs() {
   return (
@@ -12,7 +13,7 @@ export default function AboutUs() {
           About US
           <br />
           <span className="text-xl md:text-3xl text-neutral-300 font-semibold mt-2 block">
-            Get to Know EdFoal
+            Get to Know {BRAND_NAME}
           </span>
         </>
       }

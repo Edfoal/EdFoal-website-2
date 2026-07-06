@@ -2,6 +2,7 @@
 
 import type React from "react";
 import { useEffect, useRef } from "react";
+import { BRAND_NAME } from "@/lib/constants";
 import {
   BrainCircuit,
   Cpu,
@@ -174,7 +175,7 @@ export default function AboutUsSection() {
             ABOUT US
           </motion.span>
           <h2 className="mb-4 text-center text-[36px] font-extrabold leading-[1.05] tracking-tight text-zinc-950 md:leading-[1.1]">
-            Who We Are at EdFoal AI
+            Who We Are at {BRAND_NAME} AI
           </h2>
           <motion.div
             className="w-24 h-1 bg-[#1D6ACF]"
@@ -186,10 +187,10 @@ export default function AboutUsSection() {
 
         <motion.div className="mx-auto mb-10 max-w-4xl space-y-5 text-center text-sm font-normal leading-relaxed text-zinc-800 sm:mb-12 sm:text-base md:mb-16 md:text-lg" variants={itemVariants}>
           <p className="mx-auto text-center max-w-none">
-            At EdFoal AI, we are passionate about leveraging the transformative power of artificial intelligence to help businesses succeed. Founded with the vision of making AI accessible and impactful, we specialize in designing tailored AI solutions that reduce costs, save time, and enhance overall efficiency. Our mission is simple: to empower businesses with intelligent tools that solve their unique challenges and create new opportunities for growth.
+            At {BRAND_NAME} AI, we are passionate about leveraging the transformative power of artificial intelligence to help businesses succeed. Founded with the vision of making AI accessible and impactful, we specialize in designing tailored AI solutions that reduce costs, save time, and enhance overall efficiency. Our mission is simple: to empower businesses with intelligent tools that solve their unique challenges and create new opportunities for growth.
           </p>
           <p className="mx-auto text-center max-w-none">
-            We understand that no two businesses are the same, which is why we take a personalized approach to every project. Our team of AI experts works closely with clients to understand their specific needs, design innovative AI systems, and implement seamless solutions that integrate perfectly into existing operations. Whether you&apos;re looking to automate processes, gain actionable insights from data, or develop a completely custom AI solution, EdFoal AI is your trusted partner in driving results. We help companies of all sizes unlock their full potential and stay competitive in today’s rapidly evolving marketplace.
+            We understand that no two businesses are the same, which is why we take a personalized approach to every project. Our team of AI experts works closely with clients to understand their specific needs, design innovative AI systems, and implement seamless solutions that integrate perfectly into existing operations. Whether you&apos;re looking to automate processes, gain actionable insights from data, or develop a completely custom AI solution, {BRAND_NAME} AI is your trusted partner in driving results. We help companies of all sizes unlock their full potential and stay competitive in today’s rapidly evolving marketplace.
           </p>
         </motion.div>
 

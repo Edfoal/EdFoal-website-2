@@ -16,6 +16,7 @@ import Footer from "@/components/layout/Footer";
 import { MinimalistHero } from "@/components/ui/minimalist-hero";
 import useLenis from "@/hooks/useLenis";
 import { cn } from "@/lib/utils";
+import { BRAND_NAME } from "@/lib/constants";
 
 // If you have a Google Sheets deployment URL, paste it here to enable active submission:
 const GOOGLE_SHEETS_URL = "";
@@ -127,7 +128,7 @@ export default function ContactPage() {
             mainText="Explore how we're transforming businesses with cutting-edge AI solutions tailored just for you! Reach out to our AI strategy and engineering team to get started."
             readMoreLink="#contact-form-section"
             imageSrc="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=800"
-            imageAlt="Contact Edfoal AI Solutions"
+            imageAlt={`Contact ${BRAND_NAME} AI Solutions`}
             overlayText={{
               part1: "get in",
               part2: "touch.",
@@ -138,7 +139,7 @@ export default function ContactPage() {
               { icon: FaLinkedin, href: "#" },
               { icon: FaYoutube, href: "#" },
             ]}
-            locationText="Edfoal AI Solutions"
+            locationText={`${BRAND_NAME} AI Solutions`}
             hideHeader={true}
             hideFooter={true}
             className="mx-1.5 mt-1.5 w-auto rounded-xl bg-[#001427] text-white [--background:207_100%_8%] [--foreground:0_0%_100%] sm:mx-2.5 sm:mt-2.5"

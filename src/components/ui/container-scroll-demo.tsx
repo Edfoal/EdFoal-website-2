@@ -2,6 +2,7 @@
 import React from "react";
 import { ContainerScroll } from "@/components/ui/ContainerScrollAnimation";
 import Image from "next/image";
+import { BRAND_NAME } from "@/lib/constants";
 
 export function HeroScrollDemo() {
   return (
@@ -20,7 +21,7 @@ export function HeroScrollDemo() {
       >
         <Image
           src="/dashboard-preview.png"
-          alt="Edfoal project management dashboard"
+          alt={`${BRAND_NAME} project management dashboard`}
           height={720}
           width={1400}
           className="mx-auto rounded-2xl object-cover h-full object-left-top"

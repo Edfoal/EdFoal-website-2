@@ -1,5 +1,7 @@
+export const BRAND_NAME = "EdFoal";
+
 export const SITE_METADATA = {
-  title: "EdFoal | Transform Learning Into Intelligence",
+  title: `${BRAND_NAME} | Transform Learning Into Intelligence`,
   description: "Bespoke AI solutions and automations designed to drive enterprise workflow efficiency.",
   siteUrl: "https://edfoal.com",
 };

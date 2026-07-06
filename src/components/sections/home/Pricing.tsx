@@ -66,7 +66,7 @@ export default function Pricing() {
           Predictable Scaled Plans
         </h2>
         <p className="text-gray-400 text-lg leading-relaxed max-w-xl mx-auto">
-          Choose the cognitive depth that fits your team's structural requirements.
+          Choose the cognitive depth that fits your team&apos;s structural requirements.
         </p>
       </div>
 
