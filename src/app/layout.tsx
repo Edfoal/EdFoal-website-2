@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
 import "@/styles/globals.css";
+import SmoothScroll from "@/components/ui/SmoothScroll";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -21,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={spaceGrotesk.variable}>
       <body>
+        <SmoothScroll />
         {children}
       </body>
     </html>

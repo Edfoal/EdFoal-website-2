@@ -1,6 +1,11 @@
-"use client";
-
 import React from "react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Edfoal | Transform Learning Into Intelligence",
+  description: "Edfoal helps students, educators, and organizations unlock knowledge through AI-powered learning experiences and intelligent insights.",
+};
+
 import Navbar from "@/components/layout/Navbar";
 import HeroSection from "@/components/sections/home/Hero";
 import LogoTicker from "@/components/sections/home/LogoTicker";
@@ -11,12 +16,8 @@ import ElevateSection from "@/components/sections/home/ElevateSection";
 import IndustriesHoverExpand from "@/components/sections/home/IndustriesHoverExpand";
 import HowWeWork from "@/components/sections/home/HowWeWork";
 import BackgroundEffects from "@/components/ui/BackgroundEffects";
-import useLenis from "@/hooks/useLenis";
 
 export default function Home() {
-  // Initialize Lenis scroll smoothing on layout mount
-  useLenis();
-
   return (
     <main className="relative min-h-screen bg-black text-white selection:bg-purple-500/30 selection:text-purple-200">
       {/* Premium fixed background gradients, noise and grids */}
