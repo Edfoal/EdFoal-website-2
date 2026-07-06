@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RCA Report — 1.3 Navigation Defined in Three Places</title>
+  <style>
+    :root {
+      --primary: #0a1224;
+      --secondary: #3b82f6;
+      --text: #1e293b;
+      --bg: #ffffff;
+      --border: #e2e8f0;
+      --code-bg: #f8fafc;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background-color: var(--bg);
+      margin: 0;
+      padding: 40px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: var(--primary);
+      margin: 0 0 10px 0;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: #64748b;
+      margin: 0;
+    }
+
+    h2 {
+      font-size: 20px;
+      color: var(--primary);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      margin-top: 35px;
+      margin-bottom: 15px;
+    }
+
+    h3 {
+      font-size: 16px;
+      color: var(--text);
+      margin-top: 25px;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 12px 16px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-medium {
+      background-color: #fef3c7;
+      color: #d97706;
+      border: 1px solid #fde68a;
+    }
+
+    .alert {
+      background-color: #fffbeb;
+      border-left: 4px solid #f59e0b;
+      padding: 16px;
+      border-radius: 0 8px 8px 0;
+      margin: 20px 0;
+    }
+
+    .alert-title {
+      font-weight: 700;
+      color: #b45309;
+      margin-bottom: 4px;
+      display: flex;
+      items-center: center;
+      gap: 6px;
+    }
+
+    pre, code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13px;
+    }
+
+    pre {
+      background-color: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+
+    code {
+      background-color: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #0f172a;
+    }
+
+    .diff-add {
+      color: #16a34a;
+      background-color: #f0fdf4;
+      display: block;
+      padding: 1px 4px;
+    }
+
+    .diff-remove {
+      color: #dc2626;
+      background-color: #fef2f2;
+      display: block;
+      padding: 1px 4px;
+    }
+
+    ul, ol {
+      padding-left: 24px;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        max-width: 100%;
+        background-color: #ffffff;
+      }
+      
+      header {
+        margin-top: 0;
+      }
+
+      table, pre, .alert {
+        page-break-inside: avoid;
+      }
+
+      h2, h3 {
+        page-break-after: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Root Cause Analysis (RCA) Report</h1>
+    <p class="subtitle">Finding 1.3: Navigation Defined in Three Places &mdash; Edfoal Website</p>
+  </header>
+
+  <table>
+    <tbody>
+      <tr>
+        <th style="width: 25%;">Finding ID</th>
+        <td><code>RCA-1.3</code></td>
+      </tr>
+      <tr>
+        <th>Severity</th>
+        <td><span class="badge badge-medium">Medium</span></td>
+      </tr>
+      <tr>
+        <th>Status</th>
+        <td><strong>Remediated / Fixed</strong></td>
+      </tr>
+      <tr>
+        <th>Affected Files</th>
+        <td>
+          <code>src/data/navigation.ts:6</code><br>
+          <code>src/components/layout/Navbar.tsx:70</code><br>
+          <code>src/components/ui/LargeNameFooter.tsx:114</code>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>1. Problem Statement &amp; Current State</h2>
+  <p>
+    The website's primary navigation items were defined independently across three separate files. Despite the existence of a dedicated data file (<code>src/data/navigation.ts</code>) intended to act as the single source of truth, it was <strong>never imported anywhere in the codebase</strong>. Instead, both the header navigation (<code>Navbar.tsx</code>) and footer navigation (<code>LargeNameFooter.tsx</code>) relied on ad-hoc, hardcoded inline arrays.
+  </p>
+  <p>
+    This isolation led to <strong>label drift and UX inconsistency</strong> across different sections of the website.
+  </p>
+
+  <h3>Navigation Label Divergence Matrix</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Route (<code>href</code>)</th>
+        <th><code>navigation.ts</code> (Dead Source)</th>
+        <th><code>Navbar.tsx</code> (Header)</th>
+        <th><code>LargeNameFooter.tsx</code> (Footer)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>/</code></td>
+        <td>"Home"</td>
+        <td>"Home"</td>
+        <td>"Home"</td>
+      </tr>
+      <tr>
+        <td><code>/about</code></td>
+        <td><strong>"About"</strong></td>
+        <td><strong>"About Us"</strong></td>
+        <td><strong>"About Us"</strong></td>
+      </tr>
+      <tr>
+        <td><code>/services</code></td>
+        <td><strong>"Services"</strong></td>
+        <td><strong>"Services"</strong></td>
+        <td><strong>"Our Services"</strong></td>
+      </tr>
+      <tr>
+        <td><code>/usecases</code></td>
+        <td><strong>"Case Studies"</strong></td>
+        <td><strong>"Usecases"</strong></td>
+        <td><strong>"Usecases"</strong></td>
+      </tr>
+      <tr>
+        <td><code>/contact</code></td>
+        <td><strong>"Contact"</strong></td>
+        <td><strong>"Contact Us"</strong></td>
+        <td><strong>"Contact Us"</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>2. Root Cause Analysis</h2>
+  <div class="alert">
+    <div class="alert-title">&#9888; Architectural Drift &amp; Dead Code</div>
+    When the layout components (<code>Navbar</code> and <code>LargeNameFooter</code>) were developed or iterated upon, navigation links were hardcoded directly inside the component scopes for speed. The original data dictionary (<code>src/data/navigation.ts</code>) was abandoned and became dead code, creating a false impression of centralized configuration.
+  </div>
+  <ol>
+    <li><strong>Lack of Centralized Enforcement:</strong> No linting rule or architectural constraint prevented developers from defining hardcoded navigation arrays inside UI components.</li>
+    <li><strong>Iterative Copy Alterations:</strong> Over time, individual developers tweaked copy in the footer (adding "Our" to Services) or header (changing "Case Studies" to "Usecases") without realizing a central schema existed.</li>
+  </ol>
+
+  <h2>3. Business &amp; Technical Impact</h2>
+  <ul>
+    <li><strong>Inconsistent User Experience:</strong> Users see "Services" at the top of the page but "Our Services" at the bottom. The route <code>/usecases</code> is labeled "Case Studies" in the data dictionary but "Usecases" in the UI, causing potential confusion regarding site hierarchy.</li>
+    <li><strong>Maintenance Overhead:</strong> Adding a new page, changing a URL slug, or updating a navigation label requires hunting down and editing multiple files, increasing the risk of broken links or missed updates.</li>
+    <li><strong>Dead Code Bloat:</strong> <code>src/data/navigation.ts</code> added unnecessary cognitive load for developers who assumed editing it would update the website navigation.</li>
+  </ul>
+
+  <h2>4. Remediation Implemented</h2>
+  <p>
+    We established <code>src/data/navigation.ts</code> as the authoritative single source of truth, standardizing the labels across the entire application and eliminating inline arrays.
+  </p>
+
+  <h3>Step 1: Standardize <code>src/data/navigation.ts</code></h3>
+  <pre><code>export const navigationItems: NavItem[] = [
+  { label: "Home", href: "/" },
+<span class="diff-remove">- { label: "About", href: "/about" },</span><span class="diff-add">+ { label: "About Us", href: "/about" },</span>  { label: "Services", href: "/services" },
+<span class="diff-remove">- { label: "Case Studies", href: "/usecases" },</span><span class="diff-add">+ { label: "Use Cases", href: "/usecases" },</span><span class="diff-remove">- { label: "Contact", href: "/contact" },</span><span class="diff-add">+ { label: "Contact Us", href: "/contact" },</span>];</code></pre>
+
+  <h3>Step 2: Refactor <code>src/components/layout/Navbar.tsx</code></h3>
+  <pre><code><span class="diff-add">+ import { navigationItems } from "@/data/navigation";</span>
+
+<span class="diff-remove">- const navLinks = [ ... ]; // Removed inline array</span>
+
+<span class="diff-remove">- {navLinks.map((link) => {</span>
+<span class="diff-add">+ {navigationItems.map((link) => {</span></code></pre>
+
+  <h3>Step 3: Refactor <code>src/components/ui/LargeNameFooter.tsx</code></h3>
+  <pre><code><span class="diff-add">+ import { navigationItems } from "@/data/navigation";</span>
+
+<span class="diff-remove">- {[ ... ].map(({ label, href }) => ( // Removed inline array</span>
+<span class="diff-add">+ {navigationItems.map(({ label, href }) => (</span></code></pre>
+
+  <h2>5. Verification Results</h2>
+  <ol>
+    <li><strong>Static Analysis:</strong> Confirmed that <code>navigation.ts</code> is imported in both <code>Navbar.tsx</code> and <code>LargeNameFooter.tsx</code> and that no inline navigation arrays remain.</li>
+    <li><strong>Visual Consistency:</strong> Both the header navbar and footer now display identical, standardized navigation labels: <code>"Home"</code>, <code>"About Us"</code>, <code>"Services"</code>, <code>"Use Cases"</code>, and <code>"Contact Us"</code>.</li>
+  </ol>
+
+  <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: #64748b; text-align: center;">
+    Edfoal Engineering &amp; AI Quality Assurance &bull; Generated July 2026
+  </footer>
+
+</body>
+</html>

@@ -9,7 +9,7 @@ import {
   useMotionValue,
   useSpring,
   useTransform,
-} from "motion/react";
+} from "framer-motion";
  
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";

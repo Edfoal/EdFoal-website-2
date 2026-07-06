@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { OriginButton } from "@/components/ui/OriginButton";
 import { BRAND_NAME } from "@/lib/constants";
+import { navigationItems } from "@/data/navigation";
 
 const EdfoalLogo = ({ isLight }: { isLight: boolean }) => (
   <div className="flex items-center select-none group cursor-pointer">
@@ -68,14 +69,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [pathname]);
 
-  const navLinks = [
-    { label: "Home", href: "/" },
-    { label: "Services", href: "/services" },
-    { label: "About Us", href: "/about" },
-    { label: "Usecases", href: "/usecases" },
-    { label: "Contact Us", href: "/contact" },
-  ];
-
   return (
     <>
       <motion.nav
@@ -101,7 +94,7 @@ export default function Navbar() {
           </div>
           {/* 2. Middle Column: Centered links (Large screens only) */}
           <div className="hidden flex-1 items-center justify-center gap-6 lg:flex xl:gap-10">
-            {navLinks.map((link) => {
+            {navigationItems.map((link) => {
               const isActive = pathname === link.href || (link.href !== "/" && pathname?.startsWith(link.href));
               return (
                 <Link
@@ -189,7 +182,7 @@ export default function Navbar() {
             className="fixed inset-0 z-40 flex h-dvh flex-col justify-between overflow-y-auto bg-black/95 px-4 pb-6 pt-24 backdrop-blur-lg min-[420px]:px-6 sm:pb-10 sm:pt-28 lg:hidden"
           >
             <div className="flex flex-col gap-3 sm:gap-5">
-              {navLinks.map((link) => {
+              {navigationItems.map((link) => {
                 const isActive = pathname === link.href || (link.href !== "/" && pathname?.startsWith(link.href));
                 return (
                   <Link

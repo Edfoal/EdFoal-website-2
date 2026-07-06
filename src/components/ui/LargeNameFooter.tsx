@@ -4,13 +4,14 @@ import { useRef } from "react";
 import Link from "next/link";
 import { Mail, Phone, Clock } from "lucide-react";
 import { BRAND_NAME } from "@/lib/constants";
+import { navigationItems } from "@/data/navigation";
 import {
   motion,
   useMotionValue,
   useSpring,
   useTransform,
   type MotionValue,
-} from "motion/react";
+} from "framer-motion";
 
 const footerLogoUrl = "https://ik.imagekit.io/edfoalImage/assets/image/footerlogo.png";
 
@@ -112,13 +113,7 @@ function Footer() {
                 Our Pages
               </h3>
               <ul className="space-y-3.5">
-                {[
-                  { label: "Home", href: "/" },
-                  { label: "About Us", href: "/about" },
-                  { label: "Our Services", href: "/services" },
-                  { label: "Usecases", href: "/usecases" },
-                  { label: "Contact Us", href: "/contact" },
-                ].map(({ label, href }) => (
+                {navigationItems.map(({ label, href }) => (
                   <li key={label}>
                     <Link href={href} className="text-[13.5px] text-zinc-400 transition-colors hover:text-white">
                       {label}

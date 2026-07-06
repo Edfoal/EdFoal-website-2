@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RCA Report — 2.4 Duplicate Animation Libraries</title>
+  <style>
+    :root {
+      --primary: #0a1224;
+      --secondary: #3b82f6;
+      --text: #1e293b;
+      --bg: #ffffff;
+      --border: #e2e8f0;
+      --code-bg: #f8fafc;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background-color: var(--bg);
+      margin: 0;
+      padding: 40px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: var(--primary);
+      margin: 0 0 10px 0;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: #64748b;
+      margin: 0;
+    }
+
+    h2 {
+      font-size: 20px;
+      color: var(--primary);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      margin-top: 35px;
+      margin-bottom: 15px;
+    }
+
+    h3 {
+      font-size: 16px;
+      color: var(--text);
+      margin-top: 25px;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-medium {
+      background-color: #fef3c7;
+      color: #d97706;
+      border: 1px solid #fde68a;
+    }
+
+    .alert {
+      background-color: #fffbeb;
+      border-left: 4px solid #f59e0b;
+      padding: 16px;
+      border-radius: 0 8px 8px 0;
+      margin: 20px 0;
+    }
+
+    .alert-title {
+      font-weight: 700;
+      color: #b45309;
+      margin-bottom: 4px;
+    }
+
+    pre, code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13px;
+    }
+
+    code {
+      background-color: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #0f172a;
+    }
+
+    ul, ol {
+      padding-left: 24px;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        max-width: 100%;
+        background-color: #ffffff;
+      }
+      
+      header {
+        margin-top: 0;
+      }
+
+      table, pre, .alert {
+        page-break-inside: avoid;
+      }
+
+      h2, h3 {
+        page-break-after: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Root Cause Analysis (RCA) Report</h1>
+    <p class="subtitle">Finding 2.4: Duplicate Animation Libraries &mdash; Edfoal Website</p>
+  </header>
+
+  <table>
+    <tbody>
+      <tr>
+        <th style="width: 25%;">Finding ID</th>
+        <td><code>RCA-2.4</code></td>
+      </tr>
+      <tr>
+        <th>Severity</th>
+        <td><span class="badge badge-medium">Medium</span></td>
+      </tr>
+      <tr>
+        <th>Status</th>
+        <td><strong>Open / Proposed Remediation</strong></td>
+      </tr>
+      <tr>
+        <th>Affected Files</th>
+        <td><code>package.json:23-27</code>, <code>OriginButton.tsx</code>, <code>LayoutGrid.tsx</code>, <code>LargeNameFooter.tsx</code>, <code>CardSpotlight.tsx</code>, <code>animated-dock.tsx</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>1. Problem Statement &amp; Current State</h2>
+  <p>
+    The project's dependency manifest (<code>package.json</code>) currently installs <strong>two redundant copies of the same animation library ecosystem</strong>:
+  </p>
+  <ul>
+    <li><code>framer-motion</code>: Installed at version <code>^12.40.0</code> (used across <strong>40+ files</strong>).</li>
+    <li><code>motion</code>: Installed at version <code>^12.40.0</code> (used in <strong>5 files</strong>: <code>OriginButton.tsx</code>, <code>LayoutGrid.tsx</code>, <code>LargeNameFooter.tsx</code>, <code>CardSpotlight.tsx</code>, and <code>animated-dock.tsx</code>).</li>
+  </ul>
+  <p>
+    While <code>motion</code> (specifically <code>motion/react</code>) is the newly rebranded NPM package name for <code>framer-motion</code> v12+, having both packages installed simultaneously creates dependency duplication and confusion regarding which import path developers should use.
+  </p>
+
+  <h2>2. Root Cause Analysis</h2>
+  <div class="alert">
+    <div class="alert-title">&#9888; Third-Party Component Copy-Pasting &amp; Rebranding Transition</div>
+    The root cause is the historical rebranding of <code>framer-motion</code> to <code>motion</code> by Motion (formerly Framer). When UI developers integrated third-party component libraries (such as Aceternity UI or custom animated primitives), some newly copied components imported from <code>motion/react</code> while the core codebase was built using <code>framer-motion</code>. Instead of aligning import paths, <code>npm install motion</code> was executed, adding a second redundant dependency to <code>package.json</code>.
+  </div>
+  <ol>
+    <li><strong>Inconsistent Import Standards:</strong> Lack of an ESLint rule or project guideline specifying a single canonical animation import path.</li>
+    <li><strong>Rebranding Overlap:</strong> <code>framer-motion</code> v12 and <code>motion</code> v12 share identical underlying APIs and rendering engines, making the duplication silent during compilation.</li>
+  </ol>
+
+  <h2>3. Business &amp; Technical Impact</h2>
+  <ul>
+    <li><strong>Bundle &amp; Node_Modules Bloat:</strong> Installing both packages duplicates dependency trees in <code>node_modules</code>, increasing <code>npm install</code> times and CI/CD build overhead.</li>
+    <li><strong>Potential Version Drift &amp; Bundle Splitting:</strong> If the two packages ever drift in version (e.g., <code>framer-motion@12.40.0</code> vs <code>motion@12.45.0</code>), Webpack/Turbopack may bundle two independent animation runtime engines into the client JavaScript bundle, significantly inflating page weight and degrading page load performance (Core Web Vitals).</li>
+    <li><strong>Developer Cognitive Overhead:</strong> Future contributors face confusion when writing new animations, unsure whether to import <code>motion</code> from <code>"framer-motion"</code> or <code>"motion/react"</code>.</li>
+  </ul>
+
+  <h2>4. Remediation Plan</h2>
+  <p>We propose standardizing on <strong><code>framer-motion</code></strong>, as it represents >85% of existing codebase usage (40+ files vs 5 files):</p>
+  <ol>
+    <li><strong>Standardize Imports in the 5 Affected Files:</strong>
+      Refactor the 5 components (<code>OriginButton.tsx</code>, <code>LayoutGrid.tsx</code>, <code>LargeNameFooter.tsx</code>, <code>CardSpotlight.tsx</code>, and <code>animated-dock.tsx</code>) to import from <code>"framer-motion"</code> instead of <code>"motion/react"</code> or <code>"motion"</code>.
+    </li>
+    <li><strong>Prune Redundant Dependency from <code>package.json</code>:</strong> Remove <code>"motion": "^12.40.0"</code> from dependencies and run <code>npm uninstall motion</code>.</li>
+  </ol>
+
+  <h2>5. Verification Plan</h2>
+  <ol>
+    <li><strong>Import Scan:</strong> Execute grep search across <code>src/</code> for <code>from "motion</code> to confirm zero remaining imports from the deprecated package name.</li>
+    <li><strong>Dependency Check:</strong> Verify <code>package.json</code> only lists <code>"framer-motion"</code>.</li>
+    <li><strong>Production Build Test:</strong> Execute <code>npm run build</code> to verify that all 5 refactored components compile and animate cleanly with <code>framer-motion</code>.</li>
+  </ol>
+
+  <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: #64748b; text-align: center;">
+    Edfoal Engineering &amp; AI Quality Assurance &bull; Generated July 2026
+  </footer>
+
+</body>
+</html>
