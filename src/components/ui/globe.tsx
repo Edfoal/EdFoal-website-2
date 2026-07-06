@@ -4,7 +4,7 @@ import { Color, Scene, Fog, PerspectiveCamera, Vector3, Group, Quaternion } from
 import ThreeGlobe from "three-globe";
 import { useThree, Canvas, extend, useFrame } from "@react-three/fiber";
 import { OrbitControls, Html } from "@react-three/drei";
-import countries from "@/data/globe.json";
+
 declare module "@react-three/fiber" {
   interface ThreeElements {
     threeGlobe: ThreeElements["mesh"] & {
@@ -67,6 +67,7 @@ export function Globe({ globeConfig, data }: WorldProps) {
   const globeRef = useRef<ThreeGlobe | null>(null);
   const groupRef = useRef<any>(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [countriesData, setCountriesData] = useState<any[] | null>(null);
 
   const defaultProps = {
     pointSize: 1,
@@ -85,13 +86,21 @@ export function Globe({ globeConfig, data }: WorldProps) {
     ...globeConfig,
   };
 
-  // Initialize globe only once
+  // Initialize globe only once and load map geometry data asynchronously
   useEffect(() => {
     if (!globeRef.current && groupRef.current) {
       globeRef.current = new ThreeGlobe();
       (groupRef.current as any).add(globeRef.current);
       setIsInitialized(true);
     }
+
+    import("@/data/globe.json")
+      .then((m) => {
+        setCountriesData(m.default.features);
+      })
+      .catch((err) => {
+        console.error("Failed to load globe map data:", err);
+      });
   }, []);
 
   // Build material when globe is initialized or when relevant props change
@@ -116,9 +125,9 @@ export function Globe({ globeConfig, data }: WorldProps) {
     globeConfig.shininess,
   ]);
 
-  // Build data when globe is initialized or when data changes
+  // Build data when globe is initialized, when data changes, or when map geometry loads
   useEffect(() => {
-    if (!globeRef.current || !isInitialized || !data) return;
+    if (!globeRef.current || !isInitialized || !data || !countriesData) return;
 
     const arcs = data;
     let points = [];
@@ -152,7 +161,7 @@ export function Globe({ globeConfig, data }: WorldProps) {
     );
 
     globeRef.current
-      .hexPolygonsData(countries.features)
+      .hexPolygonsData(countriesData)
       .hexPolygonResolution(3)
       .hexPolygonMargin(0.7)
       .showAtmosphere(defaultProps.showAtmosphere)
@@ -192,6 +201,7 @@ export function Globe({ globeConfig, data }: WorldProps) {
   }, [
     isInitialized,
     data,
+    countriesData,
     defaultProps.pointSize,
     defaultProps.showAtmosphere,
     defaultProps.atmosphereColor,
