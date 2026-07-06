@@ -165,7 +165,7 @@ const WovenCanvas = () => {
     mount.appendChild(renderer.domElement);
 
     const mouse = new THREE.Vector2(0, 0);
-    const clock = new THREE.Clock();
+    const timer = new THREE.Timer();
 
     const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
@@ -239,7 +239,8 @@ const WovenCanvas = () => {
     const animate = () => {
         if (!active) return;
         animationFrameId = requestAnimationFrame(animate);
-        const elapsedTime = clock.getElapsedTime();
+        timer.update(performance.now() / 1000);
+        const elapsedTime = timer.getElapsed();
         
         mouseWorld.set(mouse.x * 3, mouse.y * 3, 0);
 

@@ -5,14 +5,72 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ParticleBrain from "./ParticleBrain";
 import { OriginButton } from "@/components/ui/OriginButton";
+import { useCanRender3D } from "@/hooks/useCanRender3D";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Static fallback for mobile / reduced-motion / no-WebGL devices
+// ─────────────────────────────────────────────────────────────────────────────
+
+function HeroStaticFallback() {
+  return (
+    <div className="absolute inset-0 h-full w-full overflow-hidden">
+      {/* Animated gradient backdrop */}
+      <div
+        className="absolute inset-0 animate-pulse"
+        style={{
+          animationDuration: "6s",
+          background:
+            "radial-gradient(ellipse 60% 50% at 60% 45%, rgba(33,150,243,0.18) 0%, rgba(233,30,99,0.08) 50%, transparent 80%)",
+        }}
+      />
+      {/* Neural network SVG */}
+      <svg
+        className="absolute right-[5%] top-1/2 -translate-y-1/2 w-[55%] max-w-[420px] opacity-[0.12]"
+        viewBox="0 0 200 200"
+        fill="none"
+      >
+        {/* Central node */}
+        <circle cx="100" cy="100" r="6" fill="#64B5F6" opacity="0.8" />
+        {/* Outer nodes */}
+        <circle cx="40" cy="60" r="3" fill="#2196F3" opacity="0.6" />
+        <circle cx="160" cy="55" r="3" fill="#2196F3" opacity="0.6" />
+        <circle cx="50" cy="150" r="3" fill="#e91e63" opacity="0.5" />
+        <circle cx="155" cy="145" r="3" fill="#2196F3" opacity="0.6" />
+        <circle cx="100" cy="30" r="3" fill="#64B5F6" opacity="0.6" />
+        <circle cx="100" cy="170" r="3" fill="#e91e63" opacity="0.5" />
+        <circle cx="30" cy="110" r="2.5" fill="#2196F3" opacity="0.4" />
+        <circle cx="170" cy="100" r="2.5" fill="#64B5F6" opacity="0.4" />
+        {/* Connections */}
+        <line x1="100" y1="100" x2="40" y2="60" stroke="#2196F3" strokeWidth="0.5" opacity="0.3" />
+        <line x1="100" y1="100" x2="160" y2="55" stroke="#2196F3" strokeWidth="0.5" opacity="0.3" />
+        <line x1="100" y1="100" x2="50" y2="150" stroke="#e91e63" strokeWidth="0.5" opacity="0.2" />
+        <line x1="100" y1="100" x2="155" y2="145" stroke="#2196F3" strokeWidth="0.5" opacity="0.3" />
+        <line x1="100" y1="100" x2="100" y2="30" stroke="#64B5F6" strokeWidth="0.5" opacity="0.3" />
+        <line x1="100" y1="100" x2="100" y2="170" stroke="#e91e63" strokeWidth="0.5" opacity="0.2" />
+        <line x1="100" y1="100" x2="30" y2="110" stroke="#2196F3" strokeWidth="0.5" opacity="0.2" />
+        <line x1="100" y1="100" x2="170" y2="100" stroke="#64B5F6" strokeWidth="0.5" opacity="0.2" />
+        {/* Cross-connections */}
+        <line x1="40" y1="60" x2="100" y2="30" stroke="#2196F3" strokeWidth="0.3" opacity="0.15" />
+        <line x1="160" y1="55" x2="100" y2="30" stroke="#64B5F6" strokeWidth="0.3" opacity="0.15" />
+        <line x1="50" y1="150" x2="100" y2="170" stroke="#e91e63" strokeWidth="0.3" opacity="0.15" />
+        <line x1="155" y1="145" x2="100" y2="170" stroke="#2196F3" strokeWidth="0.3" opacity="0.15" />
+      </svg>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Hero Section
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasContainerRef = useRef<HTMLDivElement>(null);
+  const canRender3D = useCanRender3D();
 
   // Mutable animation state passed to R3F canvas via ref
   // brainX = fraction of 3D viewport width (+0.15 → -0.15)
@@ -110,7 +168,11 @@ export default function HeroSection() {
           className="fixed left-1.5 top-1.5 right-1.5 bottom-1.5 sm:left-2.5 sm:top-2.5 sm:right-2.5 sm:bottom-2.5 z-0 overflow-hidden pointer-events-none rounded-xl"
         >
           <div className="absolute inset-0 h-full w-full">
-            <ParticleBrain animState={animState} />
+            {canRender3D ? (
+              <ParticleBrain animState={animState} />
+            ) : (
+              <HeroStaticFallback />
+            )}
           </div>
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,20,39,0)_0%,rgba(0,20,39,0.2)_45%,rgba(0,20,39,0.85)_100%)]" />
           <div className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-[#001427] via-[#001427]/60 to-transparent" />

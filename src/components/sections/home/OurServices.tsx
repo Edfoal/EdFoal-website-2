@@ -1,12 +1,21 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import Globe3DDemoSecond from "@/components/ui/Globe3D-demo-2";
+import { useCanRender3D } from "@/hooks/useCanRender3D";
+import { useInView } from "framer-motion";
 
 export default function OurServices() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const canRender3D = useCanRender3D();
+  // Trigger when section is within 300px of the viewport — gives the Globe
+  // time to initialise its Canvas before the user actually scrolls to it.
+  const isInView = useInView(sectionRef, { once: true, margin: "300px" });
+
   return (
     <section
       id="services"
+      ref={sectionRef}
       data-theme="light"
       className="relative flex w-full flex-col items-center justify-center overflow-hidden bg-white px-4 py-12 sm:px-6 sm:py-14 md:px-12 md:py-16 lg:px-18 xl:px-24"
     >
@@ -31,26 +40,9 @@ export default function OurServices() {
           From automation to custom AI systems, our solutions are designed to optimize operations, elevate customer interactions, and enhance overall business performance.
         </p>
         <div className="flex w-full justify-center">
-          <Globe3DDemoSecond />
+          <Globe3DDemoSecond enabled={canRender3D && isInView} />
         </div>
       </div>
-      {/* <div
-        className="w-full text-center flex flex-col items-center justify-center"
-        style={{
-          maxWidth: "1450px",
-          marginLeft: "auto",
-          marginRight: "auto"
-        }}
-      >
-        <h2 className="text-sm  font-bold text-gray-500 tracking-tight leading-tight">
-          Our Serives
-        </h2>
-
-        <div className="w-full flex justify-center">
-          <Globe3DDemoSecond />
-        </div>
-      </div> */}
     </section>
   );
 }
-
