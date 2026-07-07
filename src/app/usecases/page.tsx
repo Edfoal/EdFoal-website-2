@@ -3,14 +3,11 @@
 import React, { useState } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import useLenis from "@/hooks/useLenis";
 import { WovenLightHero } from "@/components/ui/woven-light-hero";
 import { Gallery4 } from "@/components/ui/gallery4";
 import { CaseStudyModal } from "@/components/sections/usecases/CaseStudyModal";
 
 export default function UsecasesPage() {
-  // Initialize Lenis scroll smoothing
-  useLenis();
 
   const [activeId, setActiveId] = useState<string | null>(null);
 
