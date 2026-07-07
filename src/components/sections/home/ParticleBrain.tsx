@@ -17,10 +17,7 @@ function BrainFallback({ message = "Initializing 3D Engine..." }: { message?: st
   return (
     <div className="w-full h-full flex items-center justify-center bg-black/80 backdrop-blur-sm">
       <div className="flex flex-col items-center gap-4">
-<<<<<<< HEAD
-=======
         {/* Animated brain silhouette */}
->>>>>>> origin/dev
         <div className="relative w-32 h-32 flex items-center justify-center">
           <div
             className="absolute inset-0 rounded-full opacity-20 animate-ping"
@@ -55,10 +52,7 @@ function BrainFallback({ message = "Initializing 3D Engine..." }: { message?: st
               opacity="0.4"
             />
             <circle cx="32" cy="28" r="4" fill="#64B5F6" opacity="0.5" />
-<<<<<<< HEAD
-=======
             {/* Neural connection lines */}
->>>>>>> origin/dev
             <line x1="28" y1="28" x2="16" y2="20" stroke="#2196F3" strokeWidth="0.5" opacity="0.3" />
             <line x1="36" y1="28" x2="48" y2="20" stroke="#2196F3" strokeWidth="0.5" opacity="0.3" />
             <line x1="32" y1="24" x2="32" y2="12" stroke="#e91e63" strokeWidth="0.5" opacity="0.3" />
