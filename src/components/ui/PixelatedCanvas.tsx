@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React from "react";
+import { logger } from "@/lib/logger";
 
 type PixelatedCanvasProps = {
   src: string;
@@ -503,7 +504,7 @@ export const PixelatedCanvas: React.FC<PixelatedCanvasProps> = ({
     };
 
     img.onerror = () => {
-      console.error("Failed to load image for PixelatedCanvas:", src);
+      logger.error("Failed to load image for PixelatedCanvas", undefined, { src });
     };
 
     if (responsive) {

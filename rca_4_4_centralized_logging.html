@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Root Cause Analysis (RCA) Report — RCA-4.4</title>
+  <style>
+    :root {
+      --primary: #0f172a;
+      --secondary: #3b82f6;
+      --text: #334155;
+      --bg: #ffffff;
+      --border: #cbd5e1;
+      --code-bg: #f8fafc;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background-color: var(--bg);
+      margin: 0;
+      padding: 40px;
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 26px;
+      color: var(--primary);
+      margin: 0 0 8px 0;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: #64748b;
+      margin: 0;
+      font-weight: 500;
+    }
+
+    h2 {
+      font-size: 18px;
+      color: var(--primary);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+      margin-top: 35px;
+      margin-bottom: 15px;
+    }
+
+    h3 {
+      font-size: 15px;
+      color: #0f172a;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 13px;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-med {
+      background-color: #ffedd5;
+      color: #c2410c;
+      border: 1px solid #fed7aa;
+    }
+
+    .badge-open {
+      background-color: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fde68a;
+    }
+
+    .badge-pass {
+      background-color: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .callout {
+      background-color: #f8fafc;
+      border-left: 4px solid var(--secondary);
+      padding: 16px 20px;
+      margin: 20px 0;
+      border-radius: 0 6px 6px 0;
+      font-size: 13.5px;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    pre {
+      background-color: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background-color: #f1f5f9;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #0f172a;
+    }
+
+    pre code {
+      background-color: transparent;
+      padding: 0;
+    }
+
+    .diff-remove {
+      color: #b91c1c;
+      background-color: #fef2f2;
+      display: block;
+      width: 100%;
+    }
+
+    .diff-add {
+      color: #15803d;
+      background-color: #f0fdf4;
+      display: block;
+      width: 100%;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 8px;
+      font-size: 13.5px;
+    }
+
+    .footer-meta {
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: #64748b;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        max-width: 100%;
+      }
+      header {
+        margin-bottom: 20px;
+      }
+      .callout, pre, table {
+        page-break-inside: avoid;
+      }
+      h2 {
+        page-break-after: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Root Cause Analysis (RCA) Report</h1>
+    <p class="subtitle">Engineering Audit & Technical Assurance Document</p>
+  </header>
+
+  <section>
+    <h2>Finding Information</h2>
+    <table>
+      <tbody>
+        <tr>
+          <th style="width: 25%;">Finding ID</th>
+          <td><strong>RCA-4.4</strong></td>
+        </tr>
+        <tr>
+          <th>Severity</th>
+          <td><span class="badge badge-med">Medium</span> <em>(Observability & Incident Response Gap)</em></td>
+        </tr>
+        <tr>
+          <th>Status</th>
+          <td><span class="badge badge-open">Open / Proposed Remediation</span></td>
+        </tr>
+        <tr>
+          <th>Affected Files</th>
+          <td>
+            <code>src/components/ui/OriginButton.tsx:118</code><br>
+            <code>src/components/ui/PixelatedCanvas.tsx:505</code><br>
+            <code>src/components/ui/CanvasRevealEffect.tsx:246</code><br>
+            <code>src/app/error.tsx</code> & <code>src/app/global-error.tsx</code>
+          </td>
+        </tr>
+        <tr>
+          <th>Core Issue</th>
+          <td>Ad-hoc console.warn/error calls scattered across UI components and error boundaries without structured formatting or remote telemetry routing.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>1. Problem Statement & Current State</h2>
+    <p>
+      During an observability and production readiness audit, it was identified that application error and warning reporting is handled via <strong>ad-hoc, uncoordinated <code>console.warn</code> and <code>console.error</code> calls scattered across multiple files</strong> with no unified production logging strategy.
+    </p>
+    <p>
+      Specifically, direct <code>console.*</code> invocations exist in UI animation components (<code>OriginButton</code>, <code>PixelatedCanvas</code>, <code>CanvasRevealEffect</code>) and route error boundaries (<code>error.tsx</code>, <code>global-error.tsx</code>):
+    </p>
+    <pre><code>// Example: Scattered ad-hoc console calls
+console.warn("OriginButton: Missing action handler.");
+console.error("Failed to load image for PixelatedCanvas:", src);
+console.error(`[EdFoal Runtime Error]:`, error);</code></pre>
+    <p>
+      In a Next.js 15 production environment, direct browser console logs are completely invisible to engineering teams (as they execute only on end-user client devices), while server-side console calls lack structured JSON formatting, correlation IDs, timestamps, and severity levels required by modern observability platforms (e.g., Datadog, Sentry, AWS CloudWatch).
+    </p>
+  </section>
+
+  <section>
+    <h2>2. Root Cause Analysis</h2>
+    <div class="callout">
+      <div class="callout-title">
+        <span>🔍 Absence of an Observability Abstraction Layer</span>
+      </div>
+      <p style="margin: 0;">
+        When importing third-party UI components (such as Aceternity UI animations) and building initial route error boundaries, developers relied on native browser console APIs for quick local debugging. No centralized abstraction layer (e.g., <code>@/lib/logger.ts</code>) was established during scaffolding to decouple log emission from log destination.
+      </p>
+    </div>
+    <ul>
+      <li><strong>Local Debugging Bias:</strong> Developers default to <code>console.log</code>/<code>console.error</code> during development because browser devtools provide immediate feedback, overlooking how those logs behave when deployed to static CDNs or serverless edge runtimes.</li>
+      <li><strong>Missing Telemetry Architecture:</strong> The project lacks an integrated error monitoring service or structured log formatter, leaving components with no standardized method to report runtime anomalies or asset loading failures.</li>
+      <li><strong>Decentralized Error Handling:</strong> Without a single logging interface, formatting conventions (such as error prefixes and metadata attachment) vary wildly from file to file.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>3. Business & Technical Impact</h2>
+    <ul>
+      <li><strong>Blind Incident Response (MTTR Degradation):</strong> If a client-side component crashes or fails to render on a customer's browser (e.g., a canvas WebGL texture failure on iOS), engineering has zero visibility into the failure unless the customer manually submits a screenshot of their console.</li>
+      <li><strong>Log Noise & Performance:</strong> Uncontrolled <code>console.warn</code> spam in high-frequency rendering loops (such as canvas animations) can degrade client browser performance and pollute devtools for frontend developers.</li>
+      <li><strong>Vendor Lock-In Prevention:</strong> Hardcoding <code>console.*</code> throughout the codebase makes it laborious to integrate enterprise observability tools later without refactoring dozens of files.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>4. Remediation Plan</h2>
+    <p>
+      We propose establishing a <strong>Centralized Logging Service (<code>src/lib/logger.ts</code>)</strong> and replacing all scattered ad-hoc console calls with a unified abstraction.
+    </p>
+    <h3>Step 1: Create Centralized Logger (<code>src/lib/logger.ts</code>)</h3>
+    <p>Create a lightweight, type-safe logging utility that automatically formats logs for development and routes structured events to monitoring services in production:</p>
+    <pre><code>class Logger {
+  private isDev = process.env.NODE_ENV !== "production";
+
+  warn(message: string, context?: Record&lt;string, unknown&gt;) {
+    if (this.isDev) {
+      console.warn(`[WARN]: ${message}`, context || "");
+    } else {
+      console.warn(JSON.stringify({ level: "warn", message, ...context, timestamp: new Date().toISOString() }));
+    }
+  }
+
+  error(message: string, error?: unknown, context?: Record&lt;string, unknown&gt;) {
+    if (this.isDev) {
+      console.error(`[ERROR]: ${message}`, error || "", context || "");
+    } else {
+      console.error(JSON.stringify({ level: "error", message, error: String(error), ...context, timestamp: new Date().toISOString() }));
+    }
+  }
+}
+
+export const logger = new Logger();</code></pre>
+
+    <h3>Step 2: Refactor Scattered Console Calls</h3>
+    <p>Replace ad-hoc console calls across all affected files to use the centralized logger:</p>
+    <pre><code>   useEffect(() => {
+<span class="diff-remove">-    console.error("[EdFoal Runtime Error]:", error);</span>
+<span class="diff-add">+    logger.error("Route segment runtime failure", error, { digest: error.digest });</span>
+   }, [error]);</code></pre>
+  </section>
+
+  <section>
+    <h2>5. Verification & Assurance Plan</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Verification Step</th>
+          <th>Methodology</th>
+          <th>Expected Outcome</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Linter Audit</strong></td>
+          <td>Execute <code>npm run lint</code> across the workspace.</td>
+          <td><span class="badge badge-pass">Pass (0 Errors)</span> — Confirms all refactored files import <code>logger</code> cleanly without unused variable warnings.</td>
+        </tr>
+        <tr>
+          <td><strong>Production Build</strong></td>
+          <td>Execute <code>npm run build</code> with Turbopack.</td>
+          <td><span class="badge badge-pass">Pass (Clean Build)</span> — Confirms environment variable wrappers compile cleanly in App Router.</td>
+        </tr>
+        <tr>
+          <td><strong>Telemetry Simulation</strong></td>
+          <td>Test log output under <code>NODE_ENV=production</code>.</td>
+          <td><span class="badge badge-pass">Structured JSON</span> — Confirms production logs emit single-line JSON objects ready for log ingestion pipelines.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="footer-meta">
+    <span>Engineering Audit & Architecture Team</span>
+    <span>Generated for EdFoal Website Repository</span>
+  </div>
+
+</body>
+</html>

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
+import { logger } from "@/lib/logger";
 
 const componentThemeClassName = "origin-button-theme";
 
@@ -115,7 +116,7 @@ const OriginButton = React.forwardRef<HTMLButtonElement, OriginButtonProps>(
         return;
       }
 
-      console.warn(
+      logger.warn(
         "OriginButton: provide visible label text or aria-label / aria-labelledby so the control has an accessible name."
       );
     }, [ariaLabel, ariaLabelledBy, children]);
