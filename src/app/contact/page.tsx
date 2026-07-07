@@ -14,15 +14,12 @@ import { OriginButton } from "@/components/ui/OriginButton";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { MinimalistHero } from "@/components/ui/minimalist-hero";
-import useLenis from "@/hooks/useLenis";
 import { cn } from "@/lib/utils";
 
 // If you have a Google Sheets deployment URL, paste it here to enable active submission:
 const GOOGLE_SHEETS_URL = "";
 
 export default function ContactPage() {
-  // Initialize Lenis scroll smoothing
-  useLenis();
 
   const [formData, setFormData] = useState({
     fullName: "",

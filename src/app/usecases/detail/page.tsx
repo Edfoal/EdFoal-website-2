@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import { FiArrowLeft } from "react-icons/fi";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import useLenis from "@/hooks/useLenis";
 import Link from "next/link";
 import { OriginButton } from "@/components/ui/OriginButton";
 
@@ -401,8 +400,6 @@ const caseStudiesData: Record<string, CaseStudy> = {
 };
 
 function CaseStudyDetailContent() {
-  // Initialize Lenis scroll
-  useLenis();
 
   const searchParams = useSearchParams();
   const id = searchParams.get("id") || "1";

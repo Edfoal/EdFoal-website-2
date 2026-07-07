@@ -6,7 +6,6 @@ import { ArrowLeft, Clock, Calendar, Share2, Sparkles } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BackgroundEffects from "@/components/ui/BackgroundEffects";
-import useLenis from "@/hooks/useLenis";
 
 interface BlogPostProps {
   params: Promise<{
@@ -57,7 +56,6 @@ const postsData: Record<string, {
 };
 
 export default function BlogPostDetail({ params }: BlogPostProps) {
-  useLenis();
   const { slug } = use(params);
 
   const post = postsData[slug] || {

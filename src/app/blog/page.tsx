@@ -7,7 +7,6 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BackgroundEffects from "@/components/ui/BackgroundEffects";
 import HeroMinimalism from "@/components/ui/HeroMinimalism";
-import useLenis from "@/hooks/useLenis";
 
 const blogPosts = [
   {
@@ -37,7 +36,6 @@ const blogPosts = [
 ];
 
 export default function BlogPage() {
-  useLenis();
 
   return (
     <main className="relative min-h-screen bg-black text-white selection:bg-purple-500/30 selection:text-purple-200 overflow-hidden">
