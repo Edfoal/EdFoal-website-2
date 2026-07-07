@@ -36,7 +36,7 @@ const Component: FC<ComponentProps> = ({ title, description, icon }) => {
             </div>
           </div>
 
-          <h3 className="mb-4 text-3xl font-bold bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent animate-pulse transform group-hover:scale-105 transition-transform duration-300">
+          <h3 className="mb-4 text-32 font-600 bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent animate-pulse transform group-hover:scale-105 transition-transform duration-300">
             {title}
           </h3>
 
@@ -44,7 +44,7 @@ const Component: FC<ComponentProps> = ({ title, description, icon }) => {
             {description.map((line, idx) => (
               <p
                 key={idx}
-                className="text-gray-300 text-sm leading-relaxed transform group-hover:text-gray-200 transition-colors duration-300"
+                className="text-secondary text-14 leading-relaxed transform group-hover:text-primary transition-colors duration-300"
               >
                 {line}
               </p>

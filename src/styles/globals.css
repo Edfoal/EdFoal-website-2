@@ -10,8 +10,126 @@
 
 /* Dala Design System — Style Reference */
 
+@theme {
+  /* Font Family definitions */
+  --font-sans: var(--font-acronym);
+  --font-outfit: "Outfit", var(--font-sans);
+  
+  /* Font sizes (pixel value names as text-{N}) */
+  --text-12: 0.75rem;
+  --text-12--line-height: 1rem;
+  --text-12--letter-spacing: -0.24px;
+
+  --text-13: 0.8125rem;
+  --text-13--line-height: 1.15rem;
+  --text-13--letter-spacing: -0.26px;
+
+  --text-14: 0.875rem;
+  --text-14--line-height: 1.25rem;
+  --text-14--letter-spacing: -0.28px;
+
+  --text-16: 1rem;
+  --text-16--line-height: 1.5rem;
+  --text-16--letter-spacing: -0.32px;
+
+  --text-18: 1.125rem;
+  --text-18--line-height: 1.6rem;
+  --text-18--letter-spacing: -0.36px;
+
+  --text-20: 1.25rem;
+  --text-20--line-height: 1.75rem;
+  --text-20--letter-spacing: -0.4px;
+
+  --text-22: 1.375rem;
+  --text-22--line-height: 1.85rem;
+  --text-22--letter-spacing: -0.44px;
+
+  --text-24: 1.5rem;
+  --text-24--line-height: 2rem;
+  --text-24--letter-spacing: -0.48px;
+
+  --text-32: 2rem;
+  --text-32--line-height: 2.5rem;
+  --text-32--letter-spacing: -0.64px;
+
+  --text-40: 2.5rem;
+  --text-40--line-height: 3rem;
+  --text-40--letter-spacing: -0.8px;
+
+  --text-86: 5.375rem;
+  --text-86--line-height: 6rem;
+  --text-86--letter-spacing: -1.72px;
+
+  /* Font weights (numerical weights) */
+  --font-weight-300: 300;
+  --font-weight-400: 400;
+  --font-weight-500: 500;
+  --font-weight-600: 600;
+
+  /* Raw palette colors mapped to Tailwind utilities */
+  --color-cloud-grey-25: var(--cloud-grey-25);
+  --color-cloud-grey-50: var(--cloud-grey-50);
+  --color-cloud-grey-100: var(--cloud-grey-100);
+  --color-cloud-grey-400: var(--cloud-grey-400);
+  
+  --color-stone-grey-200: var(--stone-grey-200);
+  
+  --color-navy-blue-100: var(--navy-blue-100);
+  --color-navy-blue-700: var(--navy-blue-700);
+  --color-navy-blue-800: var(--navy-blue-800);
+  
+  --color-midnight-blue-400: var(--midnight-blue-400);
+  --color-midnight-blue-800: var(--midnight-blue-800);
+  
+  --color-ice-blue-50: var(--ice-blue-50);
+  --color-hot-pink-800: var(--hot-pink-800);
+  --color-safety-orange-800: var(--safety-orange-800);
+  --color-lime-green-500: var(--lime-green-500);
+  --color-red-800: var(--red-800);
+  --color-blue-800: var(--blue-800);
+  --color-green-800: var(--green-800);
+  --color-white-0: var(--white-0);
+  --color-background-blue-0: var(--background-blue-0);
+
+  /* Semantic Text Colors (text-*) */
+  --text-color-primary: var(--color-text-primary);
+  --text-color-secondary: var(--color-text-secondary);
+  --text-color-tertiary: var(--color-text-tertiary);
+  --text-color-disabled: var(--color-text-disabled);
+  --text-color-clickable: var(--color-text-clickable);
+  --text-color-negative: var(--color-text-negative);
+  --text-color-white: var(--color-text-white);
+  --text-color-brand: var(--color-text-brand);
+  
+  /* Semantic Border Colors (border-*) */
+  --border-color-primary: var(--color-border-primary);
+  --border-color-secondary: var(--color-border-secondary);
+  --border-color-tertiary: var(--color-border-tertiary);
+  --border-color-quaternary: var(--color-border-quaternary);
+  --border-color-disabled: var(--color-border-disabled);
+  --border-color-aqua: var(--color-border-aqua);
+  --border-color-error: var(--color-border-error);
+  --border-color-brand: var(--color-border-brand);
+  
+  /* Semantic Background Colors (bg-*) */
+  --background-color-primary: var(--color-bg-primary);
+  --background-color-secondary: var(--color-bg-secondary);
+  --background-color-tertiary: var(--color-bg-tertiary);
+  --background-color-dark-primary: var(--color-bg-dark-primary);
+  --background-color-dark-secondary: var(--color-bg-dark-secondary);
+  --background-color-dark-tertiary: var(--color-bg-dark-tertiary);
+  --background-color-aqua: var(--color-bg-aqua);
+  --background-color-danger: var(--color-bg-danger);
+  --background-color-brand: var(--color-bg-brand);
+
+  --background-color-hover: var(--color-bg-hover);
+  --background-color-active: var(--color-bg-active);
+  --background-color-selected: var(--color-bg-selected);
+  --background-color-disabled: var(--color-bg-disabled);
+}
+
 :root {
-  /* Color Tokens */
+  /* Existing legacy colors */
   --color-void: #0f172a;
   --color-purple-accent: #8b5cf6;
   --color-purple-glow: rgba(139, 92, 246, 0.15);
@@ -20,13 +138,70 @@
 
   /* Noise Overlay */
   --noise-url: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  --color-void: #0f172a;
   --color-bone: #ffffff;
   --color-ash: #bdbdbd;
   --color-smoke: #9a9a9a;
   --color-plum-voltage: #8052ff;
   --color-amber-spark: #ffb829;
   --color-lichen: #15846e;
+
+  /* Design System Raw Palette (Hex Scales) */
+  --cloud-grey-25: #f9fafb;
+  --cloud-grey-50: #f3f4f6;
+  --cloud-grey-100: #e5e7eb;
+  --cloud-grey-400: #9ca3af;
+  --stone-grey-200: #cbd5e1;
+  --navy-blue-100: #e2e8f0;
+  --navy-blue-700: #1e293b;
+  --navy-blue-800: #0f172a;
+  --midnight-blue-400: #475569;
+  --midnight-blue-800: #101826;
+  --ice-blue-50: #f0fdf4;
+  --hot-pink-800: #E2076D;
+  --safety-orange-800: #d97706;
+  --lime-green-500: #84cc16;
+  --red-800: #b91c1c;
+  --blue-800: #0084cb;
+  --green-800: #15846e;
+  --white-0: #ffffff;
+  --background-blue-0: #f8fafc;
+
+  /* Semantic Mappings */
+  --color-text-primary: var(--midnight-blue-800);
+  --color-text-secondary: var(--midnight-blue-400);
+  --color-text-tertiary: var(--navy-blue-100);
+  --color-text-disabled: var(--stone-grey-200);
+  --color-text-clickable: var(--blue-800);
+  --color-text-negative: var(--red-800);
+  --color-text-white: #ffffff;
+  --color-text-brand: var(--hot-pink-800);
+
+  /* Border / Stroke */
+  --color-border-primary: var(--midnight-blue-800);
+  --color-border-secondary: var(--midnight-blue-400);
+  --color-border-tertiary: var(--navy-blue-100);
+  --color-border-quaternary: var(--cloud-grey-100);
+  --color-border-disabled: var(--stone-grey-200);
+  --color-border-aqua: #06b6d4;
+  --color-border-error: var(--red-800);
+  --color-border-brand: var(--hot-pink-800);
+
+  /* Backgrounds */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: var(--cloud-grey-50);
+  --color-bg-tertiary: var(--cloud-grey-400);
+  --color-bg-dark-primary: var(--midnight-blue-800);
+  --color-bg-dark-secondary: var(--navy-blue-700);
+  --color-bg-dark-tertiary: var(--navy-blue-100);
+  --color-bg-aqua: #ecfeff;
+  --color-bg-danger: #fee2e2;
+  --color-bg-brand: #fdf2f8;
+
+  /* State colors */
+  --color-bg-hover: var(--cloud-grey-50);
+  --color-bg-active: var(--cloud-grey-100);
+  --color-bg-selected: var(--cloud-grey-100);
+  --color-bg-disabled: var(--stone-grey-200);
 
   /* Typography Families & Weights */
   --font-acronym: var(--font-acronym-family), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;

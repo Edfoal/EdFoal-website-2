@@ -175,49 +175,49 @@ const serviceTestimonials = [
 
 export default function Globe3DDemoSecond() {
   return (
-    <div className="relative my-4 flex min-h-[960px] w-full max-w-[1400px] flex-col items-start justify-start overflow-hidden rounded-3xl bg-white p-4 shadow-sm shadow-black/5 sm:my-6 sm:min-h-[980px] sm:p-6 md:min-h-[940px] md:p-8 lg:my-8 lg:h-[800px] lg:min-h-0 lg:p-12 xl:p-16">
+    <div className="relative my-4 flex min-h-[960px] w-full max-w-[1400px] flex-col items-start justify-start overflow-hidden rounded-3xl bg-primary p-4 shadow-sm shadow-black/5 sm:my-6 sm:min-h-[980px] sm:p-6 md:min-h-[940px] md:p-8 lg:my-8 lg:h-[800px] lg:min-h-0 lg:p-12 xl:p-16">
       {/* Top Row: Left card + Right circular testimonials */}
       <div className="relative z-10 flex w-full flex-col items-center justify-between gap-6 lg:flex-row lg:items-start lg:gap-8">
         {/* Left: Realtime Tracking Card */}
         <CardSpotlight
           color="#f4f4f5"
           showGradient={false}
-          className="relative z-10 flex min-h-[320px] w-full max-w-88 shrink-0 flex-col items-center justify-center gap-y-5 overflow-hidden rounded-3xl border border-neutral-200/80 bg-white/95 p-5 text-center text-gray-900 shadow-2xl backdrop-blur-sm dark:border-neutral-200/80 dark:bg-white/95 dark:text-gray-900 sm:h-[360px] sm:max-w-92 sm:p-6 lg:h-95 lg:max-w-95"
+          className="relative z-10 flex min-h-[320px] w-full max-w-88 shrink-0 flex-col items-center justify-center gap-y-5 overflow-hidden rounded-3xl border border-quaternary/80 bg-primary/95 p-5 text-center text-primary shadow-2xl backdrop-blur-sm dark:border-quaternary/80 dark:bg-primary/95 dark:text-primary sm:h-[360px] sm:max-w-92 sm:p-6 lg:h-95 lg:max-w-95"
         >
           {/* Header Section */}
           <div className="relative z-20 flex flex-col items-center">
             {/* Globe icon badge */}
-            <div className="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center mb-3">
-              <Globe className="w-5 h-5 text-gray-800" />
+            <div className="w-10 h-10 rounded-xl bg-secondary border border-quaternary flex items-center justify-center mb-3">
+              <Globe className="w-5 h-5 text-primary" />
             </div>
 
             {/* Title */}
-            <h3 className="mb-1 text-[clamp(1.5rem,7vw,1.75rem)] font-extrabold leading-tight tracking-tight text-gray-900">
+            <h3 className="mb-1 text-[clamp(1.5rem,7vw,1.75rem)] font-600 leading-tight tracking-tight text-primary">
               Realtime tracking
             </h3>
 
             {/* Subtitle */}
-            <p className="max-w-[280px] text-sm font-normal leading-relaxed text-zinc-600 sm:text-base">
+            <p className="max-w-[280px] text-14 font-400 leading-relaxed text-secondary sm:text-16">
               Watch visitors arrive and interact with your site as it happens.
             </p>
           </div>
 
           {/* Feature bullets */}
           <div className="relative z-20 mx-auto flex w-fit flex-col items-start space-y-2.5 text-left">
-            <div className="flex items-center gap-3 text-sm font-semibold text-gray-700">
-              <Smile className="w-[18px] h-[18px] text-blue-500 shrink-0" />
+            <div className="flex items-center gap-3 text-14 font-600 text-secondary">
+              <Smile className="w-[18px] h-[18px] text-clickable shrink-0" />
               <span>AI-Driven Automation</span>
             </div>
-            <div className="flex items-center gap-3 text-sm font-semibold text-gray-700">
-              <Globe className="w-[18px] h-[18px] text-blue-500 shrink-0" />
+            <div className="flex items-center gap-3 text-14 font-600 text-secondary">
+              <Globe className="w-[18px] h-[18px] text-clickable shrink-0" />
               <span>Custom AI Systems</span>
             </div>
-            <div className="flex items-center gap-3 text-sm font-semibold text-gray-700">
-              <Send className="w-[18px] h-[18px] text-blue-500 shrink-0" />
+            <div className="flex items-center gap-3 text-14 font-600 text-secondary">
+              <Send className="w-[18px] h-[18px] text-clickable shrink-0" />
               <span>Customer Feedback Intelligence</span>
             </div>
-            <div className="flex items-center gap-3 text-sm font-semibold text-gray-700">
-              <MapPin className="w-[18px] h-[18px] text-blue-500 shrink-0" />
+            <div className="flex items-center gap-3 text-14 font-600 text-secondary">
+              <MapPin className="w-[18px] h-[18px] text-clickable shrink-0" />
               <span>Knowledge Base Optimization</span>
             </div>
           </div>

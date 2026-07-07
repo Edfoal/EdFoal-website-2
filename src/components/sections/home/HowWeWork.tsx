@@ -489,31 +489,31 @@ export default function HowWeWork() {
   return (
     <section
       id="how-we-work"
-      className="relative w-full overflow-hidden bg-white px-4 py-12 sm:px-6 sm:py-14 md:py-16 lg:px-8 lg:pb-25 lg:pt-22.5"
+      className="relative w-full overflow-hidden bg-primary px-4 py-12 sm:px-6 sm:py-14 md:py-16 lg:px-8 lg:pb-25 lg:pt-22.5"
     >
       <div className="mx-auto w-full max-w-360">
 
         {/* ── Static section header ── */}
         <div className="text-center">
-          <div className="mt-3 inline-flex items-center gap-2.5 rounded-full border border-gray-200 bg-gray-50 px-4 py-2">
+          <div className="mt-3 inline-flex items-center gap-2.5 rounded-full border border-quaternary bg-secondary px-4 py-2">
             <span className="relative flex h-2 w-2 shrink-0">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#1D6ACF]" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-800" />
             </span>
-            <span className="text-sm font-semibold leading-none tracking-widest text-gray-600">
+            <span className="text-14 font-600 leading-none tracking-widest text-secondary">
               How We Work
             </span>
           </div>
 
-          <h2 className="mt-4 text-[clamp(2.25rem,9vw,3rem)] font-bold leading-tight tracking-tight text-gray-900 md:text-5xl">
+          <h2 className="mt-4 text-[clamp(2.25rem,9vw,3rem)] font-600 leading-tight tracking-tight text-primary md:text-5xl">
             How We{" "}
             <span
-              className="bg-clip-text text-transparent bg-[linear-gradient(90deg,#1D6ACF_0%,#E2076D_50%,#1D6ACF_100%)]"
+              className="bg-clip-text text-transparent bg-[linear-gradient(90deg,var(--blue-800)_0%,var(--hot-pink-800)_50%,var(--blue-800)_100%)]"
             >
               Work
             </span>
           </h2>
-          <p className="mx-auto mb-8 mt-3 max-w-4xl text-sm leading-relaxed text-gray-500 sm:text-base lg:mb-4">
+          <p className="mx-auto mb-8 mt-3 max-w-4xl text-14 leading-relaxed text-secondary sm:text-base lg:mb-4">
             A transparent, battle-tested process that turns your vision into
             exceptional digital products — faster, smarter, better.
           </p>
@@ -538,7 +538,7 @@ export default function HowWeWork() {
             {steps.map((step) => (
               <div
                 key={step.id}
-                className="flex flex-col gap-3 rounded-2xl bg-white px-4 py-4 shadow-[0_2px_12px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg sm:px-4.5 sm:py-5"
+                className="flex flex-col gap-3 rounded-2xl bg-primary px-4 py-4 shadow-[0_2px_12px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg sm:px-4.5 sm:py-5"
               >
                 <div
                   className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
@@ -547,11 +547,11 @@ export default function HowWeWork() {
                   {step.icon}
                 </div>
                 <div>
-                  <h3 className="m-0 text-[13px] font-bold leading-[1.35] text-gray-900">
+                  <h3 className="m-0 text-13 font-600 leading-[1.35] text-primary">
                     {step.title}
                   </h3>
                 </div>
-                <p className="m-0 text-[11px] leading-[1.6] text-gray-500">
+                <p className="m-0 text-12 leading-[1.6] text-secondary">
                   {step.description}
                 </p>
               </div>
