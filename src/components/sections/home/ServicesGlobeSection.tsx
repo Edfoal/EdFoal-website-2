@@ -173,7 +173,7 @@ const serviceTestimonials = [
   },
 ];
 
-export default function ServicesGlobeSection() {
+export default function ServicesGlobeSection({ enabled = true }: { enabled?: boolean }) {
   return (
     <div className="relative my-4 flex min-h-[960px] w-full max-w-[1400px] flex-col items-start justify-start overflow-hidden rounded-3xl bg-white p-4 shadow-sm shadow-black/5 sm:my-6 sm:min-h-[980px] sm:p-6 md:min-h-[940px] md:p-8 lg:my-8 lg:h-[800px] lg:min-h-0 lg:p-12 xl:p-16">
       {/* Top Row: Left card + Right circular testimonials */}
@@ -249,10 +249,21 @@ export default function ServicesGlobeSection() {
         </div>
       </div>
 
-      {/* Globe Canvas positioned absolutely like the original */}
-      <div className="absolute bottom-[-90px] left-0 z-10 h-[340px] w-full sm:bottom-[-120px] sm:h-[420px] md:bottom-[-180px] md:h-[600px] lg:bottom-[-220px] lg:h-168">
-        <World data={sampleArcs} globeConfig={globeConfig} />
-      </div>
+      {/* Globe Canvas — only mount when enabled (desktop + WebGL available) */}
+      {enabled ? (
+        <div className="absolute bottom-[-90px] left-0 z-10 h-[340px] w-full sm:bottom-[-120px] sm:h-[420px] md:bottom-[-180px] md:h-[600px] lg:bottom-[-220px] lg:h-168">
+          <World data={sampleArcs} globeConfig={globeConfig} />
+        </div>
+      ) : (
+        <div className="absolute bottom-[-90px] left-0 z-10 flex h-[340px] w-full items-center justify-center sm:bottom-[-120px] sm:h-[420px] md:bottom-[-180px] md:h-[600px] lg:bottom-[-220px] lg:h-168">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/world-map.svg"
+            alt="Global reach"
+            className="h-full w-full object-contain opacity-[0.07]"
+          />
+        </div>
+      )}
     </div>
   );
 }
