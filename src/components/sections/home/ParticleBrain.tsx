@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useMemo } from "react";
+import React, { useRef, useMemo, Suspense } from "react";
 import dynamic from "next/dynamic";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
@@ -8,6 +8,102 @@ import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { useInView } from "framer-motion";
 import FloatingTriangles from "./FloatingTriangles";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Static fallback UI — shown while loading or if brain.glb fails
+// ─────────────────────────────────────────────────────────────────────────────
+
+function BrainFallback({ message = "Initializing 3D Engine..." }: { message?: string }) {
+  return (
+    <div className="w-full h-full flex items-center justify-center bg-black/80 backdrop-blur-sm">
+      <div className="flex flex-col items-center gap-4">
+        {/* Animated brain silhouette */}
+        <div className="relative w-32 h-32 flex items-center justify-center">
+          <div
+            className="absolute inset-0 rounded-full opacity-20 animate-ping"
+            style={{
+              background: "radial-gradient(circle, #2196F3 0%, transparent 70%)",
+              animationDuration: "2s",
+            }}
+          />
+          <div
+            className="absolute inset-2 rounded-full opacity-30 animate-pulse"
+            style={{
+              background: "radial-gradient(circle, #64B5F6 0%, #e91e63 50%, transparent 80%)",
+            }}
+          />
+          <svg
+            viewBox="0 0 64 64"
+            className="relative w-16 h-16 animate-pulse"
+            style={{ animationDuration: "3s" }}
+          >
+            <path
+              d="M32 4C18.7 4 8 14.7 8 28c0 8.4 4.3 15.8 10.8 20.1C22.2 50.7 26.8 56 32 60c5.2-4 9.8-9.3 13.2-11.9C51.7 43.8 56 36.4 56 28 56 14.7 45.3 4 32 4z"
+              fill="none"
+              stroke="#64B5F6"
+              strokeWidth="1.5"
+              opacity="0.6"
+            />
+            <path
+              d="M32 12c-8.8 0-16 7.2-16 16s7.2 16 16 16 16-7.2 16-16-7.2-16-16-16z"
+              fill="none"
+              stroke="#2196F3"
+              strokeWidth="1"
+              opacity="0.4"
+            />
+            <circle cx="32" cy="28" r="4" fill="#64B5F6" opacity="0.5" />
+            {/* Neural connection lines */}
+            <line x1="28" y1="28" x2="16" y2="20" stroke="#2196F3" strokeWidth="0.5" opacity="0.3" />
+            <line x1="36" y1="28" x2="48" y2="20" stroke="#2196F3" strokeWidth="0.5" opacity="0.3" />
+            <line x1="32" y1="24" x2="32" y2="12" stroke="#e91e63" strokeWidth="0.5" opacity="0.3" />
+            <line x1="32" y1="32" x2="24" y2="44" stroke="#2196F3" strokeWidth="0.5" opacity="0.3" />
+            <line x1="32" y1="32" x2="40" y2="44" stroke="#2196F3" strokeWidth="0.5" opacity="0.3" />
+          </svg>
+        </div>
+        <span className="text-blue-400/80 text-xs font-semibold tracking-widest uppercase">
+          {message}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Error Boundary — catches useGLTF / R3F runtime errors
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+}
+
+class Canvas3DErrorBoundary extends React.Component<
+  { children: React.ReactNode; fallback?: React.ReactNode },
+  ErrorBoundaryState
+> {
+  constructor(props: { children: React.ReactNode; fallback?: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(): ErrorBoundaryState {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
+    console.error("[ParticleBrain] 3D render error:", error, info.componentStack);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        this.props.fallback ?? (
+          <BrainFallback message="3D visualization unavailable" />
+        )
+      );
+    }
+    return this.props.children;
+  }
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Barycentric area-weighted mesh sampler for loading GLTF model
@@ -553,39 +649,39 @@ function CanvasBrainInner({ animState }: ParticleBrainProps) {
 
   return (
     <div ref={containerRef} className="w-full h-full relative overflow-visible select-none pointer-events-none">
-      <Canvas
-        frameloop={isInView ? "always" : "never"}
-        camera={{ position: [0, 0, 3.6], fov: 60 }}
-        gl={{ antialias: true, alpha: true }}
-        style={{ background: "transparent", overflow: "visible", width: "100%", height: "100%" }}
-      >
-        <FloatingTriangles />
-        <BrainParticles animState={animState} />
-        <EffectComposer>
-          <Bloom
-            luminanceThreshold={0.08}
-            luminanceSmoothing={0.75}
-            height={300}
-            intensity={0.7}
-          />
-        </EffectComposer>
-      </Canvas>
+      <Canvas3DErrorBoundary>
+        <Canvas
+          frameloop={isInView ? "always" : "never"}
+          camera={{ position: [0, 0, 3.6], fov: 60 }}
+          gl={{ antialias: true, alpha: true }}
+          style={{ background: "transparent", overflow: "visible", width: "100%", height: "100%" }}
+        >
+          <FloatingTriangles />
+          <Suspense fallback={null}>
+            <BrainParticles animState={animState} />
+          </Suspense>
+          <EffectComposer>
+            <Bloom
+              luminanceThreshold={0.08}
+              luminanceSmoothing={0.75}
+              height={300}
+              intensity={0.7}
+            />
+          </EffectComposer>
+        </Canvas>
+      </Canvas3DErrorBoundary>
     </div>
   );
 }
 
 export default dynamic(() => Promise.resolve(CanvasBrainInner), {
   ssr: false,
-  loading: () => (
-    <div className="w-full h-full flex items-center justify-center bg-black">
-      <div className="flex flex-col items-center gap-3">
-        <div className="w-10 h-10 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
-        <span className="text-purple-400 text-xs font-semibold tracking-widest uppercase">
-          Initializing 3D Engine...
-        </span>
-      </div>
-    </div>
-  ),
+  loading: () => <BrainFallback />,
 });
 
-useGLTF.preload("/brain.glb");
+// Safe preload — don't crash if the asset is missing
+try {
+  useGLTF.preload("/brain.glb");
+} catch {
+  // Silently skip preload; the error boundary will handle it at render time
+}
