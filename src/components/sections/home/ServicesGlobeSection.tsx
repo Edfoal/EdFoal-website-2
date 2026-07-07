@@ -173,7 +173,7 @@ const serviceTestimonials = [
   },
 ];
 
-export default function Globe3DDemoSecond() {
+export default function ServicesGlobeSection() {
   return (
     <div className="relative my-4 flex min-h-[960px] w-full max-w-[1400px] flex-col items-start justify-start overflow-hidden rounded-3xl bg-white p-4 shadow-sm shadow-black/5 sm:my-6 sm:min-h-[980px] sm:p-6 md:min-h-[940px] md:p-8 lg:my-8 lg:h-[800px] lg:min-h-0 lg:p-12 xl:p-16">
       {/* Top Row: Left card + Right circular testimonials */}

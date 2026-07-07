@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Globe3DDemoSecond from "@/components/ui/Globe3D-demo-2";
+import ServicesGlobeSection from "@/components/sections/home/ServicesGlobeSection";
 
 export default function OurServices() {
   return (
@@ -31,7 +31,7 @@ export default function OurServices() {
           From automation to custom AI systems, our solutions are designed to optimize operations, elevate customer interactions, and enhance overall business performance.
         </p>
         <div className="flex w-full justify-center">
-          <Globe3DDemoSecond />
+          <ServicesGlobeSection />
         </div>
       </div>
       {/* <div
@@ -47,7 +47,7 @@ export default function OurServices() {
         </h2>
 
         <div className="w-full flex justify-center">
-          <Globe3DDemoSecond />
+          <ServicesGlobeSection />
         </div>
       </div> */}
     </section>
