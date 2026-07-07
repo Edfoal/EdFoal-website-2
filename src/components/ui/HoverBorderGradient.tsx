@@ -9,7 +9,7 @@ export function HoverBorderGradient<T extends React.ElementType = "button">({
   children,
   containerClassName,
   className,
-  as: Tag = "button" as any,
+  as: Tag = "button" as unknown as T,
   duration = 1,
   clockwise = true,
   ...props
@@ -55,7 +55,12 @@ export function HoverBorderGradient<T extends React.ElementType = "button">({
     }
   }, [hovered]);
 
-  const Component = Tag as any;
+  const Component = Tag as React.ComponentType<{
+    children?: React.ReactNode;
+    className?: string;
+    onMouseEnter?: () => void;
+    onMouseLeave?: () => void;
+  }>;
 
   return (
     <Component

@@ -65,7 +65,7 @@ export default function Testimonials() {
 
       {/* Carousel Marquee Container */}
       <div className="relative flex w-full overflow-hidden py-4 select-none">
-        
+
         {/* Soft edge masking blurs */}
         <div className="absolute left-0 top-0 bottom-0 w-20 md:w-44 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
         <div className="absolute right-0 top-0 bottom-0 w-20 md:w-44 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
@@ -87,7 +87,7 @@ export default function Testimonials() {
             >
               {/* Quote */}
               <p className="text-gray-300 text-sm sm:text-base leading-relaxed font-normal italic mb-6">
-                "{t.quote}"
+                &quot;{t.quote}&quot;
               </p>
 
               {/* User Info */}

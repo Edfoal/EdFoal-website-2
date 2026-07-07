@@ -7,7 +7,7 @@ export default function AboutHero() {
   return (
     <section className="relative w-full bg-white py-20 md:py-28 px-6 md:px-12 lg:px-20 overflow-hidden" >
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center relative z-10" >
-        
+
         {/* Left Column: Image with frame & shadow */}
         <motion.div
           className="lg:col-span-5 flex justify-center w-full"
@@ -35,7 +35,7 @@ export default function AboutHero() {
           <span className="text-xs font-semibold tracking-[0.2em] text-blue-600 uppercase mb-4 block">
             About us
           </span>
-          
+
           <h1 className="text-3xl md:text-5xl font-extrabold text-zinc-950 tracking-tight leading-[1.15] mb-8">
             Who We Are at EdFoal AI
           </h1>
@@ -46,11 +46,11 @@ export default function AboutHero() {
             </p>
             <p>
               We understand that no two businesses are the same, which is why we take a personalized approach to every project. Our team of AI experts works closely with clients to understand their specific needs, design innovative AI systems, and implement seamless solutions that integrate perfectly into existing operations.
-              Whether you're looking to automate processes, gain actionable insights from data, or develop a completely custom AI solution, EdFoal AI is your trusted partner in driving results. We help companies of all sizes unlock their full potential and stay competitive in today’s rapidly evolving marketplace.
+              Whether you&apos;re looking to automate processes, gain actionable insights from data, or develop a completely custom AI solution, EdFoal AI is your trusted partner in driving results. We help companies of all sizes unlock their full potential and stay competitive in today&apos;s rapidly evolving marketplace.
             </p>
           </div>
         </motion.div>
-        
+
       </div>
     </section>
   );

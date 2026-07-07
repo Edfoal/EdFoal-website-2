@@ -82,7 +82,7 @@ function GlobeFallbackPlaceholder() {
   );
 }
 
-const Globe3DDemoSecond = dynamic(() => import("@/components/ui/Globe3D-demo-2"), {
+const ServicesGlobeSection = dynamic(() => import("./ServicesGlobeSection"), {
   ssr: false,
   loading: () => <GlobeFallbackPlaceholder />,
 });
@@ -123,7 +123,7 @@ export default function OurServices() {
         </p>
         <div className="flex w-full justify-center">
           {isInView ? (
-            <Globe3DDemoSecond enabled={canRender3D} />
+            <ServicesGlobeSection enabled={canRender3D} />
           ) : (
             <GlobeFallbackPlaceholder />
           )}

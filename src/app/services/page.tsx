@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import useLenis from "@/hooks/useLenis";
 import { useRouter } from "next/navigation";
 import { OriginButton } from "@/components/ui/OriginButton";
 import ServiceHero from "@/components/sections/services/ServiceHero";
@@ -12,8 +11,6 @@ import { GetStartedModal } from "@/components/sections/usecases/GetStartedModal"
 
 export default function ServicesPage() {
   const router = useRouter();
-  // Initialize Lenis scroll smoothing
-  useLenis();
 
   const [isGetStartedOpen, setIsGetStartedOpen] = useState(false);
   const [selectedServiceTab, setSelectedServiceTab] = useState<string>("tailored-ai");

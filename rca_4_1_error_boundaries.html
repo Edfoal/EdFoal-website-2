@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Root Cause Analysis (RCA) Report — RCA-4.1</title>
+  <style>
+    :root {
+      --primary: #0f172a;
+      --secondary: #3b82f6;
+      --text: #334155;
+      --bg: #ffffff;
+      --border: #cbd5e1;
+      --code-bg: #f8fafc;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background-color: var(--bg);
+      margin: 0;
+      padding: 40px;
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 26px;
+      color: var(--primary);
+      margin: 0 0 8px 0;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: #64748b;
+      margin: 0;
+      font-weight: 500;
+    }
+
+    h2 {
+      font-size: 18px;
+      color: var(--primary);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+      margin-top: 35px;
+      margin-bottom: 15px;
+    }
+
+    h3 {
+      font-size: 15px;
+      color: #0f172a;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 13px;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-high {
+      background-color: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .badge-open {
+      background-color: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fde68a;
+    }
+
+    .badge-pass {
+      background-color: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .callout {
+      background-color: #fef2f2;
+      border-left: 4px solid #ef4444;
+      padding: 16px 20px;
+      margin: 20px 0;
+      border-radius: 0 6px 6px 0;
+      font-size: 13.5px;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      color: #991b1b;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    pre {
+      background-color: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background-color: #f1f5f9;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #0f172a;
+    }
+
+    pre code {
+      background-color: transparent;
+      padding: 0;
+    }
+
+    .diff-add {
+      color: #15803d;
+      background-color: #f0fdf4;
+      display: block;
+      width: 100%;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 8px;
+      font-size: 13.5px;
+    }
+
+    .footer-meta {
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: #64748b;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        max-width: 100%;
+      }
+      header {
+        margin-bottom: 20px;
+      }
+      .callout, pre, table {
+        page-break-inside: avoid;
+      }
+      h2 {
+        page-break-after: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Root Cause Analysis (RCA) Report</h1>
+    <p class="subtitle">Engineering Audit & Technical Assurance Document</p>
+  </header>
+
+  <section>
+    <h2>Finding Information</h2>
+    <table>
+      <tbody>
+        <tr>
+          <th style="width: 25%;">Finding ID</th>
+          <td><strong>RCA-4.1</strong></td>
+        </tr>
+        <tr>
+          <th>Severity</th>
+          <td><span class="badge badge-high">High</span></td>
+        </tr>
+        <tr>
+          <th>Status</th>
+          <td><span class="badge badge-open">Open / Proposed Remediation</span></td>
+        </tr>
+        <tr>
+          <th>Affected Files</th>
+          <td>Missing <code>src/app/error.tsx</code> and <code>src/app/global-error.tsx</code></td>
+        </tr>
+        <tr>
+          <th>Core Issue</th>
+          <td>Uncaught runtime exceptions in Client Components cause total application unmount (White Screen of Death).</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>1. Problem Statement & Current State</h2>
+    <p>
+      The Next.js App Router application currently <strong>lacks root or route-level error boundaries</strong> (<code>src/app/error.tsx</code> and <code>src/app/global-error.tsx</code>).
+    </p>
+    <p>
+      In Next.js 15 / React 19, when an unhandled runtime exception occurs during rendering or inside a Client Component (such as a null pointer exception, animation state crash, or failed third-party script hydration), React unmounts the broken component tree. Without a route segment error boundary to intercept and contain the failure, the entire application collapses into a completely blank <strong>White Screen of Death (WSOD)</strong>:
+    </p>
+    <pre><code>[Runtime Exception in Client Component] ──&gt; No &lt;ErrorBoundary&gt; ──&gt; Whole App Unmounts (White Screen)</code></pre>
+    <p>
+      Furthermore, without defensive error boundaries, client-side crashes cannot be programmatically caught, logged, or forwarded to telemetry services (such as Sentry, Datadog, or custom analytics), leaving engineering teams blind to critical production outages.
+    </p>
+  </section>
+
+  <section>
+    <h2>2. Root Cause Analysis</h2>
+    <div class="callout">
+      <div class="callout-title">
+        <span>⚠️ App Router Defensive Routing Gap</span>
+      </div>
+      <p style="margin: 0;">
+        During initial project development and migration to Next.js App Router (<code>src/app/</code>), engineering efforts focused heavily on happy-path page construction (<code>page.tsx</code>, <code>layout.tsx</code>) and UI presentation, while file-system routing conventions for fault tolerance (<code>error.tsx</code>, <code>global-error.tsx</code>) were omitted.
+      </p>
+    </div>
+    <ul>
+      <li><strong>Server vs. Client Catch-Boundary Miscomprehension:</strong> In App Router, standard <code>try/catch</code> blocks inside async Server Components only catch server-side data fetching errors. They <strong>cannot</strong> catch React client-side rendering exceptions, event handler crashes, or browser hydration failures. Catching client component errors strictly requires Next.js <code>error.tsx</code> conventions (which automatically wrap route segments in React <code>&lt;ErrorBoundary&gt;</code> primitives under the hood).</li>
+      <li><strong>Missing Root Safeguard:</strong> Even if individual components handle their own state, the absence of <code>src/app/global-error.tsx</code> means that if the root <code>layout.tsx</code> (or top-level theme/font providers) fails to render, there is zero fallback UI, resulting in a fatal browser crash.</li>
+      <li><strong>Lack of Architecture Enforcement:</strong> No automated linter rule or CI/CD architecture gate was configured to enforce the presence of mandatory error boundaries in root route segments.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>3. Business & Technical Impact</h2>
+    <ul>
+      <li><strong>Catastrophic User Experience (High Bounce Rate):</strong> A single unhandled TypeError in an interactive UI element (such as the 3D Globe, Framer Motion animations, or navigation menus) crashes the entire page for the visitor. Users experience a frozen or blank white screen with no way to recover or navigate back, destroying brand credibility.</li>
+      <li><strong>Zero Observability & Silent Outages:</strong> Because errors bypass structured logging, critical production crashes fail silently on user devices without alerting the engineering team, drastically increasing Mean Time to Detection (MTTD) and Mean Time to Resolution (MTTR).</li>
+      <li><strong>Broken Conversion Funnels:</strong> If a crash occurs during interactive lead generation workflows (e.g., Contact Form submission or Get Started modals), potential clients are lost permanently without any error feedback or retry mechanism.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>4. Remediation Plan</h2>
+    <p>
+      We propose implementing the canonical Next.js App Router fault-tolerance architecture immediately by creating two defensive error boundary files styled to match EdFoal's premium cosmic design system.
+    </p>
+    <h3>Step 1: Create Route Segment Error Boundary (<code>src/app/error.tsx</code>)</h3>
+    <p>This file intercepts crashes in all nested pages and layouts, presenting a branded recovery interface with a <code>reset()</code> button to re-render the segment without doing a hard browser refresh.</p>
+    <pre><code><span class="diff-add">+"use client";</span>
+<span class="diff-add">+</span>
+<span class="diff-add">+import React, { useEffect } from "react";</span>
+<span class="diff-add">+import { AlertTriangle, RefreshCw, Home } from "lucide-react";</span>
+<span class="diff-add">+import Link from "next/link";</span>
+<span class="diff-add">+import { BRAND_NAME } from "@/lib/constants";</span>
+<span class="diff-add">+</span>
+<span class="diff-add">+export default function ErrorBoundary({ error, reset }: { error: Error & { digest?: string }; reset: () => void; }) {</span>
+<span class="diff-add">+  useEffect(() => {</span>
+<span class="diff-add">+    console.error(`[${BRAND_NAME} Runtime Error]:`, error);</span>
+<span class="diff-add">+  }, [error]);</span>
+<span class="diff-add">+</span>
+<span class="diff-add">+  return (</span>
+<span class="diff-add">+    &lt;div className="relative min-h-[70vh] w-full flex flex-col items-center justify-center px-6 text-center bg-black text-white overflow-hidden select-none"&gt;</span>
+<span class="diff-add">+      &lt;div className="relative z-10 flex flex-col items-center max-w-md mx-auto p-8 rounded-2xl border border-white/10 bg-zinc-900/50 backdrop-blur-xl shadow-2xl"&gt;</span>
+<span class="diff-add">+        &lt;h2 className="text-2xl font-bold tracking-tight text-white mb-2"&gt;Something went wrong&lt;/h2&gt;</span>
+<span class="diff-add">+        &lt;p className="text-sm text-zinc-400 mb-8"&gt;An unexpected error occurred. Our engineering team has been notified.&lt;/p&gt;</span>
+<span class="diff-add">+        &lt;button onClick={reset} className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm"&gt;Try Again&lt;/button&gt;</span>
+<span class="diff-add">+      &lt;/div&gt;</span>
+<span class="diff-add">+    &lt;/div&gt;</span>
+<span class="diff-add">+  );</span>
+<span class="diff-add">+}</span></code></pre>
+
+    <h3>Step 2: Create Root Layout Error Boundary (<code>src/app/global-error.tsx</code>)</h3>
+    <p>This file wraps the entire application. If the root <code>layout.tsx</code> fails, <code>global-error.tsx</code> replaces it entirely and must define its own <code>&lt;html&gt;</code> and <code>&lt;body&gt;</code> tags.</p>
+    <pre><code><span class="diff-add">+"use client";</span>
+<span class="diff-add">+</span>
+<span class="diff-add">+import React, { useEffect } from "react";</span>
+<span class="diff-add">+import { BRAND_NAME } from "@/lib/constants";</span>
+<span class="diff-add">+</span>
+<span class="diff-add">+export default function GlobalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void; }) {</span>
+<span class="diff-add">+  useEffect(() => {</span>
+<span class="diff-add">+    console.error(`[${BRAND_NAME} Fatal Global Error]:`, error);</span>
+<span class="diff-add">+  }, [error]);</span>
+<span class="diff-add">+</span>
+<span class="diff-add">+  return (</span>
+<span class="diff-add">+    &lt;html lang="en"&gt;</span>
+<span class="diff-add">+      &lt;body className="min-h-screen bg-[#030914] text-white flex flex-col items-center justify-center p-6 text-center font-sans"&gt;</span>
+<span class="diff-add">+        &lt;h1 className="text-2xl font-bold text-red-400 mb-3"&gt;Fatal System Error&lt;/h1&gt;</span>
+<span class="diff-add">+        &lt;button onClick={reset} className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm"&gt;Reload Application&lt;/button&gt;</span>
+<span class="diff-add">+      &lt;/body&gt;</span>
+<span class="diff-add">+    &lt;/html&gt;</span>
+<span class="diff-add">+  );</span>
+<span class="diff-add">+}</span></code></pre>
+  </section>
+
+  <section>
+    <h2>5. Verification & Assurance Plan</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Verification Step</th>
+          <th>Methodology</th>
+          <th>Expected Outcome</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Linter Audit</strong></td>
+          <td>Execute <code>npm run lint</code> across the workspace.</td>
+          <td><span class="badge badge-pass">Pass (0 Errors)</span> — Confirms client boundaries and hook rules are valid.</td>
+        </tr>
+        <tr>
+          <td><strong>Production Build</strong></td>
+          <td>Execute <code>npm run build</code> with Turbopack.</td>
+          <td><span class="badge badge-pass">Pass (Clean Build)</span> — Confirms Next.js compiles <code>error.js</code> and <code>global-error.js</code> into the route tree.</td>
+        </tr>
+        <tr>
+          <td><strong>Chaos Simulation</strong></td>
+          <td>Inject temporary <code>throw new Error()</code> in a client component.</td>
+          <td><span class="badge badge-pass">Boundary Intercept</span> — Confirms error card renders instead of White Screen of Death.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="footer-meta">
+    <span>Engineering Audit & Architecture Team</span>
+    <span>Generated for EdFoal Website Repository</span>
+  </div>
+
+</body>
+</html>

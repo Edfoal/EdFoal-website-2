@@ -11,11 +11,8 @@ import ElevateSection from "@/components/sections/home/ElevateSection";
 import IndustriesHoverExpand from "@/components/sections/home/IndustriesHoverExpand";
 import HowWeWork from "@/components/sections/home/HowWeWork";
 import BackgroundEffects from "@/components/ui/BackgroundEffects";
-import useLenis from "@/hooks/useLenis";
 
 export default function Home() {
-  // Initialize Lenis scroll smoothing on layout mount
-  useLenis();
 
   return (
     <main className="relative min-h-screen bg-black text-white selection:bg-purple-500/30 selection:text-purple-200">
