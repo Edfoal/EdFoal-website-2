@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Root Cause Analysis (RCA) Report — RCA-5.3</title>
+  <style>
+    :root {
+      --primary: #0f172a;
+      --secondary: #3b82f6;
+      --text: #334155;
+      --bg: #ffffff;
+      --border: #cbd5e1;
+      --code-bg: #f8fafc;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background-color: var(--bg);
+      margin: 0;
+      padding: 40px;
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 26px;
+      color: var(--primary);
+      margin: 0 0 8px 0;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: #64748b;
+      margin: 0;
+      font-weight: 500;
+    }
+
+    h2 {
+      font-size: 18px;
+      color: var(--primary);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+      margin-top: 35px;
+      margin-bottom: 15px;
+    }
+
+    h3 {
+      font-size: 15px;
+      color: #0f172a;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 13px;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-high {
+      background-color: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .badge-med {
+      background-color: #ffedd5;
+      color: #c2410c;
+      border: 1px solid #fed7aa;
+    }
+
+    .badge-open {
+      background-color: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fde68a;
+    }
+
+    .badge-pass {
+      background-color: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .callout {
+      background-color: #f8fafc;
+      border-left: 4px solid #ef4444;
+      padding: 16px 20px;
+      margin: 20px 0;
+      border-radius: 0 6px 6px 0;
+      font-size: 13.5px;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      color: #991b1b;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    pre {
+      background-color: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background-color: #f1f5f9;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #0f172a;
+    }
+
+    pre code {
+      background-color: transparent;
+      padding: 0;
+    }
+
+    .diff-remove {
+      color: #b91c1c;
+      background-color: #fef2f2;
+      display: block;
+      width: 100%;
+    }
+
+    .diff-add {
+      color: #15803d;
+      background-color: #f0fdf4;
+      display: block;
+      width: 100%;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 8px;
+      font-size: 13.5px;
+    }
+
+    .footer-meta {
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: #64748b;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        max-width: 100%;
+      }
+      header {
+        margin-bottom: 20px;
+      }
+      .callout, pre, table {
+        page-break-inside: avoid;
+      }
+      h2 {
+        page-break-after: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Root Cause Analysis (RCA) Report</h1>
+    <p class="subtitle">Engineering Audit & Technical Assurance Document</p>
+  </header>
+
+  <section>
+    <h2>Finding Information</h2>
+    <table>
+      <tbody>
+        <tr>
+          <th style="width: 25%;">Finding ID</th>
+          <td><strong>RCA-5.3</strong></td>
+        </tr>
+        <tr>
+          <th>Severity</th>
+          <td><span class="badge badge-high">High</span> <em>(Core Web Vitals Degradation & ESLint Violations)</em></td>
+        </tr>
+        <tr>
+          <th>Status</th>
+          <td><span class="badge badge-open">Open / Proposed Remediation</span></td>
+        </tr>
+        <tr>
+          <th>Affected Files</th>
+          <td>
+            <code>next.config.ts</code><br>
+            <code>src/components/layout/Navbar.tsx</code>, <code>src/components/ui/LargeNameFooter.tsx</code><br>
+            <code>src/components/sections/home/LogoTicker.tsx</code>, <code>src/components/sections/home/HeroSection4.tsx</code><br>
+            <code>src/components/sections/home/WhyChooseUs.tsx</code>, <code>src/components/sections/home/ElevateSection.tsx</code><br>
+            <em>(and 15+ other UI/section components across 38+ locations)</em>
+          </td>
+        </tr>
+        <tr>
+          <th>Core Issue</th>
+          <td>Raw HTML &lt;img&gt; tags are used everywhere without Next.js Image Optimization, responsive sizing, or lazy loading, while next.config.ts lacks required remotePatterns.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>1. Problem Statement & Current State</h2>
+    <p>
+      During a frontend performance and Core Web Vitals audit, it was identified that <strong>raw HTML <code>&lt;img&gt;</code> tags are used extensively across 38+ locations in the codebase</strong>, while the optimized Next.js <code>&lt;Image /&gt;</code> component is used in only one file (<code>container-scroll-animation.tsx</code>).
+    </p>
+    <p>
+      Furthermore, the application's Next.js configuration (<code>next.config.ts</code>) contains an empty configuration object with no image domains or remote patterns defined:
+    </p>
+    <pre><code>// Current state of next.config.ts — No remote patterns!
+const nextConfig: NextConfig = {
+  /* config options here */
+};</code></pre>
+    <p>
+      In Next.js 15 App Router, using raw <code>&lt;img&gt;</code> tags bypasses the built-in Next.js Image Optimization API. As a result, images are served without automatic WebP/AVIF format conversion, responsive resizing (<code>srcset</code>), or native lazy loading. This triggers <strong>over 20+ <code>@next/next/no-img-element</code> ESLint build warnings/errors</strong> and severely degrades Largest Contentful Paint (LCP) scores on mobile devices.
+    </p>
+  </section>
+
+  <section>
+    <h2>2. Root Cause Analysis</h2>
+    <div class="callout">
+      <div class="callout-title">
+        <span>🚨 Missing CDN Remote Pattern Whitelisting</span>
+      </div>
+      <p style="margin: 0;">
+        When developers attempted to use external assets hosted on ImageKit (<code>https://ik.imagekit.io/...</code>) and Unsplash (<code>https://images.unsplash.com/...</code>), Next.js threw runtime security exceptions because those hostnames were not whitelisted in <code>next.config.ts</code>. Instead of configuring <code>images.remotePatterns</code>, developers reverted to raw HTML <code>&lt;img&gt;</code> tags across the entire frontend to bypass the security check during rapid prototyping.
+      </p>
+    </div>
+    <ul>
+      <li><strong>Unconfigured Security Whitelisting:</strong> Next.js requires explicit hostname authorization via <code>remotePatterns</code> in <code>next.config.ts</code> before its image server will fetch and optimize external CDN assets. Because this configuration was missing, <code>&lt;Image /&gt;</code> failed at runtime for external URLs.</li>
+      <li><strong>Rapid UI Scaffolding & Component Paste:</strong> When integrating third-party UI sections and marketing cards, raw HTML templates containing standard <code>&lt;img&gt;</code> tags were pasted directly into React components without converting them to Next.js <code>&lt;Image /&gt;</code> primitives.</li>
+      <li><strong>Ignored Linter Warnings:</strong> During local development, <code>@next/next/no-img-element</code> ESLint rules were treated as non-blocking warnings rather than hard architecture constraints, allowing unoptimized image usage to proliferate across 38+ locations.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>3. Business & Technical Impact</h2>
+    <ul>
+      <li><strong>Severe LCP Degradation (SEO Penalty):</strong> Unoptimized hero banners, logos, and case study graphics download as multi-megabyte PNGs/JPEGs. This delays Largest Contentful Paint (LCP) times beyond the Google Search 2.5-second threshold, directly harming Google PageSpeed SEO rankings and user conversion rates.</li>
+      <li><strong>Wasted Mobile Bandwidth:</strong> Without responsive <code>srcset</code> generation or <code>sizes</code> attributes, a mobile phone with a 375px screen is forced to download 3000px wide desktop banners, wasting cellular data and causing noticeable visual stuttering during page rendering.</li>
+      <li><strong>Thread Blocking & Missing Lazy Loading:</strong> Raw <code>&lt;img&gt;</code> tags default to eager loading, causing dozens of off-screen partner logos and footer graphics to download simultaneously on page load, choking browser network queues and delaying Time to Interactive (TTI).</li>
+      <li><strong>Codebase Technical Debt:</strong> 20+ ESLint linting violations clutter build reports and obscure legitimate compilation warnings.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>4. Remediation Plan</h2>
+    <p>
+      We propose a systematic two-step remediation: <strong>"Configure <code>remotePatterns</code> in <code>next.config.ts</code> and replace external <code>&lt;img&gt;</code> tags with <code>&lt;Image fill sizes="..." /&gt;</code> or explicit dimensions."</strong>
+    </p>
+    <h3>Step 1: Configure <code>remotePatterns</code> in <code>next.config.ts</code></h3>
+    <p>Update <code>next.config.ts</code> to securely authorize our external CDN providers (ImageKit, Unsplash, Aceternity) for automatic image optimization:</p>
+    <pre><code> import type { NextConfig } from "next";
+
+ const nextConfig: NextConfig = {
+<span class="diff-remove">-  /* config options here */</span>
+<span class="diff-add">+  images: {
++    remotePatterns: [
++      { protocol: "https", hostname: "ik.imagekit.io", pathname: "/edfoalImage/**" },
++      { protocol: "https", hostname: "images.unsplash.com" },
++      { protocol: "https", hostname: "assets.aceternity.com" },
++    ],
++  },</span>
+ };
+
+ export default nextConfig;</code></pre>
+
+    <h3>Step 2: Systematically Refactor Raw <code>&lt;img&gt;</code> to <code>&lt;Image /&gt;</code></h3>
+    <p>Replace raw <code>&lt;img&gt;</code> tags across UI components with Next.js <code>&lt;Image /&gt;</code> components, applying proper <code>sizes</code>, <code>fill</code>, or explicit <code>width</code>/<code>height</code> attributes:</p>
+    <pre><code><span class="diff-add">+import Image from "next/image";</span>
+
+// Before (Raw HTML img):
+<span class="diff-remove">-&lt;img key="bhavishya" src="https://ik.imagekit.io/edfoalImage/assets/image/bhavishyaNGO.png" alt="Bhavishya NGO" className="partner-logo" /&gt;</span>
+
+// After (Optimized Next.js Image):
+<span class="diff-add">+&lt;Image
++  key="bhavishya"
++  src="https://ik.imagekit.io/edfoalImage/assets/image/bhavishyaNGO.png"
++  alt="Bhavishya NGO"
++  width={140}
++  height={50}
++  className="partner-logo object-contain"
++/&gt;</span></code></pre>
+  </section>
+
+  <section>
+    <h2>5. Verification & Assurance Plan</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Verification Step</th>
+          <th>Methodology</th>
+          <th>Expected Outcome</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Linter Audit</strong></td>
+          <td>Execute <code>npm run lint</code> across the workspace.</td>
+          <td><span class="badge badge-pass">Pass (0 Warnings)</span> — Confirms all <code>@next/next/no-img-element</code> violations are eliminated.</td>
+        </tr>
+        <tr>
+          <td><strong>Production Build</strong></td>
+          <td>Execute <code>npm run build</code> with Turbopack.</td>
+          <td><span class="badge badge-pass">Pass (Clean Build)</span> — Confirms <code>next.config.ts</code> schema validation succeeds.</td>
+        </tr>
+        <tr>
+          <td><strong>Network Profiling</strong></td>
+          <td>Inspect Chrome DevTools $\rightarrow$ Network tab (Img filter).</td>
+          <td><span class="badge badge-pass">WebP / AVIF Formats</span> — Confirms images are automatically converted and payload sizes drop by 70–85%.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="footer-meta">
+    <span>Engineering Audit & Architecture Team</span>
+    <span>Generated for EdFoal Website Repository</span>
+  </div>
+
+</body>
+</html>

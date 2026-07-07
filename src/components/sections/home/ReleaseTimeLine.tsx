@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { ArrowUpRight, Package, Calendar, Sparkles, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -213,14 +214,15 @@ export default function TimeLine_01({
                 >
                   {entry.image && (
                     <div className="mb-5 overflow-hidden rounded-xl border border-white/5 bg-zinc-950/30 aspect-[16/9] w-full">
-                      <img
+                      <Image
                         src={entry.image}
                         alt={`${entry.title} visual`}
+                        width={600}
+                        height={338}
                         className={cn(
                           "w-full h-full object-cover transition-transform duration-700 ease-out",
                           isActive ? "scale-105" : "scale-100 opacity-80"
                         )}
-                        loading="lazy"
                       />
                     </div>
                   )}

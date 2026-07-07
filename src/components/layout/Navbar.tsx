@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -9,11 +10,12 @@ import { OriginButton } from "@/components/ui/OriginButton";
 
 const EdfoalLogo = ({ isLight }: { isLight: boolean }) => (
   <div className="flex items-center select-none group cursor-pointer">
-    <img
+    <Image
       src="https://ik.imagekit.io/edfoalImage/assets/image/footerlogo.png"
       alt="Edfoal"
       width={150}
       height={22}
+      priority
       className={`h-4 w-auto object-contain transform transition-transform duration-300 group-hover:scale-105 min-[420px]:h-5 sm:h-[22px] ${isLight ? "invert" : ""
         }`}
     />

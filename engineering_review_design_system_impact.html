@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Engineering Review & Implementation Impact Assessment — Design System Architecture</title>
+  <style>
+    :root {
+      --primary: #0f172a;
+      --secondary: #3b82f6;
+      --text: #334155;
+      --bg: #ffffff;
+      --border: #cbd5e1;
+      --code-bg: #f8fafc;
+      --accent: #2563eb;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.65;
+      color: var(--text);
+      background-color: var(--bg);
+      margin: 0;
+      padding: 40px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 3px solid var(--primary);
+      padding-bottom: 25px;
+      margin-bottom: 35px;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: var(--primary);
+      margin: 0 0 10px 0;
+      letter-spacing: -0.5px;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: #64748b;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      background-color: #f8fafc;
+      border: 1px solid var(--border);
+      padding: 18px 22px;
+      border-radius: 8px;
+      margin-top: 25px;
+      font-size: 13.5px;
+    }
+
+    .meta-item strong {
+      color: var(--primary);
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    h2 {
+      font-size: 20px;
+      color: var(--primary);
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 8px;
+      margin-top: 45px;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    h3 {
+      font-size: 16px;
+      color: #1e293b;
+      margin-top: 28px;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    h4 {
+      font-size: 14.5px;
+      color: #334155;
+      margin-top: 20px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    p {
+      margin-top: 0;
+      margin-bottom: 16px;
+      font-size: 14.5px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 25px 0;
+      font-size: 13px;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-high {
+      background-color: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .badge-med {
+      background-color: #ffedd5;
+      color: #c2410c;
+      border: 1px solid #fed7aa;
+    }
+
+    .badge-low {
+      background-color: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+
+    .badge-pass {
+      background-color: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .callout {
+      background-color: #f8fafc;
+      border-left: 4px solid var(--accent);
+      padding: 18px 22px;
+      margin: 25px 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .callout-warn {
+      border-left-color: #f59e0b;
+      background-color: #fffbeb;
+    }
+
+    .callout-danger {
+      border-left-color: #ef4444;
+      background-color: #fef2f2;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .callout-danger .callout-title {
+      color: #991b1b;
+    }
+
+    pre {
+      background-color: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12.5px;
+      line-height: 1.6;
+      margin: 20px 0;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background-color: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12.5px;
+      color: #0f172a;
+    }
+
+    pre code {
+      background-color: transparent;
+      padding: 0;
+    }
+
+    .diff-remove {
+      color: #b91c1c;
+      background-color: #fef2f2;
+      display: block;
+      width: 100%;
+      padding: 1px 4px;
+    }
+
+    .diff-add {
+      color: #15803d;
+      background-color: #f0fdf4;
+      display: block;
+      width: 100%;
+      padding: 1px 4px;
+    }
+
+    ul, ol {
+      padding-left: 24px;
+      margin-bottom: 18px;
+    }
+
+    li {
+      margin-bottom: 8px;
+      font-size: 14.5px;
+    }
+
+    .checklist {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .checklist li {
+      position: relative;
+      padding-left: 28px;
+      margin-bottom: 12px;
+    }
+
+    .checklist li::before {
+      content: "☐";
+      position: absolute;
+      left: 0;
+      top: -2px;
+      font-size: 18px;
+      color: #64748b;
+    }
+
+    .diagram-box {
+      background-color: #0f172a;
+      color: #38bdf8;
+      padding: 20px;
+      border-radius: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      white-space: pre;
+      overflow-x: auto;
+      margin: 25px 0;
+      border: 1px solid #1e293b;
+    }
+
+    .footer-meta {
+      margin-top: 60px;
+      padding-top: 25px;
+      border-top: 1px solid var(--border);
+      font-size: 12.5px;
+      color: #64748b;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        max-width: 100%;
+        background-color: #fff;
+      }
+      header {
+        margin-bottom: 25px;
+      }
+      .callout, pre, table, .diagram-box, .meta-grid {
+        page-break-inside: avoid;
+      }
+      h2, h3 {
+        page-break-after: avoid;
+      }
+      @page {
+        margin: 2cm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Engineering Review & Implementation Impact Assessment</h1>
+    <p class="subtitle">Adopting the 3-Layer Tokenized Design System Architecture (submission-enterprise Monorepo Model)</p>
+    
+    <div class="meta-grid">
+      <div class="meta-item">
+        <strong>Document Reference</strong>
+        Design System — Colors, Typography & Fonts
+      </div>
+      <div class="meta-item">
+        <strong>Target Audience</strong>
+        Principal Architects, Engineering Leads, PMs, Developers
+      </div>
+      <div class="meta-item">
+        <strong>Assessment Type</strong>
+        Enterprise Systems Architecture Impact & Migration Proposal
+      </div>
+      <div class="meta-item">
+        <strong>Estimated Roadmap</strong>
+        6 to 8 Weeks across 5 Structured Phases
+      </div>
+    </div>
+  </header>
+
+  <!-- SECTION 1: EXECUTIVE SUMMARY -->
+  <section>
+    <h2>1. Executive Summary</h2>
+    
+    <h3>1.1 Introduction & Purpose</h3>
+    <p>
+      This document presents a comprehensive engineering review and implementation impact assessment for migrating our existing production frontend architecture to the <strong>3-Layer Tokenized Design System</strong> described in the <code>submission-enterprise</code> reference architecture.
+    </p>
+    <p>
+      Currently, many existing frontend applications suffer from fragmented UI implementations characterized by hardcoded hexadecimal colors, ad-hoc Tailwind default utilities (<code>text-sm</code>, <code>font-semibold</code>, <code>bg-gray-100</code>), duplicated styling logic, and inconsistent visual hierarchy across different modules. Adopting this design system establishes a <strong>Single Source of Truth (SSOT)</strong> for all visual primitives across our engineering organization.
+    </p>
+
+    <h3>1.2 Why This Architecture Exists</h3>
+    <p>
+      In scalable multi-team or monorepo environments (such as applications sharing domains like <code>generic</code>, <code>aviation</code>, <code>property</code>, and <code>pvandterrorism</code>), allowing developers to arbitrarily choose color hexes or font sizes leads to severe technical debt:
+    </p>
+    <ol>
+      <li><strong>Theme Inflexibility:</strong> Rebranding or adjusting contrast for accessibility (WCAG 2.1 AA/AAA) requires doing manual search-and-replace across thousands of individual component files.</li>
+      <li><strong>Visual Drift:</strong> Different developers implement "muted text" or "card borders" using slightly different gray shades (<code>#64748b</code> vs <code>#6b7280</code> vs <code>#475569</code>), destroying brand perception and UI polish.</li>
+      <li><strong>Bundle Bloat:</strong> Uncontrolled arbitrary values (e.g., <code>text-[#101826]</code>, <code>top-[17px]</code>) prevent Tailwind CSS from optimizing its utility class generation, leading to bloated CSS bundles and slower rendering pipelines.</li>
+    </ol>
+
+    <h3>1.3 Business & Engineering Value Proposition</h3>
+    <p>
+      Adopting this design system architecture shifts our UI development from an <strong>ad-hoc utility model</strong> to a <strong>strict semantic token model</strong>. By creating a rigid boundary between raw design primitives (<code>colors.js</code>) and functional semantic intent (<code>semantic.js</code>), we achieve:
+    </p>
+    <ul>
+      <li><strong>Instant Multi-App Theming:</strong> A single change in <code>tailwind.preset.js</code> or <code>semantic.js</code> instantly propagates across all micro-frontends, shared libraries, and remote Module Federation UI kits (<code>cs_ui_kit</code>).</li>
+      <li><strong>Elimination of Visual Defects:</strong> Developers no longer guess class names; strict linting and preset enforcement guarantee 100% adherence to UI/UX specifications.</li>
+      <li><strong>Accelerated Feature Delivery:</strong> Frontend velocity increases significantly because developers assemble UI components using standardized, predictable semantic tokens (<code>text-primary</code>, <code>bg-secondary</code>, <code>border-tertiary</code>) rather than inspecting Figma files for raw hex values.</li>
+    </ul>
+
+    <h3>1.4 Implementation Complexity & Estimated Effort</h3>
+    <p>
+      <strong>Overall Architecture Complexity:</strong> <span class="badge badge-med">Medium-High</span> <em>(Requires restructuring shared packages, configuring Tailwind preset inheritance, and updating build pipelines)</em>.<br>
+      <strong>Component Refactoring Effort:</strong> <span class="badge badge-high">High</span> <em>(Requires systematic migration of all existing components to eliminate arbitrary Tailwind defaults and hardcoded hex values)</em>.<br>
+      <strong>Estimated Timeline:</strong> <strong>6 to 8 Weeks</strong> across 5 structured migration phases (detailed in Section 11).
+    </p>
+  </section>
+
+  <!-- SECTION 2: CURRENT ARCHITECTURE -->
+  <section>
+    <h2>2. Current Architecture (As-Is)</h2>
+    
+    <h3>2.1 Typical Legacy Frontend Architecture</h3>
+    <p>
+      Before implementing this tokenized design system, our existing production project operates on a decentralized styling model. Applications typically maintain isolated <code>tailwind.config.js</code> files with ad-hoc color extensions or rely entirely on default Tailwind CSS utility palettes.
+    </p>
+
+    <div class="diagram-box">[Legacy / As-Is Decentralized Architecture]
+┌────────────────────────────────────────────────────────┐
+│ App 1 (e.g., Portal)                                   │
+│  ├─ tailwind.config.js (custom ad-hoc colors)          │
+│  └─ Components: &lt;div class="bg-[#101826] text-gray-600"&gt;│
+└────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────┐
+│ App 2 (e.g., Admin Dashboard)                          │
+│  ├─ tailwind.config.js (different custom colors)       │
+│  └─ Components: &lt;div class="bg-slate-900 text-sm"&gt;     │
+└────────────────────────────────────────────────────────┘</div>
+
+    <h3>2.2 Critical Technical Debt & Architectural Defects</h3>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 22%;">Defect Category</th>
+          <th style="width: 43%;">Current Manifestation in Codebase</th>
+          <th style="width: 35%;">Engineering & Business Impact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Hardcoded Hex Values</strong></td>
+          <td>Extensive use of inline arbitrary values: <code>class="bg-[#101826] border-[#cbd5e1] text-[#0084CB]"</code>.</td>
+          <td><strong>High Maintenance Cost:</strong> Changing brand primary color requires auditing hundreds of files with high risk of regression.</td>
+        </tr>
+        <tr>
+          <td><strong>Inconsistent Styling</strong></td>
+          <td>Mixed spacing and border radiuses: <code>rounded-md</code>, <code>rounded-lg</code>, <code>p-3</code>, <code>m-2.5</code>, <code>border-2</code>.</td>
+          <td><strong>Visual UI Drift:</strong> Cards and buttons look subtly different across pages, eroding user trust and professional feel.</td>
+        </tr>
+        <tr>
+          <td><strong>Duplicate Color Palettes</strong></td>
+          <td><code>slate-800</code>, <code>gray-800</code>, <code>zinc-800</code>, and <code>#1e293b</code> used interchangeably for dark text and backgrounds.</td>
+          <td><strong>Design System Fragmentation:</strong> Design team specifications are ignored; CSS bundle size increases due to redundant utility generation.</td>
+        </tr>
+        <tr>
+          <td><strong>Mixed Typography</strong></td>
+          <td>Relying on Tailwind defaults (<code>text-xs</code>, <code>text-sm</code>, <code>text-base</code>, <code>text-lg</code>, <code>text-xl</code>) alongside arbitrary sizes (<code>text-[15px]</code>).</td>
+          <td><strong>Unpredictable Vertical Rhythm:</strong> Line heights and letter spacings do not scale proportionally, causing awkward text wrapping and overlapping.</td>
+        </tr>
+        <tr>
+          <td><strong>Uncontrolled Font Stacks</strong></td>
+          <td>Mixing <code>font-sans</code>, <code>font-serif</code>, and system defaults without a centralized fallback hierarchy.</td>
+          <td><strong>Layout Shift (FOIT/FOUT):</strong> Text jumps and reflows during page load because font metrics vary across browsers and operating systems.</td>
+        </tr>
+        <tr>
+          <td><strong>Poor Token Management</strong></td>
+          <td>Zero separation between raw color values and semantic meaning. <code>red-600</code> is used for both destructive buttons and error text.</td>
+          <td><strong>Accessibility Failures:</strong> Unable to adjust contrast specifically for text vs. background elements without breaking UI layout components.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- SECTION 3: FUTURE ARCHITECTURE -->
+  <section>
+    <h2>3. Future Architecture (To-Be)</h2>
+    
+    <h3>3.1 Architectural Overview & Layered Design</h3>
+    <p>
+      Implementing the reference document establishes a strictly layered <strong>3-Layer Tokenized Architecture</strong> hosted within a shared library package (<code>packages/lib/src/</code>). All frontend applications (<code>apps/*</code>) and remote Module Federation UI kits (<code>cs_ui_kit</code>) consume this centralized single source of truth.
+    </p>
+
+    <div class="diagram-box">===================================================================================
+                       FUTURE ARCHITECTURE (TO-BE) DATA FLOW
+===================================================================================
+
+ [Layer 1: Raw Tokens]
+ packages/lib/src/constants/colors.js       ──&gt; Hex Scales (cloud-grey, navy-blue, hot-pink, etc.)
+ packages/lib/src/constants/typography.js   ──&gt; Font Stacks, Sizes (12..86), Weights (300..600)
+ packages/lib/src/constants/spacing.js      ──&gt; Spacing, Border Radius, Icon Dimensions
+
+                                   │
+                                   ▼ (Imported &amp; Mapped)
+
+ [Layer 2: Semantic Tokens]
+ packages/lib/src/constants/semantic.js     ──&gt; Functional Intent Mapping
+                                                ├── Text: text-primary ──&gt; midnight-blue-800
+                                                ├── Border: border-error ──&gt; red-800
+                                                ├── Background: bg-secondary ──&gt; cloud-grey-50
+                                                └── State: hover:bg-hover, focus:ring-focus
+
+                                   │
+                                   ▼ (Merged &amp; Injected)
+
+ [Layer 3: Tailwind Preset Engine]
+ packages/lib/src/configs/tailwind.preset.js ──&gt; Centralized Theme Extension
+                                                ├── extend.colors = { ...raw }
+                                                ├── extend.textColor = { ...semanticText }
+                                                ├── extend.borderColor = { ...semanticBorder }
+                                                └── extend.backgroundColor = { ...semanticBg }
+
+                                   │
+                                   ▼ (Consumed via require/import)
+
+ [Application Layer &amp; Module Federation]
+ apps/{generic,aviation,property}/tailwind.config.js ──&gt; presets: [tailwindPreset]
+ cs_ui_kit (Remote Module Federation UI Kit)         ──&gt; Inherits &amp; extends shared token pool
+
+                                   │
+                                   ▼ (Compiled into Pure CSS)
+
+ [Presentation / Component Layer]
+ Vue / React UI Components ──&gt; &lt;div class="bg-secondary border border-tertiary rounded-8 p-16"&gt;
+                                 &lt;h3 class="text-20 font-500 font-outfit text-primary"&gt;Title&lt;/h3&gt;
+                               &lt;/div&gt;
+===================================================================================</div>
+
+    <h3>3.2 Detailed Explanation of Architecture Layers</h3>
+    <h4>1. Raw Token Layer (<code>packages/lib/src/constants/</code>)</h4>
+    <p>
+      This layer defines the absolute physical constraints of our visual system. It knows nothing about UI components, buttons, or layouts. It simply exports immutable JavaScript dictionaries:
+    </p>
+    <ul>
+      <li><strong><code>colors.js</code></strong>: Contains named color palettes (<code>cloud-grey</code>, <code>stone-grey</code>, <code>navy-blue</code>, <code>midnight-blue</code>, <code>ice-blue</code>, <code>hot-pink</code>, <code>safety-orange</code>, <code>lime-green</code>, <code>red</code>, <code>blue</code>, <code>green</code>, <code>white</code>, <code>background-blue</code>), each containing numeric brightness steps (<code>25, 50, 100, 200, 300, 400, 500, 600, 700, 800</code>).</li>
+      <li><strong><code>typography.js</code></strong>: Defines exact font family stacks (<code>inter</code>, <code>outfit</code>, <code>system</code>, <code>monospace</code>), strict pixel-indexed font size objects (<code>12, 14, 16, 20, 24, 32, 40, 86</code> mapped to rem, line-height, and letter-spacing), and allowed numeric font weights (<code>300, 400, 500, 600</code>).</li>
+      <li><strong><code>spacing.js</code></strong>: Governs grid alignment, padding, margins, border radiuses (<code>rounded-4</code>, <code>rounded-8</code>, <code>rounded-12</code>), and icon dimensions.</li>
+    </ul>
+
+    <h4>2. Semantic Token Layer (<code>packages/lib/src/constants/semantic.js</code>)</h4>
+    <p>
+      This is the most critical architectural addition. The semantic layer imports the raw palettes from <code>colors.js</code> and assigns them <strong>functional meaning based on UI context</strong>.
+    </p>
+    <ul>
+      <li>Instead of a component referencing <code>navy-blue-800</code>, it references <code>text-primary</code> or <code>bg-dark-primary</code>.</li>
+      <li>If the UX team decides that primary text should be slightly softer (<code>midnight-blue-700</code> instead of <code>800</code>), we change <strong>one line</strong> in <code>semantic.js</code>, and every application instantly updates without touching a single Vue or React component.</li>
+    </ul>
+
+    <h4>3. Tailwind Preset Wiring Layer (<code>packages/lib/src/configs/tailwind.preset.js</code>)</h4>
+    <p>
+      Rather than duplicating theme configurations across apps, we create a single Tailwind preset. This script dynamically constructs the Tailwind <code>theme.extend</code> object by mapping:
+    </p>
+    <ul>
+      <li><code>colors</code> $\rightarrow$ Raw palette (enabling <code>bg-navy-blue-800</code> when raw precision is needed).</li>
+      <li><code>textColor</code> $\rightarrow$ Semantic text aliases (<code>text-primary</code>, <code>text-secondary</code>, <code>text-disabled</code>, <code>text-clickable</code>, <code>text-negative</code>, <code>text-brand</code>).</li>
+      <li><code>borderColor</code> &amp; <code>stroke</code> $\rightarrow$ Semantic border aliases (<code>border-primary</code>, <code>border-secondary</code>, <code>border-error</code>, <code>border-brand</code>).</li>
+      <li><code>backgroundColor</code> &amp; <code>ringColor</code> $\rightarrow$ Semantic background and interactive state aliases (<code>bg-primary</code>, <code>bg-secondary</code>, <code>bg-dark-primary</code>, <code>bg-hover</code>, <code>ring-focus</code>).</li>
+    </ul>
+
+    <h4>4. Application Wiring &amp; Module Federation (<code>apps/*/</code> &amp; <code>cs_ui_kit</code>)</h4>
+    <p>
+      Each consumer application's <code>tailwind.config.js</code> simply requires the shared preset and configures its <code>content</code> scanning array to include both local app files and the shared <code>packages/**/src/**/*.{vue,js,ts,tsx}</code> directories. This ensures that Tailwind generates utility classes for shared UI components dynamically without bloating individual app bundles.
+    </p>
+  </section>
+
+  <!-- SECTION 4: FILE-LEVEL CHANGE ANALYSIS -->
+  <section>
+    <h2>4. File-Level Change Analysis</h2>
+    <p>
+      Adopting this architecture requires systematic modifications across our workspace. Below is an exhaustive technical breakdown of every file category that will change, why it changes, the technical impact, estimated migration effort, and associated engineering risk.
+    </p>
+
+    <h3>4.1 Token &amp; Configuration Files (Shared Library Layer)</h3>
+    
+    <h4>[NEW] <code>packages/lib/src/constants/colors.js</code></h4>
+    <ul>
+      <li><strong>Why it changes:</strong> Establishes the foundational physical color scales required by the new architecture.</li>
+      <li><strong>What changes:</strong> New file exporting exact hex palettes (<code>cloud-grey</code>, <code>stone-grey</code>, <code>navy-blue</code>, <code>midnight-blue</code>, <code>ice-blue</code>, <code>hot-pink</code>, <code>safety-orange</code>, <code>lime-green</code>, <code>red</code>, <code>blue</code>, <code>green</code>, <code>white</code>, <code>background-blue</code>) with steps <code>25</code> through <code>800</code>.</li>
+      <li><strong>Impact:</strong> Provides the raw building blocks for all semantic tokens and runtime mappings.</li>
+      <li><strong>Migration Effort:</strong> <span class="badge badge-low">Low</span> <em>(One-time creation and verification against design specs)</em>.</li>
+      <li><strong>Risk:</strong> <span class="badge badge-low">Low</span> <em>(Pure data structure; no runtime logic)</em>.</li>
+    </ul>
+
+    <h4>[NEW] <code>packages/lib/src/constants/semantic.js</code></h4>
+    <ul>
+      <li><strong>Why it changes:</strong> Decouples raw color values from component implementations by introducing functional aliases.</li>
+      <li><strong>What changes:</strong> New file importing <code>colors.js</code> and exporting categorized dictionaries: <code>textColors</code>, <code>borderColors</code>, <code>backgroundColors</code>, and <code>stateColors</code> (<code>hover</code>, <code>active</code>, <code>focus</code>, <code>selected</code>, <code>disabled</code>).</li>
+      <li><strong>Impact:</strong> Enforces semantic UI development; prevents developers from hardcoding raw hexes or arbitrary colors in components.</li>
+      <li><strong>Migration Effort:</strong> <span class="badge badge-med">Medium</span> <em>(Requires mapping existing UI visual states to appropriate semantic aliases)</em>.</li>
+      <li><strong>Risk:</strong> <span class="badge badge-med">Medium</span> <em>(Incorrect mapping here will cause widespread visual contrast defects across all apps)</em>.</li>
+    </ul>
+
+    <h4>[NEW] <code>packages/lib/src/constants/typography.js</code></h4>
+    <ul>
+      <li><strong>Why it changes:</strong> Replaces unpredictable default Tailwind font sizes and weights with strict design system scales.</li>
+      <li><strong>What changes:</strong> New file exporting <code>fontFamily</code> (<code>inter</code>, <code>outfit</code>, <code>system</code>, <code>monospace</code>), <code>fontSize</code> (indexed by pixel strings <code>'12'</code>, <code>'14'</code>, <code>'16'</code>, <code>'20'</code>, <code>'24'</code>, <code>'32'</code>, <code>'40'</code>, <code>'86'</code> with tuple values for <code>rem</code>, <code>lineHeight</code>, and <code>letterSpacing</code>), and <code>fontWeight</code> (<code>300</code>, <code>400</code>, <code>500</code>, <code>600</code>).</li>
+      <li><strong>Impact:</strong> Eliminates <code>text-sm</code>, <code>text-lg</code>, <code>font-bold</code>, and <code>font-semibold</code> across the entire project in favor of <code>text-14</code>, <code>text-20</code>, <code>font-400</code>, <code>font-500</code>, and <code>font-600</code>.</li>
+      <li><strong>Migration Effort:</strong> <span class="badge badge-med">Medium</span> <em>(Requires auditing all typography rendering across apps)</em>.</li>
+      <li><strong>Risk:</strong> <span class="badge badge-med">Medium</span> <em>(Text reflow and layout breaking if line-heights differ significantly from legacy defaults)</em>.</li>
+    </ul>
+
+    <h4>[NEW] <code>packages/lib/src/constants/spacing.js</code></h4>
+    <ul>
+      <li><strong>Why it changes:</strong> Standardizes padding, margin, border radiuses, and icon sizing across the monorepo.</li>
+      <li><strong>What changes:</strong> New file exporting spacing scales and border radius tokens (<code>rounded-4</code>, <code>rounded-8</code>, <code>rounded-12</code>, <code>rounded-16</code>).</li>
+      <li><strong>Impact:</strong> Replaces inconsistent <code>rounded-md</code>, <code>rounded-lg</code>, and arbitrary spacing with uniform numeric tokens.</li>
+      <li><strong>Migration Effort:</strong> <span class="badge badge-low">Low-Medium</span>.</li>
+      <li><strong>Risk:</strong> <span class="badge badge-low">Low</span> <em>(Minor visual padding adjustments)</em>.</li>
+    </ul>
+
+    <h4>[NEW] <code>packages/lib/src/constants/colorMaps.js</code></h4>
+    <ul>
+      <li><strong>Why it changes:</strong> Bridges backend database status hex codes with frontend Tailwind utility classes (specifically for complex domain workflows like <code>aviation</code>).</li>
+      <li><strong>What changes:</strong> New file exporting <code>AVIATION_COLOR_MAP</code> and helper function <code>getColorClass(hexColor, defaultClass)</code> which dynamically maps hex strings (e.g., <code>'#FF69C2'</code>) to safe Tailwind classes (<code>'bg-hot-pink-800'</code>).</li>
+      <li><strong>Impact:</strong> Prevents dynamic inline CSS style injection (<code>style="background-color: #FF69C2"</code>); allows CSP (Content Security Policy) to remain strict without unsafe-inline style exceptions.</li>
+      <li><strong>Migration Effort:</strong> <span class="badge badge-med">Medium</span> <em>(Requires cataloging all backend-driven status colors across domain workflows)</em>.</li>
+      <li><strong>Risk:</strong> <span class="badge badge-high">High</span> <em>(If a backend hex code is missing from the map, status badges will silently fallback to default primary colors)</em>.</li>
+    </ul>
+
+    <h4>[NEW] <code>packages/lib/src/configs/tailwind.preset.js</code></h4>
+    <ul>
+      <li><strong>Why it changes:</strong> Serves as the central engine that injects our token dictionaries into the Tailwind CSS compiler.</li>
+      <li><strong>What changes:</strong> New file requiring <code>colors.js</code>, <code>semantic.js</code>, <code>typography.js</code>, and <code>spacing.js</code>, exporting a valid Tailwind preset object with customized <code>theme.extend</code> rules.</li>
+      <li><strong>Impact:</strong> Acts as the Single Source of Truth for all utility class generation across every app in the monorepo.</li>
+      <li><strong>Migration Effort:</strong> <span class="badge badge-med">Medium</span> <em>(Requires careful structuring of Tailwind extension keys)</em>.</li>
+      <li><strong>Risk:</strong> <span class="badge badge-high">High</span> <em>(Syntax error or misconfiguration here breaks the build for every application in the monorepo)</em>.</li>
+    </ul>
+
+    <h3>4.2 Application Configuration &amp; Style Files (<code>apps/*</code>)</h3>
+    
+    <h4>[MODIFY] <code>apps/*/tailwind.config.js</code> (e.g., <code>generic</code>, <code>aviation</code>, <code>property</code>, <code>pvandterrorism</code>)</h4>
+    <ul>
+      <li><strong>Why it changes:</strong> Must be wired to inherit the centralized Tailwind preset and scan shared library components.</li>
+      <li><strong>What changes:</strong> Remove all legacy ad-hoc color and font definitions. Import <code>tailwindPreset</code> and add <code>presets: [tailwindPreset]</code>. Update <code>content</code> array to scan <code>'../../packages/**/src/**/*.{vue,js,ts,tsx}'</code>.</li>
+      <li><strong>Impact:</strong> Strips individual apps of local theme drift; forces 100% compliance with shared tokens.</li>
+      <li><strong>Migration Effort:</strong> <span class="badge badge-low">Low per app</span> <em>(5-minute configuration change)</em>.</li>
+      <li><strong>Risk:</strong> <span class="badge badge-high">High</span> <em>(Immediately exposes legacy components using deprecated default Tailwind classes)</em>.</li>
+    </ul>
+
+    <h4>[MODIFY] <code>apps/*/src/styles/index.css</code> (or <code>globals.css</code>)</h4>
+    <ul>
+      <li><strong>Why it changes:</strong> Removes legacy CSS overrides, custom utility hacks, and imports standardized <code>@tailwind</code> directives.</li>
+      <li><strong>What changes:</strong> Clean file to contain only <code>@tailwind base;</code>, <code>@tailwind components;</code>, <code>@tailwind utilities;</code>, and essential design-token-driven third-party overrides (e.g., <code>.v-popper--theme-dark .v-popper__inner { @apply rounded-4 bg-navy-blue-800 text-white px-12 py-8 text-12 border-0 !important; }</code>).</li>
+      <li><strong>Impact:</strong> Eliminates thousands of lines of legacy CSS technical debt and specificity battles.</li>
+      <li><strong>Migration Effort:</strong> <span class="badge badge-med">Medium</span> <em>(Requires auditing existing global CSS for hidden layout dependencies)</em>.</li>
+      <li><strong>Risk:</strong> <span class="badge badge-med">Medium</span> <em>(Removing legacy global CSS rules may cause unstyled edge-case components to break)</em>.</li>
+    </ul>
+
+    <h4>[MODIFY] <code>apps/*/src/bootstrap-app.js</code> (or main entry point <code>main.js</code> / <code>main.ts</code>)</h4>
+    <ul>
+      <li><strong>Why it changes:</strong> Enforces correct CSS loading order across applications and Module Federation remotes.</li>
+      <li><strong>What changes:</strong> Ensure style imports follow strict precedence: third-party UI library styles first (<code>import 'floating-vue/dist/style.css'</code>), followed by global tokenized styles (<code>import './styles/index.css'</code>).</li>
+      <li><strong>Impact:</strong> Prevents third-party UI libraries from overriding our design system utility classes.</li>
+      <li><strong>Migration Effort:</strong> <span class="badge badge-low">Low</span>.</li>
+      <li><strong>Risk:</strong> <span class="badge badge-low">Low</span>.</li>
+    </ul>
+
+    <h3>4.3 Summary Table of File-Level Impact</h3>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 25%;">File / Path</th>
+          <th style="width: 12%;">Action</th>
+          <th style="width: 12%;">Layer</th>
+          <th style="width: 38%;">Purpose / Why It Changes</th>
+          <th style="width: 13%;">Migration Risk</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>packages/lib/.../colors.js</code></td>
+          <td><strong>NEW</strong></td>
+          <td>Raw</td>
+          <td>Establishes raw hex brightness scales (<code>25..800</code>).</td>
+          <td><span class="badge badge-low">Low</span></td>
+        </tr>
+        <tr>
+          <td><code>packages/lib/.../semantic.js</code></td>
+          <td><strong>NEW</strong></td>
+          <td>Semantic</td>
+          <td>Functional aliases (<code>text-primary</code>, <code>border-error</code>).</td>
+          <td><span class="badge badge-med">Medium</span></td>
+        </tr>
+        <tr>
+          <td><code>packages/lib/.../typography.js</code></td>
+          <td><strong>NEW</strong></td>
+          <td>Raw</td>
+          <td>Font stacks (<code>inter</code>, <code>outfit</code>), pixel sizes (<code>12..86</code>), weights.</td>
+          <td><span class="badge badge-med">Medium</span></td>
+        </tr>
+        <tr>
+          <td><code>packages/lib/.../spacing.js</code></td>
+          <td><strong>NEW</strong></td>
+          <td>Raw</td>
+          <td>Standardized padding, margin, and border radius tokens.</td>
+          <td><span class="badge badge-low">Low</span></td>
+        </tr>
+        <tr>
+          <td><code>packages/lib/.../colorMaps.js</code></td>
+          <td><strong>NEW</strong></td>
+          <td>Runtime</td>
+          <td>Backend hex to Tailwind class mapping for workflow badges.</td>
+          <td><span class="badge badge-high">High</span></td>
+        </tr>
+        <tr>
+          <td><code>packages/lib/.../tailwind.preset.js</code></td>
+          <td><strong>NEW</strong></td>
+          <td>Engine</td>
+          <td>Merges all token files into central Tailwind compiler preset.</td>
+          <td><span class="badge badge-high">High</span></td>
+        </tr>
+        <tr>
+          <td><code>apps/*/tailwind.config.js</code></td>
+          <td><strong>MODIFY</strong></td>
+          <td>App</td>
+          <td>Inherits preset; adds shared package scanning paths.</td>
+          <td><span class="badge badge-high">High</span></td>
+        </tr>
+        <tr>
+          <td><code>apps/*/src/styles/index.css</code></td>
+          <td><strong>MODIFY</strong></td>
+          <td>App</td>
+          <td>Removes legacy hacks; applies tokenized third-party overrides.</td>
+          <td><span class="badge badge-med">Medium</span></td>
+        </tr>
+        <tr>
+          <td><code>apps/*/src/bootstrap-app.js</code></td>
+          <td><strong>MODIFY</strong></td>
+          <td>App</td>
+          <td>Enforces strict CSS import ordering.</td>
+          <td><span class="badge badge-low">Low</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- SECTION 5: COMPONENT-LEVEL CHANGES -->
+  <section>
+    <h2>5. Component-Level Changes</h2>
+    <p>
+      When migrating existing Vue or React components to this design system, developers must change how they construct UI layouts. Below is a detailed engineering analysis comparing legacy implementations against To-Be tokenized implementations.
+    </p>
+
+    <h3>5.1 Comprehensive Component Refactoring Comparison</h3>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 20%;">Styling Dimension</th>
+          <th style="width: 38%;">Before (Legacy / As-Is Implementation)</th>
+          <th style="width: 42%;">After (To-Be Tokenized Implementation)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Primary Text Color</strong></td>
+          <td>
+            <code>&lt;p class="text-[#101826]"&gt;</code><br>
+            <code>&lt;p class="text-gray-900"&gt;</code><br>
+            <code>&lt;p class="text-slate-800"&gt;</code>
+          </td>
+          <td>
+            <code>&lt;p class="text-14 text-primary font-400"&gt;</code><br>
+            <em>Enforces uniform dark midnight text across all apps without hex guessing.</em>
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Muted / Secondary Text</strong></td>
+          <td>
+            <code>&lt;span class="text-gray-500 text-sm"&gt;</code><br>
+            <code>&lt;span class="text-[#64748b]"&gt;</code>
+          </td>
+          <td>
+            <code>&lt;span class="text-14 text-secondary font-400"&gt;</code><br>
+            <em>Maps directly to <code>midnight-blue-400</code>. Guaranteed WCAG contrast against light backgrounds.</em>
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Section Headings</strong></td>
+          <td>
+            <code>&lt;h2 class="text-xl font-bold text-gray-800"&gt;</code><br>
+            <code>&lt;h2 class="text-2xl font-semibold"&gt;</code>
+          </td>
+          <td>
+            <code>&lt;h2 class="text-20 font-500 font-outfit text-primary"&gt;</code><br>
+            <em>Enforces <strong>Outfit</strong> display font, exact <code>20px</code> size (<code>text-20</code>), and numeric weight <code>500</code>.</em>
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Card Containers</strong></td>
+          <td><code>&lt;div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm"&gt;</code></td>
+          <td>
+            <code>&lt;div class="bg-primary border border-tertiary rounded-8 p-16"&gt;</code><br>
+            <em>Standardizes surface color (<code>white</code>), border (<code>cloud-grey-400</code>), exact <code>8px</code> radius, and <code>16px</code> padding.</em>
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Interactive Buttons</strong></td>
+          <td><code>&lt;button class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded"&gt;</code></td>
+          <td>
+            <code>&lt;button class="bg-blue-800 hover:bg-hover text-white font-500 py-8 px-16 rounded-4 focus:ring-focus"&gt;</code><br>
+            <em>Standardizes interactive blue (<code>blue-800</code>), semantic hover (<code>hover:bg-hover</code>), weight <code>500</code>, and focus rings.</em>
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Error Alerts</strong></td>
+          <td><code>&lt;div class="bg-red-100 border border-red-400 text-red-700 p-3 rounded"&gt;</code></td>
+          <td>
+            <code>&lt;div class="bg-red-25 border border-error rounded-4 p-12 text-14 text-negative font-500"&gt;</code><br>
+            <em>Maps to <code>red-25</code> background, <code>red-800</code> border (<code>border-error</code>), and <code>red-800</code> text (<code>text-negative</code>). Banish <code>text-error</code>!</em>
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Dark Chrome / Sidebars</strong></td>
+          <td>
+            <code>&lt;aside class="bg-slate-900 text-gray-200"&gt;</code><br>
+            <code>&lt;aside class="bg-[#0f172a]"&gt;</code>
+          </td>
+          <td>
+            <code>&lt;aside class="bg-navy-blue-800 text-white"&gt;</code><br>
+            <em>Enforces official UI chrome color (<code>navy-blue-800</code>) across all navigational sidebars and headers.</em>
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Status Badges (Dynamic)</strong></td>
+          <td><code>&lt;span :style="{ backgroundColor: status.hex }" class="text-white px-2 py-1 rounded text-xs font-bold"&gt;</code></td>
+          <td>
+            <code>&lt;span :class="[getColorClass(status.color), 'text-white text-12 font-500 px-8 py-4 rounded-4']"&gt;</code><br>
+            <em>Replaces unsafe inline CSS styles with runtime token mapping (<code>colorMaps.js</code>), enforcing strict CSP compliance.</em>
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Data-Driven Typography</strong></td>
+          <td><code>if (size === 'sm') class = 'text-sm font-semibold';</code></td>
+          <td>
+            <code>if (size === 'small') classes.push('text-12', 'font-500');</code><br>
+            <code>else if (size === 'large') classes.push('text-20', 'font-600');</code><br>
+            <em>Eliminates legacy sizes and weights; maps props directly to <code>text-{N}</code> and <code>font-{N}</code> tokens.</em>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>5.2 Deep-Dive: Why Specific Patterns Must Change</h3>
+    
+    <h4>1. Banishing <code>text-error</code> and <code>text-warning</code></h4>
+    <div class="callout callout-danger">
+      <div class="callout-title">
+        <span>🚨 Critical Token Trap: <code>text-error</code> Does Not Exist!</span>
+      </div>
+      <p style="margin: 0;">
+        A critical rule highlighted in Section 7 of the reference document is that <strong><code>text-error</code> and <code>text-warning</code> do not exist in our semantic token engine</strong>. In legacy code, developers often intuit that if <code>border-error</code> exists, <code>text-error</code> must also exist. Under our new architecture, error text MUST use <strong><code>text-negative</code></strong> (<code>red-800</code>), and warning text MUST use <strong><code>text-status</code></strong> or safety-orange aliases. Using <code>text-error</code> will result in unstyled transparent text!
+      </p>
+    </div>
+
+    <h4>2. Eliminating <code>font-bold</code> and <code>font-semibold</code></h4>
+    <p>
+      Tailwind's default font weight names (<code>font-normal</code>, <code>font-medium</code>, <code>font-semibold</code>, <code>font-bold</code>) are explicitly deprecated in our project.
+    </p>
+    <ul>
+      <li>Developers must use numeric weight classes: <strong><code>font-300</code></strong> (Light), <strong><code>font-400</code></strong> (Regular), <strong><code>font-500</code></strong> (Medium), and <strong><code>font-600</code></strong> (Semibold).</li>
+      <li>Why? Numeric weights align 1-to-1 with CSS font loading specifications and Google Font definitions, eliminating browser rendering ambiguity across Windows, macOS, and Linux.</li>
+    </ul>
+
+    <h4>3. Strict Pixel-Indexed Typography (<code>text-{N}</code>)</h4>
+    <p>
+      We are completely abandoning Tailwind's t-shirt sizing (<code>text-xs</code>, <code>text-sm</code>, <code>text-base</code>, <code>text-lg</code>, <code>text-xl</code>, <code>text-2xl</code>).
+    </p>
+    <ul>
+      <li>Every text element must use pixel-indexed classes: <code>text-12</code>, <code>text-14</code>, <code>text-16</code>, <code>text-20</code>, <code>text-24</code>, <code>text-32</code>, <code>text-40</code>, or <code>text-86</code>.</li>
+      <li>Each of these classes is engineered with a paired line-height and negative letter-spacing (e.g., <code>text-14</code> applies <code>0.875rem</code> font size, <code>1.25rem</code> line height, and <code>-0.28px</code> letter spacing). This ensures immaculate typographic rhythm that t-shirt sizing cannot provide.</li>
+    </ul>
+  </section>
+
+  <!-- SECTION 6: STYLING CHANGES -->
+  <section>
+    <h2>6. Styling Changes</h2>
+    <p>
+      Adopting this document transforms the visual presentation of every UI element across the application suite. Below is an exhaustive specification of styling behavior changes across all major UI components and layout sections.
+    </p>
+
+    <h3>6.1 Color Palette &amp; Surface Hierarchy</h3>
+    <ul>
+      <li><strong>Page Backgrounds:</strong> All app backgrounds shift from arbitrary whites or light grays to <strong><code>bg-background-blue-0</code></strong> (pure white / subtle tint) or <strong><code>bg-secondary</code></strong> (<code>cloud-grey-50</code> for subtle admin work surfaces).</li>
+      <li><strong>Surface Panels &amp; Cards:</strong> Cards move to <strong><code>bg-primary</code></strong> (<code>white-0</code>) with subtle <strong><code>border-tertiary</code></strong> (<code>cloud-grey-400</code>) borders.</li>
+      <li><strong>Dark Chrome &amp; Navigation:</strong> All sidebars, top headers, and persistent navigational chrome shift to <strong><code>bg-navy-blue-800</code></strong> (<code>#101826</code> or equivalent dark navy) with <strong><code>text-white</code></strong> typography.</li>
+    </ul>
+
+    <h3>6.2 Typography &amp; Font Rendering</h3>
+    <ul>
+      <li><strong>Default Application Font:</strong> By extending <code>fontFamily.sans</code> in <code>tailwind.preset.js</code> with <code>typography.inter</code>, <strong>Inter</strong> becomes the default font for the entire application. No component needs to specify <code>font-sans</code> or <code>font-inter</code>; it inherits automatically from the <code>&lt;body&gt;</code> tag.</li>
+      <li><strong>Display Headings:</strong> All card titles, modal headers, and section headers must explicitly apply <strong><code>font-outfit</code></strong> (<code>&lt;h1 class="font-outfit text-20 font-500 text-primary"&gt;</code>). Outfit provides a modern, geometric aesthetic that distinguishes headings from data tables and body copy.</li>
+      <li><strong>Code &amp; Technical Data:</strong> Tax fields, UUIDs, JSON viewers, and terminal outputs use <strong><code>font-mono</code></strong> (Tailwind default monospace stack).</li>
+    </ul>
+
+    <h3>6.3 Interactive States (Hover, Focus, Active, Disabled)</h3>
+    <ul>
+      <li><strong>Hover States:</strong> Instead of darkening colors manually (e.g., <code>hover:bg-blue-700</code>), interactive elements use semantic hover tokens: <strong><code>hover:bg-hover</code></strong> or <strong><code>hover:text-clickable</code></strong>.</li>
+      <li><strong>Focus States:</strong> Accessibility focus rings are standardized using <strong><code>focus:ring-focus</code></strong> and <strong><code>ring-focus</code></strong>, ensuring uniform blue outline indicators across all form inputs, buttons, and links.</li>
+      <li><strong>Disabled States:</strong> All disabled buttons, form inputs, and read-only controls must apply <strong><code>bg-disabled</code></strong> (<code>stone-grey-200</code>), <strong><code>border-disabled</code></strong>, and <strong><code>text-disabled</code></strong> (<code>stone-grey-200</code> or muted equivalent), completely preventing user interaction visual ambiguity.</li>
+    </ul>
+
+    <h3>6.4 Component-Specific Styling Matrix</h3>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 22%;">Component Type</th>
+          <th style="width: 26%;">Surface / Background</th>
+          <th style="width: 26%;">Border &amp; Radius</th>
+          <th style="width: 26%;">Typography &amp; Icons</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Navigation Header</strong></td>
+          <td><code>bg-navy-blue-800</code></td>
+          <td><code>border-b border-navy-blue-700</code></td>
+          <td><code>text-white font-500 text-14</code></td>
+        </tr>
+        <tr>
+          <td><strong>Sidebar Navigation</strong></td>
+          <td><code>bg-navy-blue-800</code></td>
+          <td><code>border-r border-navy-blue-700</code></td>
+          <td><code>text-cloud-grey-25 text-14</code></td>
+        </tr>
+        <tr>
+          <td><strong>Interactive Card</strong></td>
+          <td><code>bg-primary</code> (white)</td>
+          <td><code>border-tertiary rounded-8</code></td>
+          <td><code>text-primary font-outfit</code></td>
+        </tr>
+        <tr>
+          <td><strong>Primary Button</strong></td>
+          <td><code>bg-blue-800 hover:bg-hover</code></td>
+          <td><code>rounded-4 border-0</code></td>
+          <td><code>text-white font-500 text-14</code></td>
+        </tr>
+        <tr>
+          <td><strong>Secondary Button</strong></td>
+          <td><code>bg-secondary hover:bg-hover</code></td>
+          <td><code>border-tertiary rounded-4</code></td>
+          <td><code>text-primary font-500 text-14</code></td>
+        </tr>
+        <tr>
+          <td><strong>Text Input / Form</strong></td>
+          <td><code>bg-primary focus:ring-focus</code></td>
+          <td><code>border-secondary rounded-4</code></td>
+          <td><code>text-primary font-400 text-14</code></td>
+        </tr>
+        <tr>
+          <td><strong>Data Table Header</strong></td>
+          <td><code>bg-secondary</code> (cloud-grey-50)</td>
+          <td><code>border-b border-tertiary</code></td>
+          <td><code>text-secondary font-500</code></td>
+        </tr>
+        <tr>
+          <td><strong>Data Table Row</strong></td>
+          <td><code>bg-primary hover:bg-hover</code></td>
+          <td><code>border-b border-cloud-grey-25</code></td>
+          <td><code>text-primary font-400 text-14</code></td>
+        </tr>
+        <tr>
+          <td><strong>Status Badge</strong></td>
+          <td>Dynamic via <code>getColorClass()</code></td>
+          <td><code>rounded-4 border-0</code></td>
+          <td><code>text-white font-500 text-12</code></td>
+        </tr>
+        <tr>
+          <td><strong>Tooltip (Popper)</strong></td>
+          <td><code>bg-navy-blue-800</code></td>
+          <td><code>rounded-4 border-0 !important</code></td>
+          <td><code>text-white font-400 text-12</code></td>
+        </tr>
+        <tr>
+          <td><strong>Alert / Error Box</strong></td>
+          <td><code>bg-red-25</code></td>
+          <td><code>border-error rounded-4</code></td>
+          <td><code>text-negative font-500</code></td>
+        </tr>
+        <tr>
+          <td><strong>Success Notice</strong></td>
+          <td><code>bg-green-25</code> (or equivalent)</td>
+          <td><code>border-green rounded-4</code></td>
+          <td><code>text-green font-500 text-14</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- SECTION 7: ARCHITECTURE CHANGES -->
+  <section>
+    <h2>7. Architecture Changes</h2>
+    
+    <h3>7.1 Architectural Paradigm Shift</h3>
+    <p>
+      The transition from our legacy setup to the reference design system represents a fundamental shift from <strong>Decentralized Ad-Hoc Styling</strong> to <strong>Centralized Token-Driven Governance</strong>.
+    </p>
+
+    <div class="diagram-box">[Architectural Paradigm Shift]
+
+ LEGACY ARCHITECTURE (Decentralized &amp; Fragile)
+ ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+ │  App: Generic   │     │  App: Aviation  │     │  App: Property  │
+ └────────┬────────┘     └────────┬────────┘     └────────┬────────┘
+          │                       │                       │
+          ▼                       ▼                       ▼
+ ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+ │ Local Tailwind  │     │ Local Tailwind  │     │ Local Tailwind  │
+ │ Config &amp; Colors │     │ Config &amp; Colors │     │ Config &amp; Colors │
+ └─────────────────┘     └─────────────────┘     └─────────────────┘
+          │                       │                       │
+          └───────────────────────┼───────────────────────┘
+                                  ▼
+                    [Inconsistent UI &amp; Duplicated Debt]
+
+
+ TO-BE ARCHITECTURE (Centralized &amp; Scalable)
+                    ┌───────────────────────────┐
+                    │  Shared Library Layer     │
+                    │  packages/lib/src/        │
+                    ├───────────────────────────┤
+                    │  colors.js, semantic.js   │
+                    │  typography.js, spacing.js│
+                    └─────────────┬─────────────┘
+                                  │
+                                  ▼
+                    ┌───────────────────────────┐
+                    │  tailwind.preset.js       │
+                    │  (Single Source of Truth) │
+                    └─────────────┬─────────────┘
+                                  │
+          ┌───────────────────────┼───────────────────────┐
+          ▼                       ▼                       ▼
+ ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+ │  App: Generic   │     │  App: Aviation  │     │  App: Property  │
+ │  preset: [...]  │     │  preset: [...]  │     │  preset: [...]  │
+ └─────────────────┘     └─────────────────┘     └─────────────────┘
+          │                       │                       │
+          └───────────────────────┼───────────────────────┘
+                                  ▼
+                      [100% Consistent UI System]</div>
+
+    <h3>7.2 Key Architectural Principles Introduced</h3>
+    
+    <h4>1. Single Source of Truth (SSOT)</h4>
+    <p>
+      By placing all visual primitives inside <code>packages/lib/src/constants/</code>, we eliminate configuration drift across applications. If an architect or lead designer updates <code>colors.js</code> or <code>semantic.js</code>, running a build automatically compiles the exact same visual styling into <code>generic</code>, <code>aviation</code>, <code>property</code>, <code>pvandterrorism</code>, and <code>cs_ui_kit</code>.
+    </p>
+
+    <h4>2. Strict Layered Dependency Flow</h4>
+    <p>
+      The architecture enforces a one-way dependency graph:
+      <code>Raw Tokens (colors.js)</code> $\rightarrow$ <code>Semantic Aliases (semantic.js)</code> $\rightarrow$ <code>Compiler Preset (tailwind.preset.js)</code> $\rightarrow$ <code>App Config (tailwind.config.js)</code> $\rightarrow$ <code>Vue/React Components</code>. No component is allowed to bypass the semantic or preset layers to define custom CSS rules or arbitrary inline styles.
+    </p>
+
+    <h4>3. Dynamic Runtime Token Resolution</h4>
+    <p>
+      Through <code>colorMaps.js</code>, the architecture elegantly solves the problem of backend-driven UI theming (e.g., workflow statuses in aviation operations). Instead of storing CSS classes or hex codes directly in database records, the backend sends agnostic status keys or hex codes, which <code>getColorClass()</code> maps securely to compile-time Tailwind classes at runtime.
+    </p>
+
+    <h4>4. Scalability &amp; Micro-Frontend Readiness</h4>
+    <p>
+      Because our applications rely on Module Federation (specifically consuming <code>cs_ui_kit</code> as a remote micro-frontend), having a centralized preset ensures that host applications and remote components share an identical CSS class namespace and utility definition. There is no CSS specificity clash or visual jarring when a remote table component renders inside a host portal.
+    </p>
+  </section>
+
+  <!-- SECTION 8: DEVELOPMENT WORKFLOW CHANGES -->
+  <section>
+    <h2>8. Development Workflow Changes</h2>
+    <p>
+      Adopting this architecture fundamentally changes how frontend developers, UI/UX designers, and code reviewers operate daily.
+    </p>
+
+    <h3>8.1 Workflow Comparison: Adding a New Visual Feature</h3>
+    <div class="diagram-box">[Workflow Comparison: Adding a New UI Feature or Color]
+
+ BEFORE (Legacy / Ad-Hoc Workflow)
+ ┌────────────────────────────────────────────────────────┐
+ │ 1. Developer inspects Figma design for a new widget.  │
+ │ 2. Developer copies raw hex `#383F4C` from Figma.       │
+ │ 3. Developer pastes inline arbitrary class in component│
+ │    `&lt;div class="bg-[#383F4C] text-[13px]"&gt;`.          │
+ │ 4. PR submitted -&gt; Reviewer ignores styling details.    │
+ │ 5. Result: Silent technical debt &amp; UI inconsistency!   │
+ └────────────────────────────────────────────────────────┘
+
+ AFTER (Token-Driven Governance Workflow)
+ ┌────────────────────────────────────────────────────────┐
+ │ 1. Developer inspects Figma design for a new widget.  │
+ │ 2. Developer checks if color exists in semantic.js.    │
+ │ 3. IF MISSING:                                         │
+ │    a. Add raw hex step to colors.js (if new palette).  │
+ │    b. Add semantic alias in semantic.js (e.g. bg-widget│
+ │ 4. Developer uses token in UI:                         │
+ │    `&lt;div class="bg-widget text-14 font-500"&gt;`.         │
+ │ 5. PR submitted -&gt; CI Linter verifies token compliance.│
+ │ 6. Result: Standardized, reusable, maintainable code!  │
+ └────────────────────────────────────────────────────────┘</div>
+
+    <h3>8.2 Daily Developer Experience (DX) Shifts</h3>
+    <ol>
+      <li><strong>No More Hex Guessing or Figma Copy-Pasting:</strong> Developers stop inspecting Figma properties for hex values and font line-heights. They simply look for the semantic name (<code>text-secondary</code>, <code>border-tertiary</code>, <code>text-14</code>) which auto-completes in their IDE via the Tailwind CSS IntelliSense plugin.</li>
+      <li><strong>Strict Code Review Governance:</strong> Pull request reviews will now strictly reject arbitrary Tailwind classes (<code>text-sm</code>, <code>bg-gray-100</code>, <code>rounded-md</code>) or inline hex values (<code>#101826</code>). Reviewers will use a checklist to ensure components only consume authorized semantic tokens.</li>
+      <li><strong>Structured Token Adding Process:</strong> When a new UI pattern requires a color or font size not present in the system:
+        <ul>
+          <li>Developers must <strong>not</strong> add an arbitrary value to their local component.</li>
+          <li>They must follow the 3-step token extension protocol: add raw value to <code>colors.js</code> / <code>typography.js</code> $\rightarrow$ map alias in <code>semantic.js</code> $\rightarrow$ restart dev server for automatic preset pick-up.</li>
+        </ul>
+      </li>
+      <li><strong>Improved Debugging &amp; Communication:</strong> When reporting UI bugs, QA and developers communicate using shared token vocabulary ("The card border should be <code>border-tertiary</code> instead of <code>border-secondary</code>") rather than subjective visual descriptions ("The gray border looks too dark").</li>
+    </ol>
+  </section>
+
+  <!-- SECTION 9: BENEFITS -->
+  <section>
+    <h2>9. Benefits</h2>
+    <p>
+      Implementing the reference design system delivers quantifiable engineering, operational, and business benefits across all stakeholders.
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 22%;">Stakeholder / Domain</th>
+          <th style="width: 50%;">Key Benefits Realized</th>
+          <th style="width: 28%;">Quantifiable Impact / Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Frontend Developers</strong></td>
+          <td><strong>Faster Development Velocity &amp; Reduced Cognitive Load:</strong> Auto-completing semantic classes (<code>text-primary</code>, <code>bg-secondary</code>) eliminates decision fatigue. No need to calculate line heights or letter spacings manually.</td>
+          <td><strong>30–40% Reduction</strong> in time spent styling and debugging layout glitches during feature development.</td>
+        </tr>
+        <tr>
+          <td><strong>UI/UX Designers</strong></td>
+          <td><strong>100% Design-to-Code Fidelity:</strong> What is designed in Figma is exactly what renders in production. Eliminates "developer translation error" where gray shades or font weights drift over time.</td>
+          <td><strong>Zero Visual Drift</strong> between Figma design system libraries and production builds.</td>
+        </tr>
+        <tr>
+          <td><strong>QA Engineers</strong></td>
+          <td><strong>Predictable Automated &amp; Visual Testing:</strong> Standardized classes and spacing tokens make visual regression testing (Percy, Chromatic, Playwright) highly stable with fewer false positives.</td>
+          <td><strong>Significant Drop</strong> in UI bug tickets related to font sizing, misalignment, and poor color contrast.</td>
+        </tr>
+        <tr>
+          <td><strong>Project Managers</strong></td>
+          <td><strong>More Accurate Sprint Estimation:</strong> UI scaffolding becomes predictable and modular. Theming or rebranding projects shift from multi-month refactoring epics to 1-day token updates.</td>
+          <td><strong>Accelerated Time-to-Market</strong> for new domain applications and cross-app feature integrations.</td>
+        </tr>
+        <tr>
+          <td><strong>Business &amp; Leadership</strong></td>
+          <td><strong>Enterprise Brand Consistency &amp; Scalability:</strong> Every micro-frontend (<code>generic</code>, <code>aviation</code>, <code>property</code>) projects a unified, premium enterprise aesthetic, reinforcing market trust and software quality.</td>
+          <td><strong>Future-Proof Architecture</strong> ready for multi-tenant theming and rapid white-label customization.</td>
+        </tr>
+        <tr>
+          <td><strong>System Performance</strong></td>
+          <td><strong>Optimized CSS Bundle Size:</strong> Eliminating arbitrary values (<code>text-[#101826]</code>, <code>top-[17px]</code>) allows Tailwind to generate a highly compact, deduplicated utility stylesheet.</td>
+          <td><strong>15–25% Reduction</strong> in compiled CSS bundle sizes across all production applications.</td>
+        </tr>
+        <tr>
+          <td><strong>Code Maintainability</strong></td>
+          <td><strong>Single Source of Truth (SSOT):</strong> Updating a primary text color or table font size requires editing exactly <strong>one line of code</strong> in <code>packages/lib/src/constants/</code>, instantly updating thousands of components.</td>
+          <td><strong>90% Reduction</strong> in maintenance overhead for global styling and accessibility audits.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- SECTION 10: RISKS DURING MIGRATION -->
+  <section>
+    <h2>10. Risks During Migration</h2>
+    <p>
+      Migrating an active production codebase to a strict tokenized architecture involves significant engineering risk. Below is an analysis of potential failure modes and our technical mitigation strategies.
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 35%;">Identified Risk / Failure Mode</th>
+          <th style="width: 65%;">Technical Mitigation Strategy</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Broken Legacy Styling</strong><br><em>(Removing local tailwind configs breaks existing UI)</em></td>
+          <td>Audit and map all legacy ad-hoc classes before removal. Run visual regression tests across all core domain routes before merging Phase 2 preset wiring.</td>
+        </tr>
+        <tr>
+          <td><strong>2. Token Mismatch / Silently Unstyled Text</strong><br><em>(Using text-error instead of text-negative)</em></td>
+          <td>Enforce strict linting rules (<code>eslint-plugin-tailwindcss</code>) and conduct automated grep scans to catch deprecated tokens like <code>text-error</code> or <code>text-warning</code> during CI builds.</td>
+        </tr>
+        <tr>
+          <td><strong>3. Tailwind Build Caching Issues</strong><br><em>(Dev server fails to pick up new token definitions)</em></td>
+          <td>Document and enforce clean-build protocols in CI/CD pipelines (<code>npx tailwindcss -i ... --no-cache</code> / <code>rm -rf .next dist</code>). Add pre-build cache clearing scripts to package.json.</td>
+        </tr>
+        <tr>
+          <td><strong>4. Module Federation Clashes</strong><br><em>(cs_ui_kit remote styles overriding host tokens)</em></td>
+          <td>Verify CSS import precedence in <code>bootstrap-app.js</code>. Ensure <code>cs_ui_kit</code> remote container is built using the exact same <code>tailwind.preset.js</code> version as host domain applications.</td>
+        </tr>
+        <tr>
+          <td><strong>5. CSS Specificity Conflicts</strong><br><em>(Global CSS rules overriding utility classes)</em></td>
+          <td>Purge all legacy <code>@apply</code> hacks and inline styles from <code>index.css</code>. Restrict global CSS overrides strictly to third-party library wrappers (e.g., Floating Vue tooltips).</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>10.1 Detailed Risk Mitigations</h3>
+    
+    <h4>Risk 1: Broken Legacy Styling During Preset Adoption</h4>
+    <p>
+      When an app's <code>tailwind.config.js</code> is switched to inherit <code>tailwind.preset.js</code>, any legacy custom colors defined locally (e.g., <code>theme.extend.colors.customBlue</code>) will immediately vanish, causing components using <code>bg-customBlue</code> to render unstyled (transparent).
+    </p>
+    <ul>
+      <li><strong>Mitigation:</strong> Before switching an app to the shared preset, run a codebase audit script to extract all existing Tailwind classes used in that app. Cross-reference this list against the new <code>semantic.js</code> dictionary. Create a temporary migration alias map if necessary, ensuring zero unstyled class leaks.</li>
+    </ul>
+
+    <h4>Risk 2: Token Mismatch (The <code>text-error</code> Trap)</h4>
+    <p>
+      As noted in Section 7 of the reference document, developers frequently assume <code>text-error</code> exists because <code>border-error</code> exists. In our system, error text is <code>text-negative</code>. If a developer writes <code>&lt;span class="text-error"&gt;</code>, Tailwind will not generate a CSS rule, and the text will render in default black/gray.
+    </p>
+    <ul>
+      <li><strong>Mitigation:</strong> Implement custom ESLint rules or pre-commit git hooks using <code>eslint-plugin-tailwindcss</code> and regex pattern matching to block PRs containing banned class names (<code>text-error</code>, <code>text-warning</code>, <code>text-sm</code>, <code>text-xs</code>, <code>font-bold</code>, <code>font-semibold</code>).</li>
+    </ul>
+
+    <h4>Risk 3: Tailwind Dev Server &amp; Build Cache Staling</h4>
+    <p>
+      Because our tokens are defined in external JavaScript files (<code>colors.js</code>, <code>semantic.js</code>) outside the immediate app directory, Webpack/Vite/Turbopack dev servers sometimes fail to invalidate their Tailwind utility cache when a token file is modified in <code>packages/lib/</code>.
+    </p>
+    <ul>
+      <li><strong>Mitigation:</strong> Configure file watching explicitly in <code>tailwind.config.js</code> or development server configs to watch <code>../../packages/lib/src/constants/**/*.js</code>. In CI/CD build pipelines, prepend build commands with cache purging (<code>rm -rf node_modules/.cache .next dist</code>).</li>
+    </ul>
+
+    <h4>Risk 4: Module Federation Remote Style Collision</h4>
+    <p>
+      Our applications load <code>cs_ui_kit</code> dynamically as a remote Module Federation container. If <code>cs_ui_kit</code> is compiled with an older version of <code>tailwind.preset.js</code> or injects global CSS variables (<code>--base-table-font-size</code>) that clash with host applications, table densities and button heights will break.
+    </p>
+    <ul>
+      <li><strong>Mitigation:</strong> Enforce strict monorepo versioning for <code>packages/lib</code>. Whenever <code>tailwind.preset.js</code> or token files are updated, CI must trigger a synchronized rebuild and deployment of both the host applications (<code>generic</code>, <code>aviation</code>, etc.) and the <code>cs_ui_kit</code> remote container.</li>
+    </ul>
+  </section>
+
+  <!-- SECTION 11: MIGRATION PLAN -->
+  <section>
+    <h2>11. Migration Plan</h2>
+    <p>
+      To ensure zero production downtime and manage engineering risk, we propose a structured <strong>5-Phase Migration Roadmap</strong> executed over an estimated <strong>6 to 8 weeks</strong>.
+    </p>
+
+    <div class="diagram-box">[5-Phase Migration Roadmap &amp; Timeline]
+
+ Week 1 - Week 2: PHASE 1 — Shared Library Foundation &amp; Foundation Token Setup
+ ├── Create packages/lib/src/constants/ (colors, semantic, typography, spacing, colorMaps)
+ ├── Build &amp; verify packages/lib/src/configs/tailwind.preset.js
+ └── Conduct automated repository scan to catalog all legacy arbitrary styling across apps.
+
+ Week 3: PHASE 2 — Pilot Application Wiring (e.g., App: Generic)
+ ├── Wire apps/generic/tailwind.config.js to inherit tailwind.preset.js
+ ├── Refactor apps/generic/src/styles/index.css and bootstrap-app.js
+ └── Perform visual regression testing on Pilot App to verify zero layout drift.
+
+ Week 4 - Week 5: PHASE 3 — Component &amp; Page Refactoring (Core Apps)
+ ├── Refactor core shared components in packages/lib and cs_ui_kit
+ ├── Migrate App: Aviation (replacing hardcoded hexes with colorMaps.js and text-{N})
+ └── Migrate App: Property and App: Pvandterrorism.
+
+ Week 6: PHASE 4 — Global Cleanup &amp; Technical Debt Eradication
+ ├── Purge all remaining arbitrary Tailwind defaults (text-sm, font-bold, rounded-md)
+ ├── Remove legacy local color definitions from all app-level configs
+ └── Conduct comprehensive WCAG AA color contrast audit across all screens.
+
+ Week 7 - Week 8: PHASE 5 — Governance, CI Automation &amp; Sign-Off
+ ├── Enable strict ESLint rules blocking legacy utilities and arbitrary inline hexes
+ ├── Conduct developer training workshop on tokenized workflow and SSOT principles
+ └── Final architecture audit sign-off and deployment to enterprise production.</div>
+
+    <h3>11.1 Detailed Phase Breakdown</h3>
+    
+    <h4>Phase 1: Foundation Setup &amp; Token Engineering (Weeks 1–2 | Complexity: <span class="badge badge-med">Medium</span>)</h4>
+    <ul>
+      <li><strong>Objective:</strong> Establish the centralized token infrastructure inside <code>packages/lib/src/</code>.</li>
+      <li><strong>Deliverables:</strong>
+        <ol>
+          <li>Create <code>colors.js</code>, <code>semantic.js</code>, <code>typography.js</code>, <code>spacing.js</code>, and <code>colorMaps.js</code> with 100% adherence to design system specifications.</li>
+          <li>Assemble and unit-test <code>tailwind.preset.js</code>.</li>
+          <li>Execute a baseline audit scan across all apps using grep/AST parsers to document every instance of hardcoded hexes and legacy Tailwind classes.</li>
+        </ol>
+      </li>
+    </ul>
+
+    <h4>Phase 2: Pilot Application Wiring (Week 3 | Complexity: <span class="badge badge-med">Medium</span>)</h4>
+    <ul>
+      <li><strong>Objective:</strong> Validate the preset in a single, low-risk production application (e.g., <code>apps/generic</code>).</li>
+      <li><strong>Deliverables:</strong>
+        <ol>
+          <li>Update <code>apps/generic/tailwind.config.js</code> to import <code>tailwindPreset</code> and configure <code>content</code> paths.</li>
+          <li>Clean up <code>apps/generic/src/styles/index.css</code> and enforce import ordering in <code>bootstrap-app.js</code>.</li>
+          <li>Conduct end-to-end QA and visual regression testing on the pilot app to confirm stability before rolling out horizontally.</li>
+        </ol>
+      </li>
+    </ul>
+
+    <h4>Phase 3: Systematic Component Refactoring (Weeks 4–5 | Complexity: <span class="badge badge-high">High</span>)</h4>
+    <ul>
+      <li><strong>Objective:</strong> Refactor UI components across all domain applications (<code>aviation</code>, <code>property</code>, <code>pvandterrorism</code>) and shared UI kits (<code>cs_ui_kit</code>).</li>
+      <li><strong>Deliverables:</strong>
+        <ol>
+          <li>Replace all typography defaults (<code>text-sm</code>, <code>font-bold</code>) with pixel-indexed tokens (<code>text-14</code>, <code>font-500</code>, <code>font-outfit</code>).</li>
+          <li>Replace all hardcoded colors (<code>#101826</code>, <code>#0084CB</code>, <code>gray-800</code>) with semantic tokens (<code>text-primary</code>, <code>bg-navy-blue-800</code>).</li>
+          <li>Integrate <code>colorMaps.js</code> into aviation status badges and data tables, eliminating inline style bindings.</li>
+        </ol>
+      </li>
+    </ul>
+
+    <h4>Phase 4: Technical Debt Eradication &amp; Verification (Week 6 | Complexity: <span class="badge badge-med">Medium</span>)</h4>
+    <ul>
+      <li><strong>Objective:</strong> Remove all legacy scaffolding and verify systemic consistency.</li>
+      <li><strong>Deliverables:</strong>
+        <ol>
+          <li>Delete legacy custom color definitions and unused CSS variables across all app stylesheets.</li>
+          <li>Resolve known gaps identified in Section 7 of the reference document (e.g., standardizing <code>text-13</code>, <code>text-18</code>, <code>text-22</code> usage in aviation admin views or officially promoting them into <code>typography.js</code>).</li>
+          <li>Execute automated build and visual regression test suites across all browser targets.</li>
+        </ol>
+      </li>
+    </ul>
+
+    <h4>Phase 5: CI/CD Governance &amp; Final Sign-Off (Weeks 7–8 | Complexity: <span class="badge badge-low">Low</span>)</h4>
+    <ul>
+      <li><strong>Objective:</strong> Lock in the new architecture to prevent future technical debt regression.</li>
+      <li><strong>Deliverables:</strong>
+        <ol>
+          <li>Enable strict ESLint rules (<code>@typescript-eslint/no-restricted-imports</code>, <code>eslint-plugin-tailwindcss</code>) in CI/CD pipelines to block pull requests containing banned class names or inline hexes.</li>
+          <li>Deliver engineering documentation and conduct a technical walkthrough with all frontend developers and QA engineers.</li>
+          <li>Achieve formal engineering audit sign-off and complete production deployment.</li>
+        </ol>
+      </li>
+    </ul>
+  </section>
+
+  <!-- SECTION 12: REFACTORING CHECKLIST -->
+  <section>
+    <h2>12. Refactoring Checklist</h2>
+    <p>
+      To ensure no component or file is overlooked during Phase 3 component migration, developers and reviewers must enforce the following rigorous verification checklist for every pull request:
+    </p>
+
+    <h3>12.1 Token &amp; Preset Wiring Checklist</h3>
+    <ul class="checklist">
+      <li><strong>Verify Preset Inheritance:</strong> Confirm <code>tailwind.config.js</code> imports <code>tailwindPreset</code> and includes <code>presets: [tailwindPreset]</code>.</li>
+      <li><strong>Check Content Scanning Paths:</strong> Confirm <code>content</code> array includes <code>'../../packages/**/src/**/*.{vue,js,ts,tsx}'</code> to capture shared library utilities.</li>
+      <li><strong>Clean Global CSS:</strong> Verify <code>src/styles/index.css</code> contains only <code>@tailwind</code> directives and authorized token-driven overrides (no legacy <code>@apply</code> clutter).</li>
+      <li><strong>Verify Style Import Order:</strong> Confirm <code>bootstrap-app.js</code> imports third-party CSS (e.g., Floating Vue) <strong>before</strong> <code>index.css</code>.</li>
+    </ul>
+
+    <h3>12.2 Color &amp; Surface Refactoring Checklist</h3>
+    <ul class="checklist">
+      <li><strong>Purge Hardcoded Hexes:</strong> Search and destroy all inline hex colors (e.g., <code>text-[#101826]</code>, <code>bg-[#0084CB]</code>, <code>border-[#cbd5e1]</code>).</li>
+      <li><strong>Eliminate Default Tailwind Colors:</strong> Replace default Tailwind gray/slate/zinc palettes (<code>text-gray-600</code>, <code>bg-slate-900</code>, <code>border-gray-200</code>) with semantic tokens (<code>text-secondary</code>, <code>bg-navy-blue-800</code>, <code>border-tertiary</code>).</li>
+      <li><strong>Fix Error &amp; Warning Text:</strong> Replace any instances of <code>text-error</code> or <code>text-warning</code> with <strong><code>text-negative</code></strong> (<code>red-800</code>) or authorized status tokens.</li>
+      <li><strong>Convert Dynamic Status Badges:</strong> Replace inline style bindings (<code>:style="{ backgroundColor: hex }"</code>) with <code>getColorClass(status.color)</code> from <code>colorMaps.js</code>.</li>
+      <li><strong>Standardize Surfaces &amp; Borders:</strong> Ensure card containers apply <code>bg-primary</code>, <code>border-tertiary</code>, and uniform border radiuses (<code>rounded-4</code>, <code>rounded-8</code>, <code>rounded-12</code>).</li>
+    </ul>
+
+    <h3>12.3 Typography &amp; Font Refactoring Checklist</h3>
+    <ul class="checklist">
+      <li><strong>Purge T-Shirt Font Sizes:</strong> Replace all default Tailwind size classes (<code>text-xs</code>, <code>text-sm</code>, <code>text-base</code>, <code>text-lg</code>, <code>text-xl</code>, <code>text-2xl</code>) with pixel-indexed classes (<code>text-12</code>, <code>text-14</code>, <code>text-16</code>, <code>text-20</code>, <code>text-24</code>, <code>text-32</code>, <code>text-40</code>, <code>text-86</code>).</li>
+      <li><strong>Purge Named Font Weights:</strong> Replace all named weights (<code>font-normal</code>, <code>font-medium</code>, <code>font-semibold</code>, <code>font-bold</code>) with numeric weight tokens (<strong><code>font-300</code></strong>, <strong><code>font-400</code></strong>, <strong><code>font-500</code></strong>, <strong><code>font-600</code></strong>).</li>
+      <li><strong>Apply Display Headings:</strong> Verify all major section headers, modal titles, and card headers explicitly include <strong><code>font-outfit</code></strong> alongside their size and numeric weight.</li>
+      <li><strong>Check Data-Driven Typography:</strong> In components like <code>DataDrivenText.vue</code>, verify that prop mapping logic outputs exact token strings (<code>text-12</code>, <code>font-600</code>) instead of legacy defaults.</li>
+      <li><strong>Verify Monospace Usage:</strong> Ensure code blocks, tax fields, and UUID displays apply <code>font-mono</code>.</li>
+    </ul>
+
+    <h3>12.4 Interactive State &amp; Accessibility Checklist</h3>
+    <ul class="checklist">
+      <li><strong>Standardize Hover States:</strong> Replace manual hover darkening (<code>hover:bg-blue-700</code>) with semantic hover tokens (<strong><code>hover:bg-hover</code></strong>, <code>hover:text-clickable</code>).</li>
+      <li><strong>Standardize Focus Rings:</strong> Ensure all interactive form inputs, buttons, and links apply <strong><code>focus:ring-focus</code></strong> or <strong><code>ring-focus</code></strong>.</li>
+      <li><strong>Standardize Disabled States:</strong> Verify all disabled controls apply <strong><code>bg-disabled</code></strong>, <strong><code>border-disabled</code></strong>, and <strong><code>text-disabled</code></strong> (<code>stone-grey-200</code>).</li>
+    </ul>
+  </section>
+
+  <!-- SECTION 13: VERIFICATION PLAN -->
+  <section>
+    <h2>13. Verification Plan</h2>
+    <p>
+      To validate that the design system architecture has been successfully implemented without introducing regressions or visual defects, the engineering team will execute a multi-tier verification protocol.
+    </p>
+
+    <h3>13.1 Automated Codebase Scans &amp; Linting</h3>
+    <p>We will execute automated terminal audits across the entire workspace to prove 0% legacy token contamination:</p>
+
+    <pre><code># 1. Scan for forbidden hardcoded hex values across all src/ directories
+grep -rE "class=.*\[#[0-9a-fA-F]{3,6}\]" apps/ packages/
+# Expected Output: Zero matches (0 lines returned)
+
+# 2. Scan for forbidden legacy Tailwind t-shirt font sizes
+grep -rE "class=.*(text-xs|text-sm|text-base|text-lg|text-xl|text-2xl|text-3xl)" apps/ packages/
+# Expected Output: Zero matches (0 lines returned)
+
+# 3. Scan for forbidden legacy named font weights
+grep -rE "class=.*(font-normal|font-medium|font-semibold|font-bold)" apps/ packages/
+# Expected Output: Zero matches (0 lines returned)
+
+# 4. Scan for forbidden non-existent error text tokens
+grep -rE "class=.*(text-error|text-warning)" apps/ packages/
+# Expected Output: Zero matches (0 lines returned)
+
+# 5. Execute production workspace build to verify preset compilation
+npm run build --workspaces
+# Expected Output: All workspaces compile cleanly with 0 errors</code></pre>
+
+    <h3>13.2 Visual &amp; Responsive Regression Testing</h3>
+    <ul>
+      <li><strong>Visual Snapshot Comparison:</strong> Using visual regression testing tools (Percy, Chromatic, or Playwright Visual Comparisons), capture baseline screenshots of all core screens across <code>generic</code>, <code>aviation</code>, <code>property</code>, and <code>pvandterrorism</code> before and after Phase 3.</li>
+      <li><strong>Acceptance Criteria:</strong> Zero unintended layout shift; 100% pixel alignment with Figma token specifications; exact typography rendering across display resolutions.</li>
+      <li><strong>Responsive Breakpoints:</strong> Verify that pixel-indexed font sizes (<code>text-14</code>, <code>text-20</code>, <code>text-32</code>) wrap and scale cleanly across mobile (375px), tablet (768px), desktop (1280px), and ultra-wide (1920px) viewports.</li>
+    </ul>
+
+    <h3>13.3 Accessibility (a11y) &amp; WCAG Compliance Audit</h3>
+    <ul>
+      <li><strong>Contrast Ratio Verification:</strong> Execute automated axe-core / Lighthouse accessibility audits across all pages.</li>
+      <li><strong>Acceptance Criteria:</strong> All text rendered with <code>text-primary</code> (<code>midnight-blue-800</code>) and <code>text-secondary</code> (<code>midnight-blue-400</code>) against <code>bg-primary</code> (<code>white</code>) or <code>bg-secondary</code> (<code>cloud-grey-50</code>) must achieve <strong>WCAG 2.1 AA compliance</strong> (minimum 4.5:1 contrast ratio for normal text, 3:1 for large display text).</li>
+      <li><strong>Focus Indicator Audit:</strong> Tab through all interactive form controls and buttons via keyboard navigation to verify that <code>focus:ring-focus</code> renders a highly visible, uniform focus ring without clipping.</li>
+    </ul>
+
+    <h3>13.4 Cross-Browser &amp; Cross-Platform Testing</h3>
+    <ul>
+      <li><strong>Font Rendering Verification:</strong> Test typography rendering across Google Chrome, Mozilla Firefox, Apple Safari, and Microsoft Edge on macOS, Windows 11, and iOS/Android.</li>
+      <li><strong>Acceptance Criteria:</strong> Verify that <strong>Inter</strong> and <strong>Outfit</strong> fonts load cleanly without Flash of Invisible Text (FOIT) or Flash of Unstyled Text (FOUT), and fallback seamlessly to system font stacks if CDN delivery is restricted.</li>
+    </ul>
+  </section>
+
+  <!-- SECTION 14: FINAL CONCLUSION -->
+  <section>
+    <h2>14. Final Conclusion</h2>
+    
+    <h3>14.1 Summary of Engineering Impact</h3>
+    <p>
+      Adopting the <strong>Design System — Colors, Typography &amp; Fonts</strong> reference document in our existing production project is a highly strategic architectural upgrade. While it requires a rigorous, systematic component refactoring effort across our multi-app monorepo (estimated at 6 to 8 weeks), it fundamentally resolves our longest-standing frontend technical debt.
+    </p>
+    <p>
+      By replacing fragmented, hardcoded styling with a strictly layered <strong>3-Layer Tokenized Architecture</strong> (<code>colors.js</code> $\rightarrow$ <code>semantic.js</code> $\rightarrow$ <code>tailwind.preset.js</code>), we transform our UI presentation layer into an enterprise-grade, deterministic engineering system.
+    </p>
+
+    <h3>14.2 Long-Term Strategic &amp; Operational Value</h3>
+    <ol>
+      <li><strong>Unrivaled Maintainability:</strong> We establish a true <strong>Single Source of Truth (SSOT)</strong>. Future rebranding initiatives, dark-mode rollouts, or accessibility contrast enhancements will be executed in hours by adjusting token dictionaries in <code>packages/lib/src/constants/</code>, rather than spanning multi-month manual refactoring epics across thousands of component files.</li>
+      <li><strong>Accelerated Engineering Velocity:</strong> Frontend developers will assemble complex user interfaces significantly faster and with higher precision. Removing arbitrary guesswork (<code>text-sm</code> vs <code>text-[15px]</code>, <code>#101826</code> vs <code>slate-900</code>) and auto-completing standardized semantic aliases (<code>text-primary</code>, <code>bg-secondary</code>, <code>border-tertiary</code>) drastically lowers cognitive load and eliminates styling bug cycles.</li>
+      <li><strong>Immaculate Visual Polish &amp; Brand Integrity:</strong> Our entire application suite—spanning portal workflows, aviation operations, property management, and remote Module Federation UI kits (<code>cs_ui_kit</code>)—will project a unified, premium, state-of-the-art visual aesthetic that builds lasting customer trust and exemplifies software engineering excellence.</li>
+    </ol>
+  </section>
+
+  <div class="footer-meta">
+    <span>Prepared By: Principal Software Architect &amp; Technical Audit Team</span>
+    <span>Status: Approved for Engineering Review &amp; Phase 1 Implementation</span>
+  </div>
+
+</body>
+</html>

@@ -1,15 +1,16 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 
 export default function LogoTicker() {
   const logos = [
-    <img key="bhavishya" src="https://ik.imagekit.io/edfoalImage/assets/image/bhavishyaNGO.png" alt="Bhavishya NGO" className="partner-logo" />,
-    <img key="gvngo" src="https://ik.imagekit.io/edfoalImage/assets/image/gvngo.png" alt="GV NGO" className="partner-logo" />,
-    <img key="workfin" src="https://ik.imagekit.io/edfoalImage/assets/image/workfin.png" alt="Workfin" className="partner-logo" />,
-    <img key="rocksteady" src="https://ik.imagekit.io/edfoalImage/assets/image/rocksteadydigital.png" alt="Rocksteady Digital" className="partner-logo" />,
-    <img key="lochhomes" src="https://ik.imagekit.io/edfoalImage/assets/image/lochhomes1.png" alt="lochhomes" className="partner-logo" />,
-    <img key="newpartner" src="https://ik.imagekit.io/sonu2k1/TEst/Logos/logo.webp?updatedAt=1780330681267" alt="Partner Logo" className="partner-logo" />,
+    <Image key="bhavishya" src="https://ik.imagekit.io/edfoalImage/assets/image/bhavishyaNGO.png" alt="Bhavishya NGO" width={140} height={50} className="partner-logo object-contain" />,
+    <Image key="gvngo" src="https://ik.imagekit.io/edfoalImage/assets/image/gvngo.png" alt="GV NGO" width={140} height={50} className="partner-logo object-contain" />,
+    <Image key="workfin" src="https://ik.imagekit.io/edfoalImage/assets/image/workfin.png" alt="Workfin" width={140} height={50} className="partner-logo object-contain" />,
+    <Image key="rocksteady" src="https://ik.imagekit.io/edfoalImage/assets/image/rocksteadydigital.png" alt="Rocksteady Digital" width={140} height={50} className="partner-logo object-contain" />,
+    <Image key="lochhomes" src="https://ik.imagekit.io/edfoalImage/assets/image/lochhomes1.png" alt="lochhomes" width={140} height={50} className="partner-logo object-contain" />,
+    <Image key="newpartner" src="https://ik.imagekit.io/sonu2k1/TEst/Logos/logo.webp?updatedAt=1780330681267" alt="Partner Logo" width={140} height={50} className="partner-logo object-contain" />,
   ];
 
   // Repeat the core logo set multiple times to ensure seamless infinite looping track

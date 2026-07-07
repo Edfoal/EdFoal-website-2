@@ -2,6 +2,7 @@
 import * as React from "react";
 import { useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Mail, Phone, Clock } from "lucide-react";
 import {
   motion,
@@ -9,7 +10,7 @@ import {
   useSpring,
   useTransform,
   type MotionValue,
-} from "motion/react";
+} from "framer-motion";
 
 const footerLogoUrl = "https://ik.imagekit.io/edfoalImage/assets/image/footerlogo.png";
 
@@ -76,9 +77,11 @@ function Footer() {
           {/* Left — Logo, Description, Socials */}
           <div className="flex flex-col items-start">
             <Link href="/" className="mb-4 inline-block">
-              <img
+              <Image
                 src={footerLogoUrl}
                 alt="Edfoal Logo"
+                width={150}
+                height={28}
                 className="h-7 w-auto object-contain"
               />
             </Link>

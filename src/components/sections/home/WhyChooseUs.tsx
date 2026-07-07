@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { ArrowUpRight, Zap } from "lucide-react";
 
 const ChartIcon = () => (
@@ -15,25 +16,33 @@ const ChartIcon = () => (
 
 const AvatarGroup = () => (
   <div className="flex -space-x-2 overflow-hidden">
-    <img
+    <Image
       className="inline-block h-8 w-8 rounded-full ring-2 ring-[#f3f4f6] object-cover"
       src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80"
       alt="avatar1"
+      width={32}
+      height={32}
     />
-    <img
+    <Image
       className="inline-block h-8 w-8 rounded-full ring-2 ring-[#f3f4f6] object-cover"
       src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80"
       alt="avatar2"
+      width={32}
+      height={32}
     />
-    <img
+    <Image
       className="inline-block h-8 w-8 rounded-full ring-2 ring-[#f3f4f6] object-cover"
       src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=100&q=80"
       alt="avatar3"
+      width={32}
+      height={32}
     />
-    <img
+    <Image
       className="inline-block h-8 w-8 rounded-full ring-2 ring-[#f3f4f6] object-cover"
       src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=100&q=80"
       alt="avatar4"
+      width={32}
+      height={32}
     />
   </div>
 );
