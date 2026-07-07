@@ -3,13 +3,18 @@
 import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import ParticleBrain from "./ParticleBrain";
+import dynamic from "next/dynamic";
 import { OriginButton } from "@/components/ui/OriginButton";
 import { useCanRender3D } from "@/hooks/useCanRender3D";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
+
+const ParticleBrain = dynamic(() => import("./ParticleBrain"), {
+  ssr: false,
+  loading: () => <HeroStaticFallback />,
+});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Static fallback for mobile / reduced-motion / no-WebGL devices

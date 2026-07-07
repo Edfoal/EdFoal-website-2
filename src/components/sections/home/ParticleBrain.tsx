@@ -668,10 +668,7 @@ function CanvasBrainInner({ animState }: ParticleBrainProps) {
   );
 }
 
-export default dynamic(() => Promise.resolve(CanvasBrainInner), {
-  ssr: false,
-  loading: () => <BrainFallback />,
-});
+export default CanvasBrainInner;
 
 // Safe preload — don't crash if the asset is missing
 try {
