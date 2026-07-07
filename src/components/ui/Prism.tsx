@@ -44,6 +44,7 @@ const Prism = ({
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+    let io: IntersectionObserver | null = null;
 
     const H = Math.max(0.001, height);
     const BW = Math.max(0.001, baseWidth);
@@ -404,14 +405,13 @@ const Prism = ({
     };
 
     if (suspendWhenOffscreen) {
-      const io = new IntersectionObserver(entries => {
+      io = new IntersectionObserver(entries => {
         const vis = entries.some(e => e.isIntersecting);
         if (vis) startRAF();
         else stopRAF();
       });
       io.observe(container);
       startRAF();
-      (container as any).__prismIO = io;
     } else {
       startRAF();
     }
@@ -424,10 +424,8 @@ const Prism = ({
         window.removeEventListener('mouseleave', onLeave);
         window.removeEventListener('blur', onBlur);
       }
-      if (suspendWhenOffscreen) {
-        const io = (container as any).__prismIO;
-        if (io) io.disconnect();
-        delete (container as any).__prismIO;
+      if (suspendWhenOffscreen && io) {
+        io.disconnect();
       }
       if (gl.canvas.parentElement === container) container.removeChild(gl.canvas);
     };

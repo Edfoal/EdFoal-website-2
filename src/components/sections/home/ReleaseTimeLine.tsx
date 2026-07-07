@@ -142,10 +142,7 @@ export default function TimeLine_01({
     return () => cancelAnimationFrame(frame);
   }, [activeIndex]);
 
-  // Optional: ensure the first card is active on mount
-  useEffect(() => {
-    setActiveIndex(0);
-  }, []);
+
 
   return (
     <section className={cn("relative z-10 w-full max-w-5xl mx-auto px-6 md:px-12 py-16 md:py-24", className)}>
